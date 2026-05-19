@@ -13,23 +13,16 @@
 
 <style>
   :root {
-    --bg: #050810;
-    --bg-2: #0a0f1c;
+    --bg: #050810; --bg-2: #0a0f1c;
     --surface: rgba(15, 22, 38, 0.6);
     --surface-2: rgba(20, 28, 48, 0.8);
     --border: rgba(0, 217, 255, 0.12);
     --border-strong: rgba(0, 217, 255, 0.3);
-    --text: #e6edf7;
-    --text-dim: #8a9bb5;
-    --text-muted: #5b6a82;
-    --cyan: #00d9ff;
-    --cyan-glow: rgba(0, 217, 255, 0.5);
-    --magenta: #ff2d92;
-    --magenta-glow: rgba(255, 45, 146, 0.5);
-    --purple: #9d4edd;
-    --green: #00ff9d;
-    --gold: #ffb800;
-    --danger: #ff3860;
+    --text: #e6edf7; --text-dim: #8a9bb5; --text-muted: #5b6a82;
+    --cyan: #00d9ff; --cyan-glow: rgba(0, 217, 255, 0.5);
+    --magenta: #ff2d92; --magenta-glow: rgba(255, 45, 146, 0.5);
+    --purple: #9d4edd; --green: #00ff9d; --gold: #ffb800;
+    --danger: #ff3860; --pink: #ff6b9d;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   html { scroll-behavior: smooth; }
@@ -37,7 +30,7 @@
     font-family: 'Outfit', sans-serif;
     background: var(--bg); color: var(--text);
     line-height: 1.6; min-height: 100vh;
-    overflow-x: hidden; position: relative;
+    overflow-x: hidden;
   }
   .bg-grid {
     position: fixed; inset: 0; z-index: -2;
@@ -62,13 +55,6 @@
     33% { transform: translate(50px, -30px) scale(1.1); }
     66% { transform: translate(-30px, 40px) scale(0.95); }
   }
-  .bg-scan {
-    position: fixed; inset: 0; z-index: -1;
-    background: linear-gradient(180deg, transparent 0%, rgba(0, 217, 255, 0.02) 50%, transparent 100%);
-    background-size: 100% 200px;
-    animation: scan 8s linear infinite; pointer-events: none;
-  }
-  @keyframes scan { 0% { background-position: 0 0; } 100% { background-position: 0 200px; } }
   header {
     position: sticky; top: 0; z-index: 100;
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
@@ -147,14 +133,161 @@
   .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(0, 217, 255, 0.6), 0 8px 20px rgba(0, 217, 255, 0.2); }
   .btn-ghost { background: rgba(255,255,255,0.03); color: var(--text-dim); border-color: var(--border); }
   .btn-ghost:hover { background: rgba(0, 217, 255, 0.08); color: var(--cyan); border-color: var(--border-strong); }
+  .btn-danger { background: rgba(255,56,96,0.1); color: var(--danger); border-color: rgba(255,56,96,0.3); }
+  .btn-danger:hover { background: var(--danger); color: #fff; box-shadow: 0 0 20px rgba(255,56,96,0.4); }
   .btn-sm { padding: 0.45rem 0.9rem; font-size: 0.78rem; }
-  main { max-width: 1320px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
-  .hero { margin-bottom: 2.5rem; text-align: center; padding: 2rem 1rem; }
+  main { max-width: 1320px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* === SAVINGS SELECTOR === */
+  .savings-bar {
+    margin-bottom: 2rem;
+  }
+  .savings-bar-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 0.9rem;
+  }
+  .savings-bar-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem; color: var(--cyan);
+    letter-spacing: 0.2em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .savings-bar-title::before {
+    content: ''; width: 18px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan));
+  }
+  .savings-scroll {
+    display: flex; gap: 0.9rem;
+    overflow-x: auto; padding-bottom: 0.5rem;
+    scrollbar-width: thin; scrollbar-color: var(--cyan) transparent;
+  }
+  .savings-scroll::-webkit-scrollbar { height: 6px; }
+  .savings-scroll::-webkit-scrollbar-track { background: transparent; }
+  .savings-scroll::-webkit-scrollbar-thumb { background: rgba(0,217,255,0.2); border-radius: 3px; }
+  .saving-card {
+    flex: 0 0 260px;
+    background: var(--surface);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.2rem;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(.4,0,.2,1);
+    position: relative; overflow: hidden;
+  }
+  .saving-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 2px;
+    background: var(--accent, var(--cyan));
+    opacity: 0.6;
+  }
+  .saving-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent, var(--border-strong));
+    box-shadow: 0 0 25px rgba(0, 217, 255, 0.12);
+  }
+  .saving-card.active {
+    border-color: var(--accent, var(--cyan));
+    background: linear-gradient(135deg, rgba(0,217,255,0.08), var(--surface));
+    box-shadow: 0 0 30px rgba(0, 217, 255, 0.2);
+  }
+  .saving-card.active::before { opacity: 1; height: 3px; }
+  .saving-card-type {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.5rem;
+    display: flex; align-items: center; gap: 0.4rem;
+  }
+  .saving-card-type::before {
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--accent, var(--cyan));
+    box-shadow: 0 0 5px var(--accent, var(--cyan));
+  }
+  .saving-card-name {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 1.1rem; font-weight: 500;
+    letter-spacing: 0.02em;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+  }
+  .saving-card-balance {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.05rem; font-weight: 600;
+    color: var(--green);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 0.7rem;
+  }
+  .saving-card-progress {
+    margin-top: 0.7rem;
+  }
+  .progress-bar {
+    width: 100%; height: 5px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 3px; overflow: hidden;
+    position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent, var(--cyan)), var(--magenta));
+    border-radius: 3px;
+    transition: width 0.6s cubic-bezier(.4,0,.2,1);
+    box-shadow: 0 0 8px var(--accent, var(--cyan));
+  }
+  .progress-meta {
+    display: flex; justify-content: space-between;
+    margin-top: 0.4rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+  .saving-card-new {
+    flex: 0 0 180px;
+    border: 1px dashed var(--border-strong);
+    background: transparent;
+    display: grid; place-items: center;
+    color: var(--text-dim);
+    font-family: 'Chakra Petch', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+  .saving-card-new:hover {
+    border-color: var(--cyan);
+    color: var(--cyan);
+    background: rgba(0,217,255,0.03);
+  }
+  .saving-empty {
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    border: 1px dashed var(--border-strong);
+    border-radius: 14px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+  }
+  .saving-empty h3 {
+    font-family: 'Chakra Petch', sans-serif;
+    color: var(--text); font-weight: 500;
+    margin-bottom: 0.5rem; letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .saving-empty p {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted); font-size: 0.82rem;
+    margin-bottom: 1.2rem;
+  }
+
+  /* === HERO === */
+  .hero { margin-bottom: 2rem; text-align: center; padding: 1.5rem 1rem; }
   .hero-label {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.72rem; color: var(--cyan);
     letter-spacing: 0.3em; text-transform: uppercase;
-    margin-bottom: 1.2rem;
+    margin-bottom: 0.8rem;
     display: inline-flex; align-items: center; gap: 0.5rem;
   }
   .hero-label::before, .hero-label::after {
@@ -165,7 +298,7 @@
   .hero-balance {
     font-family: 'Chakra Petch', sans-serif;
     font-weight: 600;
-    font-size: clamp(3rem, 10vw, 6.5rem);
+    font-size: clamp(2.5rem, 9vw, 5.5rem);
     letter-spacing: -0.02em; line-height: 1;
     background: linear-gradient(135deg, var(--cyan) 0%, #fff 50%, var(--magenta) 100%);
     -webkit-background-clip: text; background-clip: text;
@@ -179,15 +312,68 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.85rem; letter-spacing: 0.05em;
   }
+  .hero-goal {
+    margin-top: 1.3rem;
+    max-width: 400px;
+    margin-left: auto; margin-right: auto;
+  }
+
+  /* === BIRTHDAY BANNER === */
+  .bday-banner {
+    background: linear-gradient(135deg, rgba(255,107,157,0.1), rgba(255,45,146,0.08));
+    border: 1px solid rgba(255,107,157,0.3);
+    border-radius: 12px;
+    padding: 1rem 1.3rem;
+    margin-bottom: 2rem;
+    display: flex; align-items: center; gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .bday-icon {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, var(--pink), var(--magenta));
+    display: grid; place-items: center;
+    font-size: 1.4rem;
+    box-shadow: 0 0 20px rgba(255,107,157,0.4);
+    flex-shrink: 0;
+  }
+  .bday-content {
+    flex: 1; min-width: 200px;
+  }
+  .bday-title {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--pink);
+    margin-bottom: 0.3rem;
+  }
+  .bday-list {
+    color: var(--text); font-size: 0.92rem;
+  }
+  .bday-item {
+    display: inline-block;
+    margin-right: 1rem;
+  }
+  .bday-name { font-weight: 600; }
+  .bday-date {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    margin-left: 0.4rem;
+  }
+
+  /* === STATS === */
   .stats {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    gap: 1rem; margin-bottom: 2.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem; margin-bottom: 2rem;
   }
   .stat-card {
     background: var(--surface);
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border); border-radius: 14px; padding: 1.4rem;
+    border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.3rem;
     transition: all 0.3s cubic-bezier(.4,0,.2,1);
     position: relative; overflow: hidden;
   }
@@ -197,20 +383,20 @@
     background: linear-gradient(90deg, transparent, var(--accent-color, var(--cyan)), transparent);
     opacity: 0.6;
   }
-  .stat-card:hover { transform: translateY(-4px); border-color: var(--accent-color, var(--cyan)); }
+  .stat-card:hover { transform: translateY(-3px); border-color: var(--accent-color, var(--cyan)); }
   .stat-card.c-green { --accent-color: var(--green); }
   .stat-card.c-magenta { --accent-color: var(--magenta); }
   .stat-card.c-gold { --accent-color: var(--gold); }
   .stat-card.c-cyan { --accent-color: var(--cyan); }
-  .stat-card.c-cyan:hover { box-shadow: 0 0 30px rgba(0, 217, 255, 0.15); }
-  .stat-card.c-green:hover { box-shadow: 0 0 30px rgba(0, 255, 157, 0.2); }
-  .stat-card.c-magenta:hover { box-shadow: 0 0 30px rgba(255, 45, 146, 0.2); }
-  .stat-card.c-gold:hover { box-shadow: 0 0 30px rgba(255, 184, 0, 0.2); }
+  .stat-card.c-cyan:hover { box-shadow: 0 0 25px rgba(0, 217, 255, 0.15); }
+  .stat-card.c-green:hover { box-shadow: 0 0 25px rgba(0, 255, 157, 0.2); }
+  .stat-card.c-magenta:hover { box-shadow: 0 0 25px rgba(255, 45, 146, 0.2); }
+  .stat-card.c-gold:hover { box-shadow: 0 0 25px rgba(255, 184, 0, 0.2); }
   .stat-label {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem; color: var(--text-muted);
+    font-size: 0.66rem; color: var(--text-muted);
     letter-spacing: 0.15em; text-transform: uppercase;
-    margin-bottom: 0.7rem;
+    margin-bottom: 0.6rem;
     display: flex; align-items: center; gap: 0.5rem;
   }
   .stat-dot {
@@ -220,8 +406,8 @@
   }
   .stat-value {
     font-family: 'Chakra Petch', sans-serif;
-    font-size: 1.8rem; font-weight: 600;
-    letter-spacing: -0.01em; color: var(--text);
+    font-size: 1.6rem; font-weight: 600;
+    letter-spacing: -0.01em;
     font-variant-numeric: tabular-nums;
   }
   .stat-sub {
@@ -229,16 +415,18 @@
     font-size: 0.72rem; color: var(--text-muted);
     margin-top: 0.4rem; letter-spacing: 0.05em;
   }
-  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2.5rem; }
+
+  /* === CHARTS === */
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
   .chart-card {
     background: var(--surface);
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem;
+    border: 1px solid var(--border); border-radius: 14px; padding: 1.4rem;
   }
   .chart-card h3 {
     font-family: 'Chakra Petch', sans-serif;
     font-weight: 500; font-size: 1rem;
-    margin-bottom: 1.2rem;
+    margin-bottom: 1.1rem;
     letter-spacing: 0.03em; text-transform: uppercase;
     display: flex; align-items: center; gap: 0.5rem;
   }
@@ -247,7 +435,9 @@
     background: linear-gradient(180deg, var(--cyan), var(--magenta));
     border-radius: 2px;
   }
-  .chart-container { position: relative; height: 260px; }
+  .chart-container { position: relative; height: 240px; }
+
+  /* === TABS === */
   .tabs {
     display: flex; gap: 0.3rem; margin-bottom: 1.5rem; padding: 0.3rem;
     background: var(--surface);
@@ -257,9 +447,10 @@
   }
   .tabs::-webkit-scrollbar { display: none; }
   .tab {
-    background: none; border: none; padding: 0.7rem 1.2rem;
+    background: none; border: none;
+    padding: 0.65rem 1.1rem;
     font-family: 'Chakra Petch', sans-serif;
-    font-size: 0.85rem; font-weight: 500;
+    font-size: 0.83rem; font-weight: 500;
     color: var(--text-dim); cursor: pointer; border-radius: 7px;
     transition: all 0.2s; white-space: nowrap;
     letter-spacing: 0.05em; text-transform: uppercase;
@@ -282,7 +473,7 @@
   }
   .section-title {
     font-family: 'Chakra Petch', sans-serif;
-    font-size: 1.4rem; font-weight: 500;
+    font-size: 1.35rem; font-weight: 500;
     letter-spacing: 0.03em; text-transform: uppercase;
     display: flex; align-items: center; gap: 0.6rem;
   }
@@ -297,25 +488,25 @@
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
     border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
   }
-  .list-empty { padding: 3.5rem 1.5rem; text-align: center; color: var(--text-muted); }
+  .list-empty { padding: 3rem 1.5rem; text-align: center; color: var(--text-muted); }
   .list-empty h3 {
     font-family: 'Chakra Petch', sans-serif;
     font-weight: 500; font-size: 1.1rem; color: var(--text-dim);
     margin-bottom: 0.5rem; letter-spacing: 0.05em; text-transform: uppercase;
   }
-  .list-empty p { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; letter-spacing: 0.05em; }
+  .list-empty p { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
   table { width: 100%; border-collapse: collapse; }
   th {
-    text-align: left; padding: 1rem 1.3rem;
+    text-align: left; padding: 0.9rem 1.2rem;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.68rem; text-transform: uppercase;
+    font-size: 0.66rem; text-transform: uppercase;
     letter-spacing: 0.15em; color: var(--text-muted); font-weight: 600;
     background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border);
   }
   td {
-    padding: 1rem 1.3rem;
+    padding: 0.9rem 1.2rem;
     border-bottom: 1px solid rgba(255,255,255,0.04);
-    font-size: 0.92rem; color: var(--text);
+    font-size: 0.9rem;
   }
   tr:last-child td { border-bottom: none; }
   tr { transition: background 0.15s; }
@@ -323,37 +514,47 @@
   .td-amount { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-variant-numeric: tabular-nums; }
   .td-amount.positive { color: var(--green); text-shadow: 0 0 10px rgba(0,255,157,0.3); }
   .td-amount.negative { color: var(--magenta); text-shadow: 0 0 10px rgba(255,45,146,0.3); }
-  .td-date { font-family: 'JetBrains Mono', monospace; color: var(--text-muted); font-size: 0.82rem; }
+  .td-date { font-family: 'JetBrains Mono', monospace; color: var(--text-muted); font-size: 0.8rem; }
   .td-note { color: var(--text-dim); font-size: 0.85rem; }
   .member-chip {
     display: inline-flex; align-items: center; gap: 0.45rem;
-    padding: 0.3rem 0.75rem;
+    padding: 0.28rem 0.7rem;
     background: rgba(0, 217, 255, 0.1);
     color: var(--cyan);
     border: 1px solid rgba(0, 217, 255, 0.3);
     border-radius: 5px;
-    font-size: 0.78rem; font-weight: 500;
+    font-size: 0.76rem; font-weight: 500;
     font-family: 'Chakra Petch', sans-serif;
     letter-spacing: 0.03em;
   }
   .member-chip::before {
-    content: ''; width: 6px; height: 6px; border-radius: 50%;
-    background: var(--cyan); box-shadow: 0 0 6px var(--cyan);
+    content: ''; width: 5px; height: 5px; border-radius: 50%;
+    background: var(--cyan); box-shadow: 0 0 5px var(--cyan);
   }
   .category-tag {
-    display: inline-block; padding: 0.25rem 0.7rem;
+    display: inline-block; padding: 0.22rem 0.65rem;
     background: rgba(255, 45, 146, 0.1);
     border: 1px solid rgba(255, 45, 146, 0.3);
     color: var(--magenta); border-radius: 5px;
-    font-size: 0.75rem;
+    font-size: 0.73rem;
     font-family: 'JetBrains Mono', monospace;
+  }
+  .saving-tag {
+    display: inline-block; padding: 0.22rem 0.65rem;
+    background: rgba(255, 184, 0, 0.1);
+    border: 1px solid rgba(255, 184, 0, 0.3);
+    color: var(--gold); border-radius: 5px;
+    font-size: 0.73rem;
+    font-family: 'Chakra Petch', sans-serif;
     letter-spacing: 0.03em;
   }
-  .members-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
+
+  /* === MEMBERS GRID === */
+  .members-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1rem; }
   .member-card {
     background: var(--surface);
     backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem;
+    border: 1px solid var(--border); border-radius: 14px; padding: 1.4rem;
     position: relative;
     transition: all 0.3s cubic-bezier(.4,0,.2,1);
     overflow: hidden;
@@ -364,28 +565,36 @@
     opacity: 0; transition: opacity 0.3s;
   }
   .member-card:hover {
-    transform: translateY(-4px);
+    transform: translateY(-3px);
     border-color: var(--border-strong);
-    box-shadow: 0 0 30px rgba(0, 217, 255, 0.15);
+    box-shadow: 0 0 25px rgba(0, 217, 255, 0.12);
   }
   .member-card:hover::before { opacity: 1; }
   .member-avatar {
-    width: 52px; height: 52px; border-radius: 12px;
+    width: 50px; height: 50px; border-radius: 12px;
     background: linear-gradient(135deg, var(--cyan), var(--magenta));
     color: #000;
     display: grid; place-items: center;
     font-family: 'Chakra Petch', sans-serif;
-    font-size: 1.4rem; font-weight: 700;
-    margin-bottom: 1rem;
+    font-size: 1.3rem; font-weight: 700;
+    margin-bottom: 0.9rem;
     box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
     position: relative; z-index: 1;
   }
   .member-name {
     font-family: 'Chakra Petch', sans-serif;
-    font-size: 1.15rem; font-weight: 500;
-    margin-bottom: 0.3rem;
+    font-size: 1.12rem; font-weight: 500;
+    margin-bottom: 0.2rem;
     letter-spacing: 0.02em;
     position: relative; z-index: 1;
+  }
+  .member-meta {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    margin-bottom: 0.5rem;
+    position: relative; z-index: 1;
+    display: flex; align-items: center; gap: 0.4rem;
   }
   .member-total {
     color: var(--green); font-weight: 600; font-size: 0.95rem;
@@ -401,29 +610,93 @@
     color: var(--text-muted); border-radius: 6px;
     transition: all 0.15s;
     display: grid; place-items: center;
-    width: 30px; height: 30px; font-size: 0.8rem;
+    width: 28px; height: 28px; font-size: 0.75rem;
   }
   .icon-btn:hover { background: rgba(255, 255, 255, 0.08); color: var(--text); }
+  .icon-btn.edit:hover { color: var(--cyan); border-color: var(--cyan); }
   .icon-btn.danger:hover { color: var(--danger); border-color: var(--danger); box-shadow: 0 0 12px rgba(255,56,96,0.3); }
+
+  /* === SAVINGS LIST === */
+  .savings-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+  .savings-list-card {
+    background: var(--surface);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border); border-radius: 14px;
+    padding: 1.4rem;
+    transition: all 0.3s;
+    position: relative;
+  }
+  .savings-list-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--border-strong);
+    box-shadow: 0 0 25px rgba(0, 217, 255, 0.12);
+  }
+  .savings-list-header {
+    display: flex; justify-content: space-between;
+    align-items: flex-start; margin-bottom: 0.8rem;
+    gap: 0.5rem;
+  }
+  .savings-list-name {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 1.15rem; font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--text);
+  }
+  .savings-list-desc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    min-height: 1rem;
+  }
+  .savings-list-stats {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+    padding: 0.8rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0.8rem;
+  }
+  .ss-stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
+  }
+  .ss-stat-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .savings-list-members {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem; color: var(--text-dim);
+    margin-bottom: 0.8rem;
+  }
+
+  /* === FILTERS === */
   .filters { display: flex; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; }
   .filter-select {
     padding: 0.55rem 0.9rem;
-    border: 1px solid var(--border);
-    border-radius: 7px;
+    border: 1px solid var(--border); border-radius: 7px;
     background: var(--surface);
-    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.78rem; color: var(--text);
     cursor: pointer; transition: all 0.15s;
-    letter-spacing: 0.03em;
   }
   .filter-select:hover { border-color: var(--border-strong); }
   .filter-select:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(0,217,255,0.1); }
   .filter-select option { background: var(--bg-2); }
+
+  /* === MODAL === */
   .modal-backdrop {
     position: fixed; inset: 0;
     background: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
     z-index: 200; display: none;
     align-items: center; justify-content: center; padding: 1rem;
   }
@@ -432,8 +705,8 @@
   .modal {
     background: linear-gradient(135deg, var(--bg-2), var(--surface-2));
     border: 1px solid var(--border-strong);
-    border-radius: 16px; padding: 2rem;
-    max-width: 480px; width: 100%;
+    border-radius: 16px; padding: 1.8rem;
+    max-width: 500px; width: 100%;
     max-height: 90vh; overflow-y: auto;
     box-shadow: 0 0 60px rgba(0, 217, 255, 0.2);
     position: relative;
@@ -450,16 +723,16 @@
   }
   .modal h2 {
     font-family: 'Chakra Petch', sans-serif;
-    font-weight: 500; font-size: 1.4rem;
+    font-weight: 500; font-size: 1.35rem;
     margin-bottom: 0.4rem;
     letter-spacing: 0.04em; text-transform: uppercase;
   }
   .modal p.modal-sub {
     font-family: 'JetBrains Mono', monospace;
-    color: var(--text-muted); font-size: 0.78rem;
-    margin-bottom: 1.6rem; letter-spacing: 0.04em;
+    color: var(--text-muted); font-size: 0.76rem;
+    margin-bottom: 1.4rem;
   }
-  .form-group { margin-bottom: 1.1rem; }
+  .form-group { margin-bottom: 1rem; }
   .form-group label {
     display: block;
     font-family: 'JetBrains Mono', monospace;
@@ -469,9 +742,9 @@
     margin-bottom: 0.5rem;
   }
   .form-group input, .form-group select, .form-group textarea {
-    width: 100%; padding: 0.75rem 1rem;
+    width: 100%; padding: 0.7rem 0.9rem;
     border: 1px solid var(--border); border-radius: 8px;
-    font-family: 'Outfit', sans-serif; font-size: 0.95rem;
+    font-family: 'Outfit', sans-serif; font-size: 0.92rem;
     background: rgba(0,0,0,0.3); color: var(--text);
     transition: all 0.15s;
   }
@@ -480,7 +753,66 @@
     box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.15);
   }
   .form-group select option { background: var(--bg-2); }
-  .modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.5rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.8rem; }
+  .checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.5rem;
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 0.7rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(0,0,0,0.3);
+  }
+  .checkbox-item {
+    display: flex; align-items: center; gap: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-size: 0.85rem;
+  }
+  .checkbox-item:hover { border-color: var(--border-strong); background: rgba(0,217,255,0.05); }
+  .checkbox-item input { width: auto; margin: 0; cursor: pointer; }
+  .checkbox-item.checked {
+    border-color: var(--cyan);
+    background: rgba(0,217,255,0.1);
+    color: var(--cyan);
+  }
+  .radio-group { display: flex; gap: 0.5rem; }
+  .radio-card {
+    flex: 1;
+    padding: 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+    background: rgba(0,0,0,0.3);
+  }
+  .radio-card:hover { border-color: var(--border-strong); }
+  .radio-card.selected {
+    border-color: var(--cyan);
+    background: rgba(0,217,255,0.08);
+    box-shadow: 0 0 15px rgba(0,217,255,0.15);
+  }
+  .radio-card-title {
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 600; font-size: 0.92rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.2rem;
+  }
+  .radio-card-desc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+  }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.4rem; flex-wrap: wrap; }
+
   .toast {
     position: fixed; bottom: 2rem; left: 50%;
     transform: translateX(-50%) translateY(20px);
@@ -488,7 +820,7 @@
     border: 1px solid var(--border-strong); color: var(--text);
     padding: 0.9rem 1.5rem; border-radius: 10px;
     font-family: 'JetBrains Mono', monospace;
-    font-size: 0.85rem; letter-spacing: 0.03em;
+    font-size: 0.85rem;
     opacity: 0; transition: all 0.3s ease;
     z-index: 300; pointer-events: none;
     backdrop-filter: blur(20px);
@@ -498,14 +830,17 @@
   .toast.error { border-color: var(--danger); box-shadow: 0 0 30px rgba(255, 56, 96, 0.3); color: var(--danger); }
   .toast.success { border-color: var(--green); box-shadow: 0 0 30px rgba(0, 255, 157, 0.3); color: var(--green); }
   .hidden { display: none !important; }
+
   @media (max-width: 760px) {
     .charts-row { grid-template-columns: 1fr; }
-    th, td { padding: 0.7rem 0.9rem; font-size: 0.85rem; }
+    .form-row { grid-template-columns: 1fr; }
+    th, td { padding: 0.65rem 0.8rem; font-size: 0.82rem; }
     .header-inner { padding: 0.9rem 1rem; }
     .brand-text h1 { font-size: 1.1rem; }
-    main { padding: 1.5rem 1rem 3rem; }
+    main { padding: 1.2rem 1rem 3rem; }
     .hero { padding: 1rem 0; }
     .bg-orb { filter: blur(60px); }
+    .saving-card { flex: 0 0 230px; }
   }
   @keyframes countPulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
   .counting { animation: countPulse 0.6s ease; }
@@ -517,7 +852,6 @@
 <div class="bg-orb o1"></div>
 <div class="bg-orb o2"></div>
 <div class="bg-orb o3"></div>
-<div class="bg-scan"></div>
 
 <header>
   <div class="header-inner">
@@ -538,13 +872,33 @@
 </header>
 
 <main>
-  <section class="hero">
-    <div class="hero-label">Saldo Disponible</div>
-    <div class="hero-balance"><span class="currency">$</span><span id="heroBalance">0</span></div>
-    <div class="hero-meta" id="heroMeta">// Iniciando sistema…</div>
+  <!-- SAVINGS SELECTOR -->
+  <section class="savings-bar" id="savingsBar">
+    <div class="savings-bar-header">
+      <div class="savings-bar-title">Ahorros activos</div>
+      <button class="btn btn-ghost btn-sm admin-only hidden" onclick="openModal('saving-new')">+ Nuevo ahorro</button>
+    </div>
+    <div id="savingsScroll" class="savings-scroll"></div>
   </section>
 
-  <section class="stats">
+  <!-- BIRTHDAY BANNER -->
+  <div id="birthdayBanner" class="hidden"></div>
+
+  <!-- HERO -->
+  <section class="hero" id="heroSection">
+    <div class="hero-label" id="heroLabel">Saldo Disponible</div>
+    <div class="hero-balance"><span class="currency">$</span><span id="heroBalance">0</span></div>
+    <div class="hero-meta" id="heroMeta">// Iniciando sistema…</div>
+    <div class="hero-goal hidden" id="heroGoal">
+      <div class="progress-bar"><div class="progress-fill" id="heroGoalFill" style="width:0%"></div></div>
+      <div class="progress-meta">
+        <span id="heroGoalText">Meta: $0</span>
+        <span id="heroGoalPct">0%</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="stats" id="statsSection">
     <div class="stat-card c-green">
       <div class="stat-label"><span class="stat-dot"></span>Aportes totales</div>
       <div class="stat-value" id="statContrib">$0</div>
@@ -556,14 +910,14 @@
       <div class="stat-sub" id="statExpCount">0 movimientos</div>
     </div>
     <div class="stat-card c-gold">
-      <div class="stat-label"><span class="stat-dot"></span>Integrantes</div>
+      <div class="stat-label"><span class="stat-dot"></span>Participantes</div>
       <div class="stat-value" id="statMembers">0</div>
-      <div class="stat-sub">Familia activa</div>
+      <div class="stat-sub" id="statMembersSub">En este ahorro</div>
     </div>
     <div class="stat-card c-cyan">
       <div class="stat-label"><span class="stat-dot"></span>Aporte promedio</div>
       <div class="stat-value" id="statAvg">$0</div>
-      <div class="stat-sub">Por integrante</div>
+      <div class="stat-sub">Por participante</div>
     </div>
   </section>
 
@@ -581,6 +935,7 @@
   <nav class="tabs">
     <button class="tab active" data-tab="aportes">Aportes</button>
     <button class="tab" data-tab="gastos">Gastos</button>
+    <button class="tab" data-tab="ahorros">Ahorros</button>
     <button class="tab" data-tab="integrantes">Integrantes</button>
     <button class="tab" data-tab="actividad">Actividad</button>
   </nav>
@@ -589,7 +944,7 @@
     <div class="section-header">
       <div>
         <h2 class="section-title">Aportes</h2>
-        <div class="section-subtitle">// Contribuciones al fondo común</div>
+        <div class="section-subtitle" id="aportesSubtitle">// Contribuciones al ahorro seleccionado</div>
       </div>
       <button class="btn btn-primary admin-only hidden" onclick="openModal('contribution')">+ Nuevo aporte</button>
     </div>
@@ -608,7 +963,7 @@
     <div class="section-header">
       <div>
         <h2 class="section-title">Gastos</h2>
-        <div class="section-subtitle">// Salidas del fondo familiar</div>
+        <div class="section-subtitle">// Salidas del ahorro seleccionado</div>
       </div>
       <button class="btn btn-primary admin-only hidden" onclick="openModal('expense')">+ Nuevo gasto</button>
     </div>
@@ -623,13 +978,24 @@
     <div class="card"><div id="expensesTable"></div></div>
   </section>
 
+  <section class="section" id="section-ahorros">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Gestión de ahorros</h2>
+        <div class="section-subtitle">// Todos los ahorros familiares</div>
+      </div>
+      <button class="btn btn-primary admin-only hidden" onclick="openModal('saving-new')">+ Nuevo ahorro</button>
+    </div>
+    <div id="savingsList" class="savings-list"></div>
+  </section>
+
   <section class="section" id="section-integrantes">
     <div class="section-header">
       <div>
         <h2 class="section-title">Integrantes</h2>
-        <div class="section-subtitle">// Participantes del ahorro</div>
+        <div class="section-subtitle">// Familia completa</div>
       </div>
-      <button class="btn btn-primary admin-only hidden" onclick="openModal('member')">+ Agregar integrante</button>
+      <button class="btn btn-primary admin-only hidden" onclick="openModal('member-new')">+ Agregar integrante</button>
     </div>
     <div id="membersGrid" class="members-grid"></div>
   </section>
@@ -638,7 +1004,7 @@
     <div class="section-header">
       <div>
         <h2 class="section-title">Actividad reciente</h2>
-        <div class="section-subtitle">// Últimos 25 movimientos</div>
+        <div class="section-subtitle">// Últimos 30 movimientos · todos los ahorros</div>
       </div>
     </div>
     <div class="card"><div id="activityTable"></div></div>
@@ -650,10 +1016,7 @@
     <h2 id="modalTitle">Título</h2>
     <p class="modal-sub" id="modalSub"></p>
     <div id="modalBody"></div>
-    <div class="modal-actions">
-      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" id="modalSubmit">Confirmar</button>
-    </div>
+    <div class="modal-actions" id="modalActions"></div>
   </div>
 </div>
 
@@ -662,11 +1025,9 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, collection, doc, addDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-  // ====================================================
-  // ✅ CONFIGURACIÓN DE FIREBASE (familia Guevara)
-  // ====================================================
+  // === CONFIGURACIÓN FIREBASE ===
   const firebaseConfig = {
     apiKey: "AIzaSyA43k3D9taaOE6TU5UgLK_9qh6IYnfUMk4",
     authDomain: "ahorro-familia-guevara.firebaseapp.com",
@@ -675,32 +1036,40 @@
     messagingSenderId: "189092264472",
     appId: "1:189092264472:web:20d3b5ac065eaad1e5616d"
   };
-
-  // ✅ CORREO DEL ADMINISTRADOR
   const ADMIN_EMAIL = "elkdnlopez@gmail.com";
-  // ====================================================
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
 
-  let state = { members: [], contributions: [], expenses: [], isAdmin: false };
+  // === STATE ===
+  let state = {
+    members: [],
+    contributions: [],
+    expenses: [],
+    savings: [],
+    activeSavingId: localStorage.getItem('activeSavingId') || null,
+    isAdmin: false,
+  };
+
   const $ = sel => document.querySelector(sel);
   const $$ = sel => document.querySelectorAll(sel);
 
-  function fmt(n) { return new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(n || 0); }
-  function fmtDate(d) {
+  const fmt = n => new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(n || 0);
+  const fmtDate = d => {
     if (!d) return '';
     const date = d.toDate ? d.toDate() : new Date(d);
     return date.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
-  }
-  function getMonthKey(d) { const date = d.toDate ? d.toDate() : new Date(d); return date.toISOString().slice(0,7); }
-  function getMonthLabel(key) {
+  };
+  const getMonthKey = d => {
+    const date = d.toDate ? d.toDate() : new Date(d);
+    return date.toISOString().slice(0,7);
+  };
+  const getMonthLabel = key => {
     const [y,m] = key.split('-');
-    const date = new Date(parseInt(y), parseInt(m)-1, 1);
-    return date.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' });
-  }
-  function initials(name) { return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
+    return new Date(parseInt(y), parseInt(m)-1, 1).toLocaleDateString('es-CO', { month: 'long', year: 'numeric' });
+  };
+  const initials = name => name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
   function showToast(msg, type='') {
     const t = $('#toast');
     t.textContent = msg;
@@ -714,18 +1083,17 @@
     function step(now) {
       const t = Math.min(1, (now - startTime) / duration);
       const eased = 1 - Math.pow(1 - t, 3);
-      const value = start + (target - start) * eased;
-      el.textContent = prefix + fmt(value);
+      el.textContent = prefix + fmt(start + (target - start) * eased);
       if (t < 1) requestAnimationFrame(step);
       else { el.dataset.value = target; setTimeout(()=>el.classList.remove('counting'), 200); }
     }
     requestAnimationFrame(step);
   }
-  function animateInt(el, target, duration=600) {
+  function animateInt(el, target) {
     const start = parseInt(el.dataset.value || 0);
     const startTime = performance.now();
     function step(now) {
-      const t = Math.min(1, (now - startTime) / duration);
+      const t = Math.min(1, (now - startTime) / 600);
       const eased = 1 - Math.pow(1 - t, 3);
       el.textContent = Math.round(start + (target - start) * eased);
       if (t < 1) requestAnimationFrame(step);
@@ -734,6 +1102,32 @@
     requestAnimationFrame(step);
   }
 
+  // === Birthday helpers ===
+  function daysUntilBirthday(birthDate) {
+    if (!birthDate) return null;
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    const bd = new Date(birthDate);
+    const thisYear = new Date(today.getFullYear(), bd.getMonth(), bd.getDate());
+    if (thisYear < today) thisYear.setFullYear(today.getFullYear() + 1);
+    return Math.ceil((thisYear - today) / (1000 * 60 * 60 * 24));
+  }
+  function calcAge(birthDate) {
+    if (!birthDate) return null;
+    const today = new Date();
+    const bd = new Date(birthDate);
+    let age = today.getFullYear() - bd.getFullYear();
+    const m = today.getMonth() - bd.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < bd.getDate())) age--;
+    return age;
+  }
+  function fmtBirthday(birthDate) {
+    if (!birthDate) return '';
+    const bd = new Date(birthDate);
+    return bd.toLocaleDateString('es-CO', { day: '2-digit', month: 'long' });
+  }
+
+  // === Auth ===
   onAuthStateChanged(auth, (user) => {
     state.isAdmin = user && user.email === ADMIN_EMAIL;
     updateAdminUI();
@@ -766,74 +1160,195 @@
     } catch(e) {}
   };
 
-  function subscribe() {
-    onSnapshot(query(collection(db, 'members'), orderBy('createdAt','asc')), snap => {
-      state.members = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderAll();
-    }, err => console.error(err));
-    onSnapshot(query(collection(db, 'contributions'), orderBy('date','desc')), snap => {
-      state.contributions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderAll();
-    }, err => console.error(err));
-    onSnapshot(query(collection(db, 'expenses'), orderBy('date','desc')), snap => {
-      state.expenses = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderAll();
-    }, err => console.error(err));
-  }
-  subscribe();
+  // === Firestore subscriptions ===
+  onSnapshot(query(collection(db, 'members'), orderBy('createdAt','asc')), snap => {
+    state.members = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderAll();
+  });
+  onSnapshot(query(collection(db, 'savings'), orderBy('createdAt','asc')), snap => {
+    state.savings = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    if (!state.activeSavingId && state.savings.length) state.activeSavingId = state.savings[0].id;
+    if (state.activeSavingId && !state.savings.find(s => s.id === state.activeSavingId) && state.savings.length) {
+      state.activeSavingId = state.savings[0].id;
+    }
+    renderAll();
+  });
+  onSnapshot(query(collection(db, 'contributions'), orderBy('date','desc')), snap => {
+    state.contributions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderAll();
+  });
+  onSnapshot(query(collection(db, 'expenses'), orderBy('date','desc')), snap => {
+    state.expenses = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderAll();
+  });
 
-  function totalContrib() { return state.contributions.reduce((s,c)=>s+(+c.amount||0),0); }
-  function totalExp() { return state.expenses.reduce((s,c)=>s+(+c.amount||0),0); }
+  // === Helpers ===
+  const getActiveSaving = () => state.savings.find(s => s.id === state.activeSavingId);
+  const getSavingContribs = sid => state.contributions.filter(c => c.savingId === sid);
+  const getSavingExpenses = sid => state.expenses.filter(e => e.savingId === sid);
+  const getSavingMembers = saving => {
+    if (!saving) return [];
+    if (!saving.memberIds || saving.memberIds.length === 0) return state.members;
+    return state.members.filter(m => saving.memberIds.includes(m.id));
+  };
+  const memberName = id => { const m = state.members.find(x=>x.id===id); return m ? m.name : '—'; };
+  const savingName = id => { const s = state.savings.find(x=>x.id===id); return s ? s.name : '—'; };
 
+  // === RENDER ===
   function renderAll() {
-    renderStats(); renderContributions(); renderExpenses();
-    renderMembers(); renderActivity(); renderCharts(); populateFilters();
+    renderSavingsBar();
+    renderBirthdays();
+    renderStats();
+    renderContributions();
+    renderExpenses();
+    renderSavingsList();
+    renderMembers();
+    renderActivity();
+    renderCharts();
+    populateFilters();
+  }
+
+  function renderSavingsBar() {
+    const cont = $('#savingsScroll');
+    if (!state.savings.length) {
+      cont.innerHTML = `<div class="saving-empty" style="flex:1">
+        <h3>Sin ahorros creados</h3>
+        <p>// Crea el primer ahorro para comenzar a registrar aportes y gastos</p>
+        ${state.isAdmin ? '<button class="btn btn-primary" onclick="window.openModal(\'saving-new\')">+ Crear primer ahorro</button>' : '<p>// Inicia sesión como administrador para crear ahorros</p>'}
+      </div>`;
+      $('#heroSection').style.opacity = '0.4';
+      return;
+    }
+    $('#heroSection').style.opacity = '1';
+    const colors = ['var(--cyan)','var(--magenta)','var(--green)','var(--gold)','var(--purple)','var(--pink)'];
+    cont.innerHTML = state.savings.map((s, i) => {
+      const tc = getSavingContribs(s.id).reduce((sum,c) => sum + (+c.amount||0), 0);
+      const te = getSavingExpenses(s.id).reduce((sum,c) => sum + (+c.amount||0), 0);
+      const bal = tc - te;
+      const accent = colors[i % colors.length];
+      const isActive = s.id === state.activeSavingId;
+      const goalPct = s.goal ? Math.min(100, Math.round((bal / s.goal) * 100)) : null;
+      const type = (!s.memberIds || s.memberIds.length === 0) ? 'GENERAL' : `NÚCLEO · ${s.memberIds.length}`;
+      return `<div class="saving-card ${isActive?'active':''}" style="--accent:${accent}" onclick="window.selectSaving('${s.id}')">
+        <div class="saving-card-type">${type}</div>
+        <div class="saving-card-name">${s.name}</div>
+        <div class="saving-card-balance">$${fmt(bal)}</div>
+        ${goalPct !== null ? `
+          <div class="saving-card-progress">
+            <div class="progress-bar"><div class="progress-fill" style="width:${goalPct}%;background:linear-gradient(90deg,${accent},var(--magenta))"></div></div>
+            <div class="progress-meta"><span>Meta $${fmt(s.goal)}</span><span>${goalPct}%</span></div>
+          </div>` : ''}
+      </div>`;
+    }).join('') + (state.isAdmin ? `<div class="saving-card saving-card-new" onclick="window.openModal('saving-new')">+ Nuevo<br>ahorro</div>` : '');
+  }
+
+  function renderBirthdays() {
+    const banner = $('#birthdayBanner');
+    const upcoming = state.members
+      .filter(m => m.birthDate)
+      .map(m => ({ ...m, days: daysUntilBirthday(m.birthDate) }))
+      .filter(m => m.days !== null && m.days <= 30)
+      .sort((a,b) => a.days - b.days);
+
+    if (!upcoming.length) { banner.classList.add('hidden'); return; }
+    banner.classList.remove('hidden');
+    banner.className = 'bday-banner';
+    banner.innerHTML = `
+      <div class="bday-icon">🎂</div>
+      <div class="bday-content">
+        <div class="bday-title">Próximos cumpleaños</div>
+        <div class="bday-list">
+          ${upcoming.map(m => `
+            <span class="bday-item">
+              <span class="bday-name">${m.name}</span>
+              <span class="bday-date">${m.days === 0 ? '¡hoy!' : m.days === 1 ? 'mañana' : `en ${m.days} días`} · ${fmtBirthday(m.birthDate)}</span>
+            </span>
+          `).join('')}
+        </div>
+      </div>
+    `;
   }
 
   function renderStats() {
-    const tc = totalContrib(), te = totalExp();
+    const saving = getActiveSaving();
+    if (!saving) {
+      $('#heroLabel').textContent = 'Sin ahorro seleccionado';
+      animateNumber($('#heroBalance'), 0, '');
+      $('#heroMeta').textContent = '// Crea un ahorro para comenzar';
+      $('#heroGoal').classList.add('hidden');
+      animateNumber($('#statContrib'), 0);
+      animateNumber($('#statExp'), 0);
+      animateInt($('#statMembers'), 0);
+      animateNumber($('#statAvg'), 0);
+      return;
+    }
+    const contribs = getSavingContribs(saving.id);
+    const exps = getSavingExpenses(saving.id);
+    const tc = contribs.reduce((s,c)=>s+(+c.amount||0),0);
+    const te = exps.reduce((s,c)=>s+(+c.amount||0),0);
     const balance = tc - te;
+    const members = getSavingMembers(saving);
+
+    $('#heroLabel').textContent = saving.name;
     animateNumber($('#heroBalance'), balance, '');
-    $('#heroMeta').textContent = state.members.length
-      ? `// ${state.members.length} integrantes · ${state.contributions.length + state.expenses.length} movimientos`
-      : '// Sin integrantes registrados';
+    $('#heroMeta').textContent = saving.description
+      ? `// ${saving.description}`
+      : `// ${members.length} participantes · ${contribs.length + exps.length} movimientos`;
+
+    if (saving.goal) {
+      $('#heroGoal').classList.remove('hidden');
+      const pct = Math.min(100, Math.round((balance / saving.goal) * 100));
+      $('#heroGoalFill').style.width = pct + '%';
+      $('#heroGoalText').textContent = `Meta: $${fmt(saving.goal)}`;
+      $('#heroGoalPct').textContent = pct + '%';
+    } else {
+      $('#heroGoal').classList.add('hidden');
+    }
+
     animateNumber($('#statContrib'), tc);
     animateNumber($('#statExp'), te);
-    $('#statContribCount').textContent = `${state.contributions.length} movimientos`;
-    $('#statExpCount').textContent = `${state.expenses.length} movimientos`;
-    animateInt($('#statMembers'), state.members.length);
-    animateNumber($('#statAvg'), state.members.length ? Math.round(tc / state.members.length) : 0);
+    $('#statContribCount').textContent = `${contribs.length} movimientos`;
+    $('#statExpCount').textContent = `${exps.length} movimientos`;
+    animateInt($('#statMembers'), members.length);
+    $('#statMembersSub').textContent = (!saving.memberIds || !saving.memberIds.length) ? 'Familia completa' : 'En este núcleo';
+    animateNumber($('#statAvg'), members.length ? Math.round(tc / members.length) : 0);
   }
 
   function populateFilters() {
-    const fcm = $('#filterContribMember'); const prevM = fcm.value;
-    fcm.innerHTML = '<option value="">Todos los integrantes</option>' +
-      state.members.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
-    fcm.value = prevM;
+    const saving = getActiveSaving();
+    const members = saving ? getSavingMembers(saving) : state.members;
 
-    const months = [...new Set(state.contributions.map(c => getMonthKey(c.date)))].sort().reverse();
-    const fcMo = $('#filterContribMonth'); const prevMo = fcMo.value;
+    const fcm = $('#filterContribMember'); const pM = fcm.value;
+    fcm.innerHTML = '<option value="">Todos los integrantes</option>' +
+      members.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+    fcm.value = pM;
+
+    const contribs = saving ? getSavingContribs(saving.id) : [];
+    const months = [...new Set(contribs.map(c => getMonthKey(c.date)))].sort().reverse();
+    const fcMo = $('#filterContribMonth'); const pMo = fcMo.value;
     fcMo.innerHTML = '<option value="">Todos los meses</option>' +
       months.map(m => `<option value="${m}">${getMonthLabel(m)}</option>`).join('');
-    fcMo.value = prevMo;
+    fcMo.value = pMo;
 
-    const monthsE = [...new Set(state.expenses.map(c => getMonthKey(c.date)))].sort().reverse();
-    const feMo = $('#filterExpMonth'); const prevEMo = feMo.value;
+    const exps = saving ? getSavingExpenses(saving.id) : [];
+    const monthsE = [...new Set(exps.map(c => getMonthKey(c.date)))].sort().reverse();
+    const feMo = $('#filterExpMonth'); const pEMo = feMo.value;
     feMo.innerHTML = '<option value="">Todos los meses</option>' +
       monthsE.map(m => `<option value="${m}">${getMonthLabel(m)}</option>`).join('');
-    feMo.value = prevEMo;
+    feMo.value = pEMo;
 
-    const cats = [...new Set(state.expenses.map(e => e.category).filter(Boolean))].sort();
-    const fec = $('#filterExpCategory'); const prevC = fec.value;
+    const cats = [...new Set(exps.map(e => e.category).filter(Boolean))].sort();
+    const fec = $('#filterExpCategory'); const pC = fec.value;
     fec.innerHTML = '<option value="">Todas las categorías</option>' +
       cats.map(c => `<option value="${c}">${c}</option>`).join('');
-    fec.value = prevC;
+    fec.value = pC;
   }
 
-  function memberName(id) { const m = state.members.find(x=>x.id===id); return m ? m.name : '—'; }
-
   function renderContributions() {
-    let list = [...state.contributions];
+    const saving = getActiveSaving();
+    $('#aportesSubtitle').textContent = saving ? `// Aportes a "${saving.name}"` : '// Sin ahorro seleccionado';
+    if (!saving) { $('#contributionsTable').innerHTML = `<div class="list-empty"><h3>Sin ahorro activo</h3><p>// Selecciona un ahorro para ver sus aportes</p></div>`; return; }
+    let list = getSavingContribs(saving.id);
     const fm = $('#filterContribMember').value;
     const fmo = $('#filterContribMonth').value;
     if (fm) list = list.filter(c => c.memberId === fm);
@@ -855,7 +1370,9 @@
   }
 
   function renderExpenses() {
-    let list = [...state.expenses];
+    const saving = getActiveSaving();
+    if (!saving) { $('#expensesTable').innerHTML = `<div class="list-empty"><h3>Sin ahorro activo</h3><p>// Selecciona un ahorro para ver sus gastos</p></div>`; return; }
+    let list = getSavingExpenses(saving.id);
     const fc = $('#filterExpCategory').value;
     const fmo = $('#filterExpMonth').value;
     if (fc) list = list.filter(e => e.category === fc);
@@ -876,36 +1393,104 @@
       </tbody></table>`;
   }
 
+  function renderSavingsList() {
+    const grid = $('#savingsList');
+    if (!state.savings.length) {
+      grid.innerHTML = `<div class="list-empty" style="grid-column:1/-1"><h3>Sin ahorros</h3><p>// Crea el primero para comenzar</p></div>`;
+      return;
+    }
+    grid.innerHTML = state.savings.map(s => {
+      const tc = getSavingContribs(s.id).reduce((sum,c) => sum + (+c.amount||0), 0);
+      const te = getSavingExpenses(s.id).reduce((sum,c) => sum + (+c.amount||0), 0);
+      const bal = tc - te;
+      const isGeneral = !s.memberIds || s.memberIds.length === 0;
+      const members = getSavingMembers(s);
+      const goalPct = s.goal ? Math.min(100, Math.round((bal / s.goal) * 100)) : null;
+      return `<div class="savings-list-card">
+        <div class="savings-list-header">
+          <div>
+            <div class="savings-list-name">${s.name}</div>
+            <div style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;color:var(--text-muted);letter-spacing:0.1em;text-transform:uppercase;margin-top:0.2rem">
+              ${isGeneral ? '◆ AHORRO GENERAL' : `◇ NÚCLEO · ${members.length} integrantes`}
+            </div>
+          </div>
+          ${state.isAdmin ? `
+            <div style="display:flex;gap:0.3rem">
+              <button class="icon-btn edit" onclick="window.editSaving('${s.id}')" title="Editar">✎</button>
+              <button class="icon-btn danger" onclick="window.deleteSaving('${s.id}')" title="Eliminar">✕</button>
+            </div>` : ''}
+        </div>
+        <div class="savings-list-desc">${s.description ? '// ' + s.description : '// Sin descripción'}</div>
+        <div class="savings-list-stats">
+          <div>
+            <div class="ss-stat-label">Saldo</div>
+            <div class="ss-stat-value" style="color:var(--green)">$${fmt(bal)}</div>
+          </div>
+          <div>
+            <div class="ss-stat-label">Aportes</div>
+            <div class="ss-stat-value">$${fmt(tc)}</div>
+          </div>
+        </div>
+        ${goalPct !== null ? `
+          <div style="margin-bottom:0.8rem">
+            <div class="progress-bar"><div class="progress-fill" style="width:${goalPct}%"></div></div>
+            <div class="progress-meta"><span>Meta $${fmt(s.goal)}</span><span>${goalPct}%</span></div>
+          </div>` : ''}
+        ${!isGeneral ? `<div class="savings-list-members">Integrantes: ${members.map(m => m.name).join(', ')}</div>` : ''}
+        <button class="btn btn-ghost btn-sm" style="width:100%;justify-content:center" onclick="window.selectSaving('${s.id}')">
+          ${s.id === state.activeSavingId ? '✓ Activo' : 'Seleccionar'}
+        </button>
+      </div>`;
+    }).join('');
+  }
+
   function renderMembers() {
     const grid = $('#membersGrid');
-    if (!state.members.length) { grid.innerHTML = `<div class="list-empty" style="grid-column:1/-1"><h3>Sin integrantes</h3><p>// Agrega participantes para comenzar</p></div>`; return; }
+    if (!state.members.length) {
+      grid.innerHTML = `<div class="list-empty" style="grid-column:1/-1"><h3>Sin integrantes</h3><p>// Agrega participantes para comenzar</p></div>`;
+      return;
+    }
     grid.innerHTML = state.members.map(m => {
       const total = state.contributions.filter(c => c.memberId === m.id).reduce((s,c) => s + (+c.amount||0), 0);
+      const age = calcAge(m.birthDate);
+      const days = daysUntilBirthday(m.birthDate);
+      let bdayInfo = '';
+      if (m.birthDate) {
+        const isSoon = days !== null && days <= 30;
+        bdayInfo = `<div class="member-meta" style="${isSoon?'color:var(--pink)':''}">
+          ${isSoon ? '🎂' : '📅'} ${fmtBirthday(m.birthDate)}${age !== null ? ` · ${age} años` : ''}
+        </div>`;
+      }
       return `<div class="member-card">
         <div class="member-actions">
-          ${state.isAdmin ? `<button class="icon-btn danger" onclick="window.deleteMember('${m.id}')" title="Eliminar">✕</button>` : ''}
+          ${state.isAdmin ? `
+            <button class="icon-btn edit" onclick="window.editMember('${m.id}')" title="Editar">✎</button>
+            <button class="icon-btn danger" onclick="window.deleteMember('${m.id}')" title="Eliminar">✕</button>
+          ` : ''}
         </div>
         <div class="member-avatar">${initials(m.name)}</div>
         <div class="member-name">${m.name}</div>
-        <div class="member-total">$${fmt(total)}</div>
+        ${bdayInfo}
+        <div class="member-total">$${fmt(total)} aportados</div>
       </div>`;
     }).join('');
   }
 
   function renderActivity() {
     const items = [
-      ...state.contributions.map(c => ({ type: 'contrib', date: c.date, amount: c.amount, text: `${memberName(c.memberId)} aportó`, note: c.note })),
-      ...state.expenses.map(e => ({ type: 'expense', date: e.date, amount: e.amount, text: e.description || 'Gasto', note: e.category })),
+      ...state.contributions.map(c => ({ type: 'contrib', savingId: c.savingId, date: c.date, amount: c.amount, text: `${memberName(c.memberId)} aportó`, note: c.note })),
+      ...state.expenses.map(e => ({ type: 'expense', savingId: e.savingId, date: e.date, amount: e.amount, text: e.description || 'Gasto', note: e.category })),
     ].sort((a,b) => {
       const da = a.date.toDate ? a.date.toDate() : new Date(a.date);
       const db = b.date.toDate ? b.date.toDate() : new Date(b.date);
       return db - da;
-    }).slice(0, 25);
+    }).slice(0, 30);
     const container = $('#activityTable');
     if (!items.length) { container.innerHTML = `<div class="list-empty"><h3>Sin actividad</h3><p>// Los movimientos aparecerán aquí</p></div>`; return; }
-    container.innerHTML = `<table><thead><tr><th>Fecha</th><th>Descripción</th><th>Detalle</th><th>Monto</th></tr></thead><tbody>
+    container.innerHTML = `<table><thead><tr><th>Fecha</th><th>Ahorro</th><th>Descripción</th><th>Detalle</th><th>Monto</th></tr></thead><tbody>
       ${items.map(it => `<tr>
         <td class="td-date">${fmtDate(it.date)}</td>
+        <td>${it.savingId ? `<span class="saving-tag">${savingName(it.savingId)}</span>` : '—'}</td>
         <td>${it.text}</td>
         <td class="td-note">${it.note || ''}</td>
         <td class="td-amount ${it.type==='contrib'?'positive':'negative'}">${it.type==='contrib'?'+':'−'}$${fmt(it.amount)}</td>
@@ -915,10 +1500,15 @@
 
   let chartMembers, chartEvo;
   function renderCharts() {
+    const saving = getActiveSaving();
     const palette = ['#00d9ff','#ff2d92','#00ff9d','#ffb800','#9d4edd','#ff6b35','#06d6a0','#118ab2'];
-    const dataM = state.members.map(m => ({
+    const members = saving ? getSavingMembers(saving) : [];
+    const contribs = saving ? getSavingContribs(saving.id) : [];
+    const expenses = saving ? getSavingExpenses(saving.id) : [];
+
+    const dataM = members.map(m => ({
       label: m.name,
-      value: state.contributions.filter(c=>c.memberId===m.id).reduce((s,c)=>s+(+c.amount||0),0)
+      value: contribs.filter(c=>c.memberId===m.id).reduce((s,c)=>s+(+c.amount||0),0)
     })).filter(d => d.value > 0);
 
     if (chartMembers) chartMembers.destroy();
@@ -934,16 +1524,15 @@
         animation: { duration: 1200, easing: 'easeOutQuart' },
         plugins: {
           legend: { position: 'bottom', labels: { font: { family: 'JetBrains Mono', size: 10 }, color: '#8a9bb5', boxWidth: 10, padding: 14, usePointStyle: true, pointStyle: 'circle' } },
-          tooltip: { backgroundColor: 'rgba(10, 15, 28, 0.95)', borderColor: 'rgba(0, 217, 255, 0.3)', borderWidth: 1,
-            titleFont: { family: 'Chakra Petch', size: 12 }, bodyFont: { family: 'JetBrains Mono', size: 11 }, padding: 12,
+          tooltip: { backgroundColor: 'rgba(10, 15, 28, 0.95)', borderColor: 'rgba(0, 217, 255, 0.3)', borderWidth: 1, padding: 12,
             callbacks: { label: (ctx) => ` ${ctx.label}: $${fmt(ctx.parsed)}` } }
         }, cutout: '68%'
       }
     });
 
     const all = [
-      ...state.contributions.map(c => ({ date: c.date, amount: +c.amount||0 })),
-      ...state.expenses.map(e => ({ date: e.date, amount: -(+e.amount||0) })),
+      ...contribs.map(c => ({ date: c.date, amount: +c.amount||0 })),
+      ...expenses.map(e => ({ date: e.date, amount: -(+e.amount||0) })),
     ].sort((a,b) => {
       const da = a.date.toDate ? a.date.toDate() : new Date(a.date);
       const db = b.date.toDate ? b.date.toDate() : new Date(b.date);
@@ -958,7 +1547,7 @@
 
     if (chartEvo) chartEvo.destroy();
     const ctx = $('#chartEvolution').getContext('2d');
-    const gradient = ctx.createLinearGradient(0, 0, 0, 260);
+    const gradient = ctx.createLinearGradient(0, 0, 0, 240);
     gradient.addColorStop(0, 'rgba(0, 217, 255, 0.35)');
     gradient.addColorStop(1, 'rgba(0, 217, 255, 0)');
 
@@ -973,8 +1562,7 @@
         maintainAspectRatio: false,
         animation: { duration: 1200, easing: 'easeOutQuart' },
         plugins: { legend: { display: false },
-          tooltip: { backgroundColor: 'rgba(10, 15, 28, 0.95)', borderColor: 'rgba(0, 217, 255, 0.3)', borderWidth: 1,
-            titleFont: { family: 'Chakra Petch', size: 12 }, bodyFont: { family: 'JetBrains Mono', size: 11 }, padding: 12,
+          tooltip: { backgroundColor: 'rgba(10, 15, 28, 0.95)', borderColor: 'rgba(0, 217, 255, 0.3)', borderWidth: 1, padding: 12,
             callbacks: { label: (ctx) => ` $${fmt(ctx.parsed.y)}` } } },
         scales: {
           x: { grid: { color: 'rgba(0, 217, 255, 0.05)' }, ticks: { color: '#5b6a82', font: { family: 'JetBrains Mono', size: 9 } } },
@@ -984,6 +1572,15 @@
     });
   }
 
+  // === Saving selection ===
+  window.selectSaving = (id) => {
+    state.activeSavingId = id;
+    localStorage.setItem('activeSavingId', id);
+    renderAll();
+    document.querySelector('.tab[data-tab="aportes"]').click();
+  };
+
+  // === Tabs ===
   $$('.tab').forEach(t => t.onclick = () => {
     $$('.tab').forEach(x => x.classList.remove('active'));
     t.classList.add('active');
@@ -991,83 +1588,206 @@
     $('#section-' + t.dataset.tab).classList.add('active');
   });
 
+  // === Modal ===
   const backdrop = $('#modalBackdrop');
   function closeModal() { backdrop.classList.remove('show'); }
   window.closeModal = closeModal;
   backdrop.onclick = (e) => { if (e.target === backdrop) closeModal(); };
 
-  function openModal(kind) {
-    let title = '', sub = '', body = '', onSubmit = null;
+  function openModal(kind, payload = {}) {
+    let title = '', sub = '', body = '', actions = '';
+
     if (kind === 'login') {
       title = 'Acceso administrador'; sub = '// Inicia sesión para editar';
       body = `<div class="form-group"><label>Correo</label><input id="inEmail" type="email" placeholder="tu@correo.com" /></div>
         <div class="form-group"><label>Contraseña</label><input id="inPass" type="password" /></div>`;
-      onSubmit = async () => {
-        try { await signInWithEmailAndPassword(auth, $('#inEmail').value, $('#inPass').value);
+      actions = `<button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary" id="modalSubmit">Iniciar sesión</button>`;
+      setTimeout(() => { $('#modalSubmit').onclick = async () => {
+        try {
+          await signInWithEmailAndPassword(auth, $('#inEmail').value, $('#inPass').value);
           showToast('Acceso concedido', 'success'); closeModal();
         } catch (e) { showToast('Credenciales inválidas', 'error'); }
-      };
-    } else if (kind === 'member') {
-      title = 'Nuevo integrante'; sub = '// Agrega un participante';
-      body = `<div class="form-group"><label>Nombre completo</label><input id="inName" type="text" placeholder="Ej. María Pérez" /></div>`;
-      onSubmit = async () => {
+      }; }, 50);
+
+    } else if (kind === 'member-new' || kind === 'member-edit') {
+      const editing = kind === 'member-edit';
+      const m = editing ? state.members.find(x => x.id === payload.id) : {};
+      title = editing ? 'Editar integrante' : 'Nuevo integrante';
+      sub = editing ? '// Modifica los datos' : '// Agrega un participante';
+      body = `
+        <div class="form-group"><label>Nombre completo</label>
+          <input id="inName" type="text" placeholder="Ej. María Pérez" value="${m.name || ''}" /></div>
+        <div class="form-group"><label>Fecha de nacimiento (opcional)</label>
+          <input id="inBirth" type="date" value="${m.birthDate || ''}" /></div>`;
+      actions = `<button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary" id="modalSubmit">${editing ? 'Guardar cambios' : 'Agregar'}</button>`;
+      setTimeout(() => { $('#modalSubmit').onclick = async () => {
         const name = $('#inName').value.trim();
+        const birthDate = $('#inBirth').value || null;
         if (!name) return showToast('Ingresa un nombre', 'error');
-        try { await addDoc(collection(db, 'members'), { name, createdAt: serverTimestamp() });
-          showToast('Integrante agregado', 'success'); closeModal();
+        try {
+          if (editing) {
+            await updateDoc(doc(db, 'members', m.id), { name, birthDate });
+            showToast('Integrante actualizado', 'success');
+          } else {
+            await addDoc(collection(db, 'members'), { name, birthDate, createdAt: serverTimestamp() });
+            showToast('Integrante agregado', 'success');
+          }
+          closeModal();
         } catch (e) { showToast('Error: ' + e.message, 'error'); }
-      };
+      }; }, 50);
+
+    } else if (kind === 'saving-new' || kind === 'saving-edit') {
+      const editing = kind === 'saving-edit';
+      const s = editing ? state.savings.find(x => x.id === payload.id) : { memberIds: [] };
+      title = editing ? 'Editar ahorro' : 'Nuevo ahorro';
+      sub = editing ? '// Modifica los datos del ahorro' : '// Crea un fondo nuevo para ahorrar';
+      const isGeneral = !s.memberIds || s.memberIds.length === 0;
+      body = `
+        <div class="form-group"><label>Nombre del ahorro</label>
+          <input id="inSavName" type="text" placeholder="Ej. Vacaciones 2026" value="${s.name || ''}" /></div>
+        <div class="form-group"><label>Descripción (opcional)</label>
+          <input id="inSavDesc" type="text" placeholder="Ej. Viaje familiar de fin de año" value="${s.description || ''}" /></div>
+        <div class="form-group"><label>Meta (opcional, COP)</label>
+          <input id="inSavGoal" type="number" min="0" step="10000" placeholder="5000000" value="${s.goal || ''}" /></div>
+        <div class="form-group"><label>Tipo de ahorro</label>
+          <div class="radio-group">
+            <div class="radio-card ${isGeneral?'selected':''}" id="typeGeneral" onclick="window.toggleSavingType('general')">
+              <div class="radio-card-title">General</div>
+              <div class="radio-card-desc">Toda la familia</div>
+            </div>
+            <div class="radio-card ${!isGeneral?'selected':''}" id="typeNucleo" onclick="window.toggleSavingType('nucleo')">
+              <div class="radio-card-title">Por núcleo</div>
+              <div class="radio-card-desc">Integrantes específicos</div>
+            </div>
+          </div>
+        </div>
+        <div class="form-group ${isGeneral?'hidden':''}" id="memberSelectGroup">
+          <label>Integrantes del núcleo</label>
+          <div class="checkbox-group" id="memberCheckboxes">
+            ${state.members.map(mem => `
+              <label class="checkbox-item ${(s.memberIds||[]).includes(mem.id)?'checked':''}" data-id="${mem.id}">
+                <input type="checkbox" ${(s.memberIds||[]).includes(mem.id)?'checked':''} onchange="window.toggleMemberCheck(this)" value="${mem.id}" />
+                <span>${mem.name}</span>
+              </label>
+            `).join('')}
+          </div>
+          ${!state.members.length ? '<p style="font-family:\'JetBrains Mono\',monospace;color:var(--text-muted);font-size:0.78rem;margin-top:0.5rem">// Agrega integrantes primero en la pestaña Integrantes</p>' : ''}
+        </div>`;
+      actions = `<button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary" id="modalSubmit">${editing ? 'Guardar cambios' : 'Crear ahorro'}</button>`;
+      setTimeout(() => { $('#modalSubmit').onclick = async () => {
+        const name = $('#inSavName').value.trim();
+        const description = $('#inSavDesc').value.trim();
+        const goal = parseFloat($('#inSavGoal').value) || null;
+        if (!name) return showToast('Ingresa un nombre', 'error');
+        const isGen = $('#typeGeneral').classList.contains('selected');
+        const memberIds = isGen ? [] : Array.from($$('#memberCheckboxes input:checked')).map(i => i.value);
+        if (!isGen && memberIds.length === 0) return showToast('Selecciona al menos un integrante', 'error');
+        try {
+          if (editing) {
+            await updateDoc(doc(db, 'savings', s.id), { name, description, goal, memberIds });
+            showToast('Ahorro actualizado', 'success');
+          } else {
+            const newDoc = await addDoc(collection(db, 'savings'), { name, description, goal, memberIds, createdAt: serverTimestamp() });
+            state.activeSavingId = newDoc.id;
+            localStorage.setItem('activeSavingId', newDoc.id);
+            showToast('Ahorro creado', 'success');
+          }
+          closeModal();
+        } catch (e) { showToast('Error: ' + e.message, 'error'); }
+      }; }, 50);
+
     } else if (kind === 'contribution') {
-      if (!state.members.length) { showToast('Agrega integrantes primero', 'error'); return; }
-      title = 'Nuevo aporte'; sub = '// Registra una contribución';
+      const saving = getActiveSaving();
+      if (!saving) { showToast('Selecciona un ahorro primero', 'error'); return; }
+      const members = getSavingMembers(saving);
+      if (!members.length) { showToast('Agrega integrantes primero', 'error'); return; }
+      title = 'Nuevo aporte';
+      sub = `// Aporte a "${saving.name}"`;
       body = `<div class="form-group"><label>Integrante</label>
-          <select id="inMember">${state.members.map(m=>`<option value="${m.id}">${m.name}</option>`).join('')}</select></div>
-        <div class="form-group"><label>Monto (COP)</label><input id="inAmount" type="number" min="0" step="1000" placeholder="100000" /></div>
-        <div class="form-group"><label>Fecha</label><input id="inDate" type="date" value="${new Date().toISOString().slice(0,10)}" /></div>
+          <select id="inMember">${members.map(m=>`<option value="${m.id}">${m.name}</option>`).join('')}</select></div>
+        <div class="form-row">
+          <div class="form-group"><label>Monto (COP)</label><input id="inAmount" type="number" min="0" step="1000" placeholder="100000" /></div>
+          <div class="form-group"><label>Fecha</label><input id="inDate" type="date" value="${new Date().toISOString().slice(0,10)}" /></div>
+        </div>
         <div class="form-group"><label>Nota (opcional)</label><input id="inNote" type="text" placeholder="Ej. aporte de mayo" /></div>`;
-      onSubmit = async () => {
+      actions = `<button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary" id="modalSubmit">Registrar aporte</button>`;
+      setTimeout(() => { $('#modalSubmit').onclick = async () => {
         const memberId = $('#inMember').value;
         const amount = parseFloat($('#inAmount').value);
         const date = new Date($('#inDate').value);
         const note = $('#inNote').value.trim();
         if (!amount || amount <= 0) return showToast('Monto inválido', 'error');
-        try { await addDoc(collection(db, 'contributions'), { memberId, amount, date, note, createdAt: serverTimestamp() });
+        try {
+          await addDoc(collection(db, 'contributions'), { savingId: saving.id, memberId, amount, date, note, createdAt: serverTimestamp() });
           showToast('Aporte registrado', 'success'); closeModal();
         } catch (e) { showToast('Error: ' + e.message, 'error'); }
-      };
+      }; }, 50);
+
     } else if (kind === 'expense') {
-      title = 'Nuevo gasto'; sub = '// Registra una salida del fondo';
+      const saving = getActiveSaving();
+      if (!saving) { showToast('Selecciona un ahorro primero', 'error'); return; }
+      title = 'Nuevo gasto';
+      sub = `// Gasto de "${saving.name}"`;
       body = `<div class="form-group"><label>Descripción</label><input id="inDesc" type="text" placeholder="Ej. mercado del mes" /></div>
-        <div class="form-group"><label>Categoría</label>
-          <select id="inCat">
-            <option>Alimentación</option><option>Servicios</option><option>Transporte</option>
-            <option>Salud</option><option>Educación</option><option>Vivienda</option>
-            <option>Recreación</option><option>Otros</option>
-          </select></div>
-        <div class="form-group"><label>Monto (COP)</label><input id="inAmount" type="number" min="0" step="1000" placeholder="50000" /></div>
-        <div class="form-group"><label>Fecha</label><input id="inDate" type="date" value="${new Date().toISOString().slice(0,10)}" /></div>`;
-      onSubmit = async () => {
+        <div class="form-row">
+          <div class="form-group"><label>Categoría</label>
+            <select id="inCat">
+              <option>Alimentación</option><option>Servicios</option><option>Transporte</option>
+              <option>Salud</option><option>Educación</option><option>Vivienda</option>
+              <option>Recreación</option><option>Otros</option>
+            </select></div>
+          <div class="form-group"><label>Fecha</label><input id="inDate" type="date" value="${new Date().toISOString().slice(0,10)}" /></div>
+        </div>
+        <div class="form-group"><label>Monto (COP)</label><input id="inAmount" type="number" min="0" step="1000" placeholder="50000" /></div>`;
+      actions = `<button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+        <button class="btn btn-primary" id="modalSubmit">Registrar gasto</button>`;
+      setTimeout(() => { $('#modalSubmit').onclick = async () => {
         const description = $('#inDesc').value.trim();
         const category = $('#inCat').value;
         const amount = parseFloat($('#inAmount').value);
         const date = new Date($('#inDate').value);
         if (!description) return showToast('Ingresa una descripción', 'error');
         if (!amount || amount <= 0) return showToast('Monto inválido', 'error');
-        try { await addDoc(collection(db, 'expenses'), { description, category, amount, date, createdAt: serverTimestamp() });
+        try {
+          await addDoc(collection(db, 'expenses'), { savingId: saving.id, description, category, amount, date, createdAt: serverTimestamp() });
           showToast('Gasto registrado', 'success'); closeModal();
         } catch (e) { showToast('Error: ' + e.message, 'error'); }
-      };
+      }; }, 50);
     }
+
     $('#modalTitle').textContent = title;
     $('#modalSub').textContent = sub;
     $('#modalBody').innerHTML = body;
-    $('#modalSubmit').onclick = onSubmit;
+    $('#modalActions').innerHTML = actions;
     backdrop.classList.add('show');
   }
   window.openModal = openModal;
 
+  // Helpers for saving modal
+  window.toggleSavingType = (type) => {
+    if (type === 'general') {
+      $('#typeGeneral').classList.add('selected');
+      $('#typeNucleo').classList.remove('selected');
+      $('#memberSelectGroup').classList.add('hidden');
+    } else {
+      $('#typeNucleo').classList.add('selected');
+      $('#typeGeneral').classList.remove('selected');
+      $('#memberSelectGroup').classList.remove('hidden');
+    }
+  };
+  window.toggleMemberCheck = (input) => {
+    input.closest('.checkbox-item').classList.toggle('checked', input.checked);
+  };
+
+  window.editMember = (id) => openModal('member-edit', { id });
+  window.editSaving = (id) => openModal('saving-edit', { id });
+
   window.deleteMember = async (id) => {
-    if (!confirm('¿Eliminar este integrante?')) return;
+    if (!confirm('¿Eliminar este integrante? Sus aportes seguirán registrados.')) return;
     try { await deleteDoc(doc(db, 'members', id)); showToast('Integrante eliminado'); }
     catch(e){ showToast('Error: '+e.message, 'error'); }
   };
@@ -1080,6 +1800,26 @@
     if (!confirm('¿Eliminar este gasto?')) return;
     try { await deleteDoc(doc(db, 'expenses', id)); showToast('Gasto eliminado'); }
     catch(e){ showToast('Error: '+e.message, 'error'); }
+  };
+  window.deleteSaving = async (id) => {
+    const s = state.savings.find(x => x.id === id);
+    if (!s) return;
+    const contribs = getSavingContribs(id);
+    const exps = getSavingExpenses(id);
+    const msg = `¿Eliminar el ahorro "${s.name}"?\n\nSe eliminarán también:\n· ${contribs.length} aportes\n· ${exps.length} gastos\n\nEsta acción NO se puede deshacer.`;
+    if (!confirm(msg)) return;
+    try {
+      // Cascade delete
+      for (const c of contribs) await deleteDoc(doc(db, 'contributions', c.id));
+      for (const e of exps) await deleteDoc(doc(db, 'expenses', e.id));
+      await deleteDoc(doc(db, 'savings', id));
+      if (state.activeSavingId === id) {
+        state.activeSavingId = state.savings.find(x => x.id !== id)?.id || null;
+        if (state.activeSavingId) localStorage.setItem('activeSavingId', state.activeSavingId);
+        else localStorage.removeItem('activeSavingId');
+      }
+      showToast('Ahorro eliminado', 'success');
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
   };
 
   renderAll();

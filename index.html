@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Ahorro Familia Guevara // Sistema</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+<style>
+  :root {
+    --bg: #050810;
+    --bg-2: #0a0f1c;
+    --surface: rgba(15, 22, 38, 0.6);
+    --surface-2: rgba(20, 28, 48, 0.8);
+    --border: rgba(0, 217, 255, 0.12);
+    --border-strong: rgba(0, 217, 255, 0.3);
+    --text: #e6edf7;
+    --text-dim: #8a9bb5;
+    --text-muted: #5b6a82;
+    --cyan: #00d9ff;
+    --cyan-glow: rgba(0, 217, 255, 0.5);
+    --magenta: #ff2d92;
+    --magenta-glow: rgba(255, 45, 146, 0.5);
+    --purple: #9d4edd;
+    --green: #00ff9d;
+    --gold: #ffb800;
+    --danger: #ff3860;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg); color: var(--text);
+    line-height: 1.6; min-height: 100vh;
+    overflow-x: hidden; position: relative;
+  }
+  .bg-grid {
+    position: fixed; inset: 0; z-index: -2;
+    background-image:
+      linear-gradient(rgba(0, 217, 255, 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 217, 255, 0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+  .bg-orb {
+    position: fixed; border-radius: 50%;
+    filter: blur(80px); opacity: 0.4; z-index: -1;
+    pointer-events: none;
+    animation: float 20s infinite ease-in-out;
+  }
+  .bg-orb.o1 { width: 500px; height: 500px; background: var(--cyan); top: -10%; left: -10%; }
+  .bg-orb.o2 { width: 400px; height: 400px; background: var(--magenta); top: 50%; right: -10%; animation-delay: -5s; }
+  .bg-orb.o3 { width: 350px; height: 350px; background: var(--purple); bottom: -10%; left: 30%; animation-delay: -10s; }
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(50px, -30px) scale(1.1); }
+    66% { transform: translate(-30px, 40px) scale(0.95); }
+  }
+  .bg-scan {
+    position: fixed; inset: 0; z-index: -1;
+    background: linear-gradient(180deg, transparent 0%, rgba(0, 217, 255, 0.02) 50%, transparent 100%);
+    background-size: 100% 200px;
+    animation: scan 8s linear infinite; pointer-events: none;
+  }
+  @keyframes scan { 0% { background-position: 0 0; } 100% { background-position: 0 200px; } }
+  header {
+    position: sticky; top: 0; z-index: 100;
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    background: rgba(5, 8, 16, 0.7);
+    border-bottom: 1px solid var(--border);
+  }
+  .header-inner {
+    max-width: 1320px; margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+  }
+  .brand { display: flex; align-items: center; gap: 0.9rem; }
+  .brand-mark {
+    width: 42px; height: 42px; border-radius: 10px;
+    background: linear-gradient(135deg, var(--cyan), var(--magenta));
+    display: grid; place-items: center; color: #000;
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 700; font-size: 1.4rem;
+    box-shadow: 0 0 30px var(--cyan-glow), inset 0 0 10px rgba(255,255,255,0.3);
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px var(--cyan-glow), inset 0 0 10px rgba(255,255,255,0.3); }
+    50% { box-shadow: 0 0 40px var(--cyan-glow), 0 0 60px var(--magenta-glow), inset 0 0 10px rgba(255,255,255,0.3); }
+  }
+  .brand-text h1 {
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 600; font-size: 1.3rem;
+    letter-spacing: 0.02em; line-height: 1.1;
+    text-transform: uppercase;
+  }
+  .brand-text p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; color: var(--cyan);
+    letter-spacing: 0.15em; text-transform: uppercase;
+    margin-top: 3px;
+  }
+  .header-actions { display: flex; gap: 0.6rem; align-items: center; }
+  .role-badge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; padding: 0.4rem 0.8rem;
+    border-radius: 4px; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    border: 1px solid;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+  }
+  .role-badge::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    animation: blink 1.5s infinite;
+  }
+  @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .role-viewer { background: rgba(0, 217, 255, 0.08); color: var(--cyan); border-color: rgba(0, 217, 255, 0.3); }
+  .role-viewer::before { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
+  .role-admin { background: rgba(0, 255, 157, 0.1); color: var(--green); border-color: rgba(0, 255, 157, 0.4); }
+  .role-admin::before { background: var(--green); box-shadow: 0 0 8px var(--green); }
+  .btn {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 500; font-size: 0.85rem;
+    padding: 0.6rem 1.2rem; border-radius: 6px;
+    border: 1px solid transparent; cursor: pointer;
+    transition: all 0.2s cubic-bezier(.4,0,.2,1);
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    letter-spacing: 0.01em; position: relative; overflow: hidden;
+  }
+  .btn::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+    transform: translateX(-100%); transition: transform 0.5s;
+  }
+  .btn:hover::before { transform: translateX(100%); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--cyan), #0088ff);
+    color: #000; font-weight: 600;
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 30px rgba(0, 217, 255, 0.6), 0 8px 20px rgba(0, 217, 255, 0.2); }
+  .btn-ghost { background: rgba(255,255,255,0.03); color: var(--text-dim); border-color: var(--border); }
+  .btn-ghost:hover { background: rgba(0, 217, 255, 0.08); color: var(--cyan); border-color: var(--border-strong); }
+  .btn-sm { padding: 0.45rem 0.9rem; font-size: 0.78rem; }
+  main { max-width: 1320px; margin: 0 auto; padding: 2.5rem 1.5rem 4rem; }
+  .hero { margin-bottom: 2.5rem; text-align: center; padding: 2rem 1rem; }
+  .hero-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem; color: var(--cyan);
+    letter-spacing: 0.3em; text-transform: uppercase;
+    margin-bottom: 1.2rem;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .hero-label::before, .hero-label::after {
+    content: ''; width: 30px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan));
+  }
+  .hero-label::after { background: linear-gradient(90deg, var(--cyan), transparent); }
+  .hero-balance {
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 600;
+    font-size: clamp(3rem, 10vw, 6.5rem);
+    letter-spacing: -0.02em; line-height: 1;
+    background: linear-gradient(135deg, var(--cyan) 0%, #fff 50%, var(--magenta) 100%);
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 80px rgba(0, 217, 255, 0.3);
+    display: inline-block;
+  }
+  .hero-balance .currency { font-size: 0.4em; vertical-align: 0.6em; opacity: 0.8; margin-right: 0.1em; }
+  .hero-meta {
+    margin-top: 1rem; color: var(--text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem; letter-spacing: 0.05em;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1rem; margin-bottom: 2.5rem;
+  }
+  .stat-card {
+    background: var(--surface);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border); border-radius: 14px; padding: 1.4rem;
+    transition: all 0.3s cubic-bezier(.4,0,.2,1);
+    position: relative; overflow: hidden;
+  }
+  .stat-card::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-color, var(--cyan)), transparent);
+    opacity: 0.6;
+  }
+  .stat-card:hover { transform: translateY(-4px); border-color: var(--accent-color, var(--cyan)); }
+  .stat-card.c-green { --accent-color: var(--green); }
+  .stat-card.c-magenta { --accent-color: var(--magenta); }
+  .stat-card.c-gold { --accent-color: var(--gold); }
+  .stat-card.c-cyan { --accent-color: var(--cyan); }
+  .stat-card.c-cyan:hover { box-shadow: 0 0 30px rgba(0, 217, 255, 0.15); }
+  .stat-card.c-green:hover { box-shadow: 0 0 30px rgba(0, 255, 157, 0.2); }
+  .stat-card.c-magenta:hover { box-shadow: 0 0 30px rgba(255, 45, 146, 0.2); }
+  .stat-card.c-gold:hover { box-shadow: 0 0 30px rgba(255, 184, 0, 0.2); }
+  .stat-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; color: var(--text-muted);
+    letter-spacing: 0.15em; text-transform: uppercase;
+    margin-bottom: 0.7rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .stat-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent-color, var(--cyan));
+    box-shadow: 0 0 8px var(--accent-color, var(--cyan));
+  }
+  .stat-value {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 1.8rem; font-weight: 600;
+    letter-spacing: -0.01em; color: var(--text);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem; color: var(--text-muted);
+    margin-top: 0.4rem; letter-spacing: 0.05em;
+  }
+  .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2.5rem; }
+  .chart-card {
+    background: var(--surface);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem;
+  }
+  .chart-card h3 {
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 500; font-size: 1rem;
+    margin-bottom: 1.2rem;
+    letter-spacing: 0.03em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .chart-card h3::before {
+    content: ''; width: 3px; height: 16px;
+    background: linear-gradient(180deg, var(--cyan), var(--magenta));
+    border-radius: 2px;
+  }
+  .chart-container { position: relative; height: 260px; }
+  .tabs {
+    display: flex; gap: 0.3rem; margin-bottom: 1.5rem; padding: 0.3rem;
+    background: var(--surface);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border); border-radius: 10px;
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab {
+    background: none; border: none; padding: 0.7rem 1.2rem;
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 0.85rem; font-weight: 500;
+    color: var(--text-dim); cursor: pointer; border-radius: 7px;
+    transition: all 0.2s; white-space: nowrap;
+    letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+  .tab.active {
+    color: #000;
+    background: linear-gradient(135deg, var(--cyan), #0088ff);
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.4);
+  }
+  .section { display: none; }
+  .section.active { display: block; animation: slideIn 0.4s cubic-bezier(.4,0,.2,1); }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .section-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1.3rem; gap: 1rem; flex-wrap: wrap;
+  }
+  .section-title {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 1.4rem; font-weight: 500;
+    letter-spacing: 0.03em; text-transform: uppercase;
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .section-title::before { content: '◢'; color: var(--cyan); font-size: 0.9em; }
+  .section-subtitle {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem; color: var(--text-muted);
+    margin-top: 0.3rem; letter-spacing: 0.05em;
+  }
+  .card {
+    background: var(--surface);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border); border-radius: 14px; overflow: hidden;
+  }
+  .list-empty { padding: 3.5rem 1.5rem; text-align: center; color: var(--text-muted); }
+  .list-empty h3 {
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 500; font-size: 1.1rem; color: var(--text-dim);
+    margin-bottom: 0.5rem; letter-spacing: 0.05em; text-transform: uppercase;
+  }
+  .list-empty p { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; letter-spacing: 0.05em; }
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left; padding: 1rem 1.3rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; text-transform: uppercase;
+    letter-spacing: 0.15em; color: var(--text-muted); font-weight: 600;
+    background: rgba(0,0,0,0.2); border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 1rem 1.3rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    font-size: 0.92rem; color: var(--text);
+  }
+  tr:last-child td { border-bottom: none; }
+  tr { transition: background 0.15s; }
+  tr:hover td { background: rgba(0, 217, 255, 0.04); }
+  .td-amount { font-family: 'JetBrains Mono', monospace; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .td-amount.positive { color: var(--green); text-shadow: 0 0 10px rgba(0,255,157,0.3); }
+  .td-amount.negative { color: var(--magenta); text-shadow: 0 0 10px rgba(255,45,146,0.3); }
+  .td-date { font-family: 'JetBrains Mono', monospace; color: var(--text-muted); font-size: 0.82rem; }
+  .td-note { color: var(--text-dim); font-size: 0.85rem; }
+  .member-chip {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    padding: 0.3rem 0.75rem;
+    background: rgba(0, 217, 255, 0.1);
+    color: var(--cyan);
+    border: 1px solid rgba(0, 217, 255, 0.3);
+    border-radius: 5px;
+    font-size: 0.78rem; font-weight: 500;
+    font-family: 'Chakra Petch', sans-serif;
+    letter-spacing: 0.03em;
+  }
+  .member-chip::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--cyan); box-shadow: 0 0 6px var(--cyan);
+  }
+  .category-tag {
+    display: inline-block; padding: 0.25rem 0.7rem;
+    background: rgba(255, 45, 146, 0.1);
+    border: 1px solid rgba(255, 45, 146, 0.3);
+    color: var(--magenta); border-radius: 5px;
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.03em;
+  }
+  .members-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; }
+  .member-card {
+    background: var(--surface);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem;
+    position: relative;
+    transition: all 0.3s cubic-bezier(.4,0,.2,1);
+    overflow: hidden;
+  }
+  .member-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(0, 217, 255, 0.05) 100%);
+    opacity: 0; transition: opacity 0.3s;
+  }
+  .member-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--border-strong);
+    box-shadow: 0 0 30px rgba(0, 217, 255, 0.15);
+  }
+  .member-card:hover::before { opacity: 1; }
+  .member-avatar {
+    width: 52px; height: 52px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--cyan), var(--magenta));
+    color: #000;
+    display: grid; place-items: center;
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 1.4rem; font-weight: 700;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 20px rgba(0, 217, 255, 0.3);
+    position: relative; z-index: 1;
+  }
+  .member-name {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 1.15rem; font-weight: 500;
+    margin-bottom: 0.3rem;
+    letter-spacing: 0.02em;
+    position: relative; z-index: 1;
+  }
+  .member-total {
+    color: var(--green); font-weight: 600; font-size: 0.95rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+    position: relative; z-index: 1;
+  }
+  .member-actions { position: absolute; top: 1rem; right: 1rem; display: flex; gap: 0.3rem; z-index: 2; }
+  .icon-btn {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid var(--border);
+    padding: 0.4rem; cursor: pointer;
+    color: var(--text-muted); border-radius: 6px;
+    transition: all 0.15s;
+    display: grid; place-items: center;
+    width: 30px; height: 30px; font-size: 0.8rem;
+  }
+  .icon-btn:hover { background: rgba(255, 255, 255, 0.08); color: var(--text); }
+  .icon-btn.danger:hover { color: var(--danger); border-color: var(--danger); box-shadow: 0 0 12px rgba(255,56,96,0.3); }
+  .filters { display: flex; gap: 0.6rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .filter-select {
+    padding: 0.55rem 0.9rem;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--surface);
+    backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem; color: var(--text);
+    cursor: pointer; transition: all 0.15s;
+    letter-spacing: 0.03em;
+  }
+  .filter-select:hover { border-color: var(--border-strong); }
+  .filter-select:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(0,217,255,0.1); }
+  .filter-select option { background: var(--bg-2); }
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    z-index: 200; display: none;
+    align-items: center; justify-content: center; padding: 1rem;
+  }
+  .modal-backdrop.show { display: flex; animation: fadeIn 0.25s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .modal {
+    background: linear-gradient(135deg, var(--bg-2), var(--surface-2));
+    border: 1px solid var(--border-strong);
+    border-radius: 16px; padding: 2rem;
+    max-width: 480px; width: 100%;
+    max-height: 90vh; overflow-y: auto;
+    box-shadow: 0 0 60px rgba(0, 217, 255, 0.2);
+    position: relative;
+    animation: modalIn 0.3s cubic-bezier(.4,0,.2,1);
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal::before {
+    content: ''; position: absolute;
+    top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), var(--magenta), transparent);
+  }
+  .modal h2 {
+    font-family: 'Chakra Petch', sans-serif;
+    font-weight: 500; font-size: 1.4rem;
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .modal p.modal-sub {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted); font-size: 0.78rem;
+    margin-bottom: 1.6rem; letter-spacing: 0.04em;
+  }
+  .form-group { margin-bottom: 1.1rem; }
+  .form-group label {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; font-weight: 600;
+    color: var(--cyan);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    margin-bottom: 0.5rem;
+  }
+  .form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 0.75rem 1rem;
+    border: 1px solid var(--border); border-radius: 8px;
+    font-family: 'Outfit', sans-serif; font-size: 0.95rem;
+    background: rgba(0,0,0,0.3); color: var(--text);
+    transition: all 0.15s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    outline: none; border-color: var(--cyan);
+    box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.15);
+  }
+  .form-group select option { background: var(--bg-2); }
+  .modal-actions { display: flex; justify-content: flex-end; gap: 0.6rem; margin-top: 1.5rem; }
+  .toast {
+    position: fixed; bottom: 2rem; left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--bg-2);
+    border: 1px solid var(--border-strong); color: var(--text);
+    padding: 0.9rem 1.5rem; border-radius: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem; letter-spacing: 0.03em;
+    opacity: 0; transition: all 0.3s ease;
+    z-index: 300; pointer-events: none;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 0 30px rgba(0, 217, 255, 0.2);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.error { border-color: var(--danger); box-shadow: 0 0 30px rgba(255, 56, 96, 0.3); color: var(--danger); }
+  .toast.success { border-color: var(--green); box-shadow: 0 0 30px rgba(0, 255, 157, 0.3); color: var(--green); }
+  .hidden { display: none !important; }
+  @media (max-width: 760px) {
+    .charts-row { grid-template-columns: 1fr; }
+    th, td { padding: 0.7rem 0.9rem; font-size: 0.85rem; }
+    .header-inner { padding: 0.9rem 1rem; }
+    .brand-text h1 { font-size: 1.1rem; }
+    main { padding: 1.5rem 1rem 3rem; }
+    .hero { padding: 1rem 0; }
+    .bg-orb { filter: blur(60px); }
+  }
+  @keyframes countPulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
+  .counting { animation: countPulse 0.6s ease; }
+</style>
+</head>
+<body>
+
+<div class="bg-grid"></div>
+<div class="bg-orb o1"></div>
+<div class="bg-orb o2"></div>
+<div class="bg-orb o3"></div>
+<div class="bg-scan"></div>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-mark">◆</div>
+      <div class="brand-text">
+        <h1>Familia Guevara</h1>
+        <p>// Sistema activo</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <span id="roleBadge" class="role-badge role-viewer">Solo lectura</span>
+      <button id="loginBtn" class="btn btn-ghost btn-sm">Admin</button>
+      <button id="logoutBtn" class="btn btn-ghost btn-sm hidden">Salir</button>
+      <button id="shareBtn" class="btn btn-ghost btn-sm">⌁ Compartir</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-label">Saldo Disponible</div>
+    <div class="hero-balance"><span class="currency">$</span><span id="heroBalance">0</span></div>
+    <div class="hero-meta" id="heroMeta">// Iniciando sistema…</div>
+  </section>
+
+  <section class="stats">
+    <div class="stat-card c-green">
+      <div class="stat-label"><span class="stat-dot"></span>Aportes totales</div>
+      <div class="stat-value" id="statContrib">$0</div>
+      <div class="stat-sub" id="statContribCount">0 movimientos</div>
+    </div>
+    <div class="stat-card c-magenta">
+      <div class="stat-label"><span class="stat-dot"></span>Gastos totales</div>
+      <div class="stat-value" id="statExp">$0</div>
+      <div class="stat-sub" id="statExpCount">0 movimientos</div>
+    </div>
+    <div class="stat-card c-gold">
+      <div class="stat-label"><span class="stat-dot"></span>Integrantes</div>
+      <div class="stat-value" id="statMembers">0</div>
+      <div class="stat-sub">Familia activa</div>
+    </div>
+    <div class="stat-card c-cyan">
+      <div class="stat-label"><span class="stat-dot"></span>Aporte promedio</div>
+      <div class="stat-value" id="statAvg">$0</div>
+      <div class="stat-sub">Por integrante</div>
+    </div>
+  </section>
+
+  <section class="charts-row">
+    <div class="chart-card">
+      <h3>Distribución por integrante</h3>
+      <div class="chart-container"><canvas id="chartMembers"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <h3>Evolución del ahorro</h3>
+      <div class="chart-container"><canvas id="chartEvolution"></canvas></div>
+    </div>
+  </section>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="aportes">Aportes</button>
+    <button class="tab" data-tab="gastos">Gastos</button>
+    <button class="tab" data-tab="integrantes">Integrantes</button>
+    <button class="tab" data-tab="actividad">Actividad</button>
+  </nav>
+
+  <section class="section active" id="section-aportes">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Aportes</h2>
+        <div class="section-subtitle">// Contribuciones al fondo común</div>
+      </div>
+      <button class="btn btn-primary admin-only hidden" onclick="openModal('contribution')">+ Nuevo aporte</button>
+    </div>
+    <div class="filters">
+      <select id="filterContribMember" class="filter-select" onchange="renderContributions()">
+        <option value="">Todos los integrantes</option>
+      </select>
+      <select id="filterContribMonth" class="filter-select" onchange="renderContributions()">
+        <option value="">Todos los meses</option>
+      </select>
+    </div>
+    <div class="card"><div id="contributionsTable"></div></div>
+  </section>
+
+  <section class="section" id="section-gastos">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Gastos</h2>
+        <div class="section-subtitle">// Salidas del fondo familiar</div>
+      </div>
+      <button class="btn btn-primary admin-only hidden" onclick="openModal('expense')">+ Nuevo gasto</button>
+    </div>
+    <div class="filters">
+      <select id="filterExpCategory" class="filter-select" onchange="renderExpenses()">
+        <option value="">Todas las categorías</option>
+      </select>
+      <select id="filterExpMonth" class="filter-select" onchange="renderExpenses()">
+        <option value="">Todos los meses</option>
+      </select>
+    </div>
+    <div class="card"><div id="expensesTable"></div></div>
+  </section>
+
+  <section class="section" id="section-integrantes">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Integrantes</h2>
+        <div class="section-subtitle">// Participantes del ahorro</div>
+      </div>
+      <button class="btn btn-primary admin-only hidden" onclick="openModal('member')">+ Agregar integrante</button>
+    </div>
+    <div id="membersGrid" class="members-grid"></div>
+  </section>
+
+  <section class="section" id="section-actividad">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Actividad reciente</h2>
+        <div class="section-subtitle">// Últimos 25 movimientos</div>
+      </div>
+    </div>
+    <div class="card"><div id="activityTable"></div></div>
+  </section>
+</main>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <h2 id="modalTitle">Título</h2>
+    <p class="modal-sub" id="modalSub"></p>
+    <div id="modalBody"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" id="modalSubmit">Confirmar</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, doc, addDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // ====================================================
+  // ✅ CONFIGURACIÓN DE FIREBASE (familia Guevara)
+  // ====================================================
+  const firebaseConfig = {
+    apiKey: "AIzaSyA43k3D9taaOE6TU5UgLK_9qh6IYnfUMk4",
+    authDomain: "ahorro-familia-guevara.firebaseapp.com",
+    projectId: "ahorro-familia-guevara",
+    storageBucket: "ahorro-familia-guevara.firebasestorage.app",
+    messagingSenderId: "189092264472",
+    appId: "1:189092264472:web:20d3b5ac065eaad1e5616d"
+  };
+
+  // ✅ CORREO DEL ADMINISTRADOR
+  const ADMIN_EMAIL = "elkdnlopez@gmail.com";
+  // ====================================================
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  let state = { members: [], contributions: [], expenses: [], isAdmin: false };
+  const $ = sel => document.querySelector(sel);
+  const $$ = sel => document.querySelectorAll(sel);
+
+  function fmt(n) { return new Intl.NumberFormat('es-CO', { maximumFractionDigits: 0 }).format(n || 0); }
+  function fmtDate(d) {
+    if (!d) return '';
+    const date = d.toDate ? d.toDate() : new Date(d);
+    return date.toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+  function getMonthKey(d) { const date = d.toDate ? d.toDate() : new Date(d); return date.toISOString().slice(0,7); }
+  function getMonthLabel(key) {
+    const [y,m] = key.split('-');
+    const date = new Date(parseInt(y), parseInt(m)-1, 1);
+    return date.toLocaleDateString('es-CO', { month: 'long', year: 'numeric' });
+  }
+  function initials(name) { return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
+  function showToast(msg, type='') {
+    const t = $('#toast');
+    t.textContent = msg;
+    t.className = 'toast show ' + type;
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+  function animateNumber(el, target, prefix='$', duration=800) {
+    const start = parseFloat(el.dataset.value || 0);
+    const startTime = performance.now();
+    el.classList.add('counting');
+    function step(now) {
+      const t = Math.min(1, (now - startTime) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const value = start + (target - start) * eased;
+      el.textContent = prefix + fmt(value);
+      if (t < 1) requestAnimationFrame(step);
+      else { el.dataset.value = target; setTimeout(()=>el.classList.remove('counting'), 200); }
+    }
+    requestAnimationFrame(step);
+  }
+  function animateInt(el, target, duration=600) {
+    const start = parseInt(el.dataset.value || 0);
+    const startTime = performance.now();
+    function step(now) {
+      const t = Math.min(1, (now - startTime) / duration);
+      const eased = 1 - Math.pow(1 - t, 3);
+      el.textContent = Math.round(start + (target - start) * eased);
+      if (t < 1) requestAnimationFrame(step);
+      else el.dataset.value = target;
+    }
+    requestAnimationFrame(step);
+  }
+
+  onAuthStateChanged(auth, (user) => {
+    state.isAdmin = user && user.email === ADMIN_EMAIL;
+    updateAdminUI();
+  });
+
+  function updateAdminUI() {
+    if (state.isAdmin) {
+      $('#roleBadge').textContent = 'Administrador';
+      $('#roleBadge').className = 'role-badge role-admin';
+      $('#loginBtn').classList.add('hidden');
+      $('#logoutBtn').classList.remove('hidden');
+      $$('.admin-only').forEach(el => el.classList.remove('hidden'));
+    } else {
+      $('#roleBadge').textContent = 'Solo lectura';
+      $('#roleBadge').className = 'role-badge role-viewer';
+      $('#loginBtn').classList.remove('hidden');
+      $('#logoutBtn').classList.add('hidden');
+      $$('.admin-only').forEach(el => el.classList.add('hidden'));
+    }
+    renderAll();
+  }
+
+  $('#loginBtn').onclick = () => openModal('login');
+  $('#logoutBtn').onclick = async () => { await signOut(auth); showToast('Sesión cerrada'); };
+  $('#shareBtn').onclick = async () => {
+    const url = window.location.origin + window.location.pathname;
+    try {
+      if (navigator.share) await navigator.share({ title: 'Ahorro Familia Guevara', url });
+      else { await navigator.clipboard.writeText(url); showToast('Enlace copiado', 'success'); }
+    } catch(e) {}
+  };
+
+  function subscribe() {
+    onSnapshot(query(collection(db, 'members'), orderBy('createdAt','asc')), snap => {
+      state.members = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderAll();
+    }, err => console.error(err));
+    onSnapshot(query(collection(db, 'contributions'), orderBy('date','desc')), snap => {
+      state.contributions = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderAll();
+    }, err => console.error(err));
+    onSnapshot(query(collection(db, 'expenses'), orderBy('date','desc')), snap => {
+      state.expenses = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      renderAll();
+    }, err => console.error(err));
+  }
+  subscribe();
+
+  function totalContrib() { return state.contributions.reduce((s,c)=>s+(+c.amount||0),0); }
+  function totalExp() { return state.expenses.reduce((s,c)=>s+(+c.amount||0),0); }
+
+  function renderAll() {
+    renderStats(); renderContributions(); renderExpenses();
+    renderMembers(); renderActivity(); renderCharts(); populateFilters();
+  }
+
+  function renderStats() {
+    const tc = totalContrib(), te = totalExp();
+    const balance = tc - te;
+    animateNumber($('#heroBalance'), balance, '');
+    $('#heroMeta').textContent = state.members.length
+      ? `// ${state.members.length} integrantes · ${state.contributions.length + state.expenses.length} movimientos`
+      : '// Sin integrantes registrados';
+    animateNumber($('#statContrib'), tc);
+    animateNumber($('#statExp'), te);
+    $('#statContribCount').textContent = `${state.contributions.length} movimientos`;
+    $('#statExpCount').textContent = `${state.expenses.length} movimientos`;
+    animateInt($('#statMembers'), state.members.length);
+    animateNumber($('#statAvg'), state.members.length ? Math.round(tc / state.members.length) : 0);
+  }
+
+  function populateFilters() {
+    const fcm = $('#filterContribMember'); const prevM = fcm.value;
+    fcm.innerHTML = '<option value="">Todos los integrantes</option>' +
+      state.members.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+    fcm.value = prevM;
+
+    const months = [...new Set(state.contributions.map(c => getMonthKey(c.date)))].sort().reverse();
+    const fcMo = $('#filterContribMonth'); const prevMo = fcMo.value;
+    fcMo.innerHTML = '<option value="">Todos los meses</option>' +
+      months.map(m => `<option value="${m}">${getMonthLabel(m)}</option>`).join('');
+    fcMo.value = prevMo;
+
+    const monthsE = [...new Set(state.expenses.map(c => getMonthKey(c.date)))].sort().reverse();
+    const feMo = $('#filterExpMonth'); const prevEMo = feMo.value;
+    feMo.innerHTML = '<option value="">Todos los meses</option>' +
+      monthsE.map(m => `<option value="${m}">${getMonthLabel(m)}</option>`).join('');
+    feMo.value = prevEMo;
+
+    const cats = [...new Set(state.expenses.map(e => e.category).filter(Boolean))].sort();
+    const fec = $('#filterExpCategory'); const prevC = fec.value;
+    fec.innerHTML = '<option value="">Todas las categorías</option>' +
+      cats.map(c => `<option value="${c}">${c}</option>`).join('');
+    fec.value = prevC;
+  }
+
+  function memberName(id) { const m = state.members.find(x=>x.id===id); return m ? m.name : '—'; }
+
+  function renderContributions() {
+    let list = [...state.contributions];
+    const fm = $('#filterContribMember').value;
+    const fmo = $('#filterContribMonth').value;
+    if (fm) list = list.filter(c => c.memberId === fm);
+    if (fmo) list = list.filter(c => getMonthKey(c.date) === fmo);
+    const container = $('#contributionsTable');
+    if (!list.length) { container.innerHTML = `<div class="list-empty"><h3>Sin aportes</h3><p>// Los aportes aparecerán aquí</p></div>`; return; }
+    container.innerHTML = `<table><thead><tr>
+      <th>Fecha</th><th>Integrante</th><th>Monto</th><th>Nota</th>
+      <th class="admin-only ${state.isAdmin?'':'hidden'}"></th></tr></thead><tbody>
+      ${list.map(c => `<tr>
+        <td class="td-date">${fmtDate(c.date)}</td>
+        <td><span class="member-chip">${memberName(c.memberId)}</span></td>
+        <td class="td-amount positive">+$${fmt(c.amount)}</td>
+        <td class="td-note">${c.note || ''}</td>
+        <td class="admin-only ${state.isAdmin?'':'hidden'}">
+          <button class="icon-btn danger" onclick="window.deleteContribution('${c.id}')" title="Eliminar">✕</button>
+        </td></tr>`).join('')}
+      </tbody></table>`;
+  }
+
+  function renderExpenses() {
+    let list = [...state.expenses];
+    const fc = $('#filterExpCategory').value;
+    const fmo = $('#filterExpMonth').value;
+    if (fc) list = list.filter(e => e.category === fc);
+    if (fmo) list = list.filter(e => getMonthKey(e.date) === fmo);
+    const container = $('#expensesTable');
+    if (!list.length) { container.innerHTML = `<div class="list-empty"><h3>Sin gastos</h3><p>// Los gastos aparecerán aquí</p></div>`; return; }
+    container.innerHTML = `<table><thead><tr>
+      <th>Fecha</th><th>Descripción</th><th>Categoría</th><th>Monto</th>
+      <th class="admin-only ${state.isAdmin?'':'hidden'}"></th></tr></thead><tbody>
+      ${list.map(e => `<tr>
+        <td class="td-date">${fmtDate(e.date)}</td>
+        <td>${e.description || '—'}</td>
+        <td>${e.category ? `<span class="category-tag">${e.category}</span>` : '—'}</td>
+        <td class="td-amount negative">−$${fmt(e.amount)}</td>
+        <td class="admin-only ${state.isAdmin?'':'hidden'}">
+          <button class="icon-btn danger" onclick="window.deleteExpense('${e.id}')" title="Eliminar">✕</button>
+        </td></tr>`).join('')}
+      </tbody></table>`;
+  }
+
+  function renderMembers() {
+    const grid = $('#membersGrid');
+    if (!state.members.length) { grid.innerHTML = `<div class="list-empty" style="grid-column:1/-1"><h3>Sin integrantes</h3><p>// Agrega participantes para comenzar</p></div>`; return; }
+    grid.innerHTML = state.members.map(m => {
+      const total = state.contributions.filter(c => c.memberId === m.id).reduce((s,c) => s + (+c.amount||0), 0);
+      return `<div class="member-card">
+        <div class="member-actions">
+          ${state.isAdmin ? `<button class="icon-btn danger" onclick="window.deleteMember('${m.id}')" title="Eliminar">✕</button>` : ''}
+        </div>
+        <div class="member-avatar">${initials(m.name)}</div>
+        <div class="member-name">${m.name}</div>
+        <div class="member-total">$${fmt(total)}</div>
+      </div>`;
+    }).join('');
+  }
+
+  function renderActivity() {
+    const items = [
+      ...state.contributions.map(c => ({ type: 'contrib', date: c.date, amount: c.amount, text: `${memberName(c.memberId)} aportó`, note: c.note })),
+      ...state.expenses.map(e => ({ type: 'expense', date: e.date, amount: e.amount, text: e.description || 'Gasto', note: e.category })),
+    ].sort((a,b) => {
+      const da = a.date.toDate ? a.date.toDate() : new Date(a.date);
+      const db = b.date.toDate ? b.date.toDate() : new Date(b.date);
+      return db - da;
+    }).slice(0, 25);
+    const container = $('#activityTable');
+    if (!items.length) { container.innerHTML = `<div class="list-empty"><h3>Sin actividad</h3><p>// Los movimientos aparecerán aquí</p></div>`; return; }
+    container.innerHTML = `<table><thead><tr><th>Fecha</th><th>Descripción</th><th>Detalle</th><th>Monto</th></tr></thead><tbody>
+      ${items.map(it => `<tr>
+        <td class="td-date">${fmtDate(it.date)}</td>
+        <td>${it.text}</td>
+        <td class="td-note">${it.note || ''}</td>
+        <td class="td-amount ${it.type==='contrib'?'positive':'negative'}">${it.type==='contrib'?'+':'−'}$${fmt(it.amount)}</td>
+      </tr>`).join('')}
+      </tbody></table>`;
+  }
+
+  let chartMembers, chartEvo;
+  function renderCharts() {
+    const palette = ['#00d9ff','#ff2d92','#00ff9d','#ffb800','#9d4edd','#ff6b35','#06d6a0','#118ab2'];
+    const dataM = state.members.map(m => ({
+      label: m.name,
+      value: state.contributions.filter(c=>c.memberId===m.id).reduce((s,c)=>s+(+c.amount||0),0)
+    })).filter(d => d.value > 0);
+
+    if (chartMembers) chartMembers.destroy();
+    chartMembers = new Chart($('#chartMembers'), {
+      type: 'doughnut',
+      data: { labels: dataM.map(d=>d.label), datasets: [{
+        data: dataM.map(d=>d.value),
+        backgroundColor: dataM.map((_,i)=>palette[i%palette.length]),
+        borderWidth: 2, borderColor: '#050810', hoverOffset: 12,
+      }]},
+      options: {
+        maintainAspectRatio: false,
+        animation: { duration: 1200, easing: 'easeOutQuart' },
+        plugins: {
+          legend: { position: 'bottom', labels: { font: { family: 'JetBrains Mono', size: 10 }, color: '#8a9bb5', boxWidth: 10, padding: 14, usePointStyle: true, pointStyle: 'circle' } },
+          tooltip: { backgroundColor: 'rgba(10, 15, 28, 0.95)', borderColor: 'rgba(0, 217, 255, 0.3)', borderWidth: 1,
+            titleFont: { family: 'Chakra Petch', size: 12 }, bodyFont: { family: 'JetBrains Mono', size: 11 }, padding: 12,
+            callbacks: { label: (ctx) => ` ${ctx.label}: $${fmt(ctx.parsed)}` } }
+        }, cutout: '68%'
+      }
+    });
+
+    const all = [
+      ...state.contributions.map(c => ({ date: c.date, amount: +c.amount||0 })),
+      ...state.expenses.map(e => ({ date: e.date, amount: -(+e.amount||0) })),
+    ].sort((a,b) => {
+      const da = a.date.toDate ? a.date.toDate() : new Date(a.date);
+      const db = b.date.toDate ? b.date.toDate() : new Date(b.date);
+      return da - db;
+    });
+    let running = 0;
+    const points = all.map(it => {
+      running += it.amount;
+      const d = it.date.toDate ? it.date.toDate() : new Date(it.date);
+      return { x: d, y: running };
+    });
+
+    if (chartEvo) chartEvo.destroy();
+    const ctx = $('#chartEvolution').getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 260);
+    gradient.addColorStop(0, 'rgba(0, 217, 255, 0.35)');
+    gradient.addColorStop(1, 'rgba(0, 217, 255, 0)');
+
+    chartEvo = new Chart($('#chartEvolution'), {
+      type: 'line',
+      data: { labels: points.map(p => p.x.toLocaleDateString('es-CO', { day: '2-digit', month: 'short' })),
+        datasets: [{ label: 'Saldo', data: points.map(p => p.y),
+          borderColor: '#00d9ff', backgroundColor: gradient, fill: true, tension: 0.35,
+          pointRadius: 3, pointHoverRadius: 6, pointBackgroundColor: '#00d9ff',
+          pointBorderColor: '#050810', pointBorderWidth: 2, borderWidth: 2 }]},
+      options: {
+        maintainAspectRatio: false,
+        animation: { duration: 1200, easing: 'easeOutQuart' },
+        plugins: { legend: { display: false },
+          tooltip: { backgroundColor: 'rgba(10, 15, 28, 0.95)', borderColor: 'rgba(0, 217, 255, 0.3)', borderWidth: 1,
+            titleFont: { family: 'Chakra Petch', size: 12 }, bodyFont: { family: 'JetBrains Mono', size: 11 }, padding: 12,
+            callbacks: { label: (ctx) => ` $${fmt(ctx.parsed.y)}` } } },
+        scales: {
+          x: { grid: { color: 'rgba(0, 217, 255, 0.05)' }, ticks: { color: '#5b6a82', font: { family: 'JetBrains Mono', size: 9 } } },
+          y: { grid: { color: 'rgba(0, 217, 255, 0.05)' }, ticks: { color: '#5b6a82', font: { family: 'JetBrains Mono', size: 9 }, callback: v => '$'+fmt(v) } }
+        }
+      }
+    });
+  }
+
+  $$('.tab').forEach(t => t.onclick = () => {
+    $$('.tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    $$('.section').forEach(s => s.classList.remove('active'));
+    $('#section-' + t.dataset.tab).classList.add('active');
+  });
+
+  const backdrop = $('#modalBackdrop');
+  function closeModal() { backdrop.classList.remove('show'); }
+  window.closeModal = closeModal;
+  backdrop.onclick = (e) => { if (e.target === backdrop) closeModal(); };
+
+  function openModal(kind) {
+    let title = '', sub = '', body = '', onSubmit = null;
+    if (kind === 'login') {
+      title = 'Acceso administrador'; sub = '// Inicia sesión para editar';
+      body = `<div class="form-group"><label>Correo</label><input id="inEmail" type="email" placeholder="tu@correo.com" /></div>
+        <div class="form-group"><label>Contraseña</label><input id="inPass" type="password" /></div>`;
+      onSubmit = async () => {
+        try { await signInWithEmailAndPassword(auth, $('#inEmail').value, $('#inPass').value);
+          showToast('Acceso concedido', 'success'); closeModal();
+        } catch (e) { showToast('Credenciales inválidas', 'error'); }
+      };
+    } else if (kind === 'member') {
+      title = 'Nuevo integrante'; sub = '// Agrega un participante';
+      body = `<div class="form-group"><label>Nombre completo</label><input id="inName" type="text" placeholder="Ej. María Pérez" /></div>`;
+      onSubmit = async () => {
+        const name = $('#inName').value.trim();
+        if (!name) return showToast('Ingresa un nombre', 'error');
+        try { await addDoc(collection(db, 'members'), { name, createdAt: serverTimestamp() });
+          showToast('Integrante agregado', 'success'); closeModal();
+        } catch (e) { showToast('Error: ' + e.message, 'error'); }
+      };
+    } else if (kind === 'contribution') {
+      if (!state.members.length) { showToast('Agrega integrantes primero', 'error'); return; }
+      title = 'Nuevo aporte'; sub = '// Registra una contribución';
+      body = `<div class="form-group"><label>Integrante</label>
+          <select id="inMember">${state.members.map(m=>`<option value="${m.id}">${m.name}</option>`).join('')}</select></div>
+        <div class="form-group"><label>Monto (COP)</label><input id="inAmount" type="number" min="0" step="1000" placeholder="100000" /></div>
+        <div class="form-group"><label>Fecha</label><input id="inDate" type="date" value="${new Date().toISOString().slice(0,10)}" /></div>
+        <div class="form-group"><label>Nota (opcional)</label><input id="inNote" type="text" placeholder="Ej. aporte de mayo" /></div>`;
+      onSubmit = async () => {
+        const memberId = $('#inMember').value;
+        const amount = parseFloat($('#inAmount').value);
+        const date = new Date($('#inDate').value);
+        const note = $('#inNote').value.trim();
+        if (!amount || amount <= 0) return showToast('Monto inválido', 'error');
+        try { await addDoc(collection(db, 'contributions'), { memberId, amount, date, note, createdAt: serverTimestamp() });
+          showToast('Aporte registrado', 'success'); closeModal();
+        } catch (e) { showToast('Error: ' + e.message, 'error'); }
+      };
+    } else if (kind === 'expense') {
+      title = 'Nuevo gasto'; sub = '// Registra una salida del fondo';
+      body = `<div class="form-group"><label>Descripción</label><input id="inDesc" type="text" placeholder="Ej. mercado del mes" /></div>
+        <div class="form-group"><label>Categoría</label>
+          <select id="inCat">
+            <option>Alimentación</option><option>Servicios</option><option>Transporte</option>
+            <option>Salud</option><option>Educación</option><option>Vivienda</option>
+            <option>Recreación</option><option>Otros</option>
+          </select></div>
+        <div class="form-group"><label>Monto (COP)</label><input id="inAmount" type="number" min="0" step="1000" placeholder="50000" /></div>
+        <div class="form-group"><label>Fecha</label><input id="inDate" type="date" value="${new Date().toISOString().slice(0,10)}" /></div>`;
+      onSubmit = async () => {
+        const description = $('#inDesc').value.trim();
+        const category = $('#inCat').value;
+        const amount = parseFloat($('#inAmount').value);
+        const date = new Date($('#inDate').value);
+        if (!description) return showToast('Ingresa una descripción', 'error');
+        if (!amount || amount <= 0) return showToast('Monto inválido', 'error');
+        try { await addDoc(collection(db, 'expenses'), { description, category, amount, date, createdAt: serverTimestamp() });
+          showToast('Gasto registrado', 'success'); closeModal();
+        } catch (e) { showToast('Error: ' + e.message, 'error'); }
+      };
+    }
+    $('#modalTitle').textContent = title;
+    $('#modalSub').textContent = sub;
+    $('#modalBody').innerHTML = body;
+    $('#modalSubmit').onclick = onSubmit;
+    backdrop.classList.add('show');
+  }
+  window.openModal = openModal;
+
+  window.deleteMember = async (id) => {
+    if (!confirm('¿Eliminar este integrante?')) return;
+    try { await deleteDoc(doc(db, 'members', id)); showToast('Integrante eliminado'); }
+    catch(e){ showToast('Error: '+e.message, 'error'); }
+  };
+  window.deleteContribution = async (id) => {
+    if (!confirm('¿Eliminar este aporte?')) return;
+    try { await deleteDoc(doc(db, 'contributions', id)); showToast('Aporte eliminado'); }
+    catch(e){ showToast('Error: '+e.message, 'error'); }
+  };
+  window.deleteExpense = async (id) => {
+    if (!confirm('¿Eliminar este gasto?')) return;
+    try { await deleteDoc(doc(db, 'expenses', id)); showToast('Gasto eliminado'); }
+    catch(e){ showToast('Error: '+e.message, 'error'); }
+  };
+
+  renderAll();
+</script>
+</body>
+</html>

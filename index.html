@@ -10,6 +10,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <style>
   :root {
@@ -995,7 +998,11 @@
         <h2 class="section-title">Integrantes</h2>
         <div class="section-subtitle">// Familia completa</div>
       </div>
-      <button class="btn btn-primary admin-only hidden" onclick="openModal('member-new')">+ Agregar integrante</button>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+        <button class="btn btn-ghost btn-sm" onclick="window.exportMembersPDF()" title="Descargar PDF">⬇ PDF</button>
+        <button class="btn btn-ghost btn-sm" onclick="window.exportMembersExcel()" title="Descargar Excel">⬇ Excel</button>
+        <button class="btn btn-primary admin-only hidden" onclick="openModal('member-new')">+ Agregar integrante</button>
+      </div>
     </div>
     <div id="membersGrid" class="members-grid"></div>
   </section>
@@ -1820,6 +1827,240 @@
       }
       showToast('Ahorro eliminado', 'success');
     } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  };
+
+  // ============================================================
+  // EXPORTACIÓN DE INTEGRANTES (PDF y EXCEL)
+  // ============================================================
+  function buildMembersData() {
+    return state.members.map((m, idx) => {
+      const total = state.contributions
+        .filter(c => c.memberId === m.id)
+        .reduce((s, c) => s + (+c.amount || 0), 0);
+      const age = calcAge(m.birthDate);
+      const days = daysUntilBirthday(m.birthDate);
+      const bdayText = m.birthDate
+        ? new Date(m.birthDate).toLocaleDateString('es-CO', { day: '2-digit', month: 'long', year: 'numeric' })
+        : '—';
+      const daysText = days === null ? '—' : days === 0 ? '¡Hoy!' : days === 1 ? 'Mañana' : `En ${days} días`;
+      return {
+        num: idx + 1,
+        nombre: m.name,
+        edad: age !== null ? age : '—',
+        cumpleanos: bdayText,
+        proximoCumple: daysText,
+        totalAportado: total,
+      };
+    });
+  }
+
+  window.exportMembersPDF = () => {
+    if (!state.members.length) return showToast('No hay integrantes para exportar', 'error');
+    try {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const today = new Date().toLocaleDateString('es-CO', { day: '2-digit', month: 'long', year: 'numeric' });
+
+      // Fondo header degradado (simulado con rectángulo)
+      pdf.setFillColor(5, 8, 16);
+      pdf.rect(0, 0, pageWidth, 90, 'F');
+      pdf.setFillColor(0, 217, 255);
+      pdf.rect(0, 88, pageWidth, 2, 'F');
+
+      // Título
+      pdf.setTextColor(255, 255, 255);
+      pdf.setFont('helvetica', 'bold');
+      pdf.setFontSize(20);
+      pdf.text('FAMILIA GUEVARA', 40, 40);
+      pdf.setFont('helvetica', 'normal');
+      pdf.setFontSize(11);
+      pdf.setTextColor(0, 217, 255);
+      pdf.text('// Listado de integrantes', 40, 58);
+      pdf.setTextColor(180, 190, 210);
+      pdf.setFontSize(9);
+      pdf.text(`Generado el ${today}`, 40, 74);
+
+      // Info resumen
+      pdf.setTextColor(60, 60, 60);
+      pdf.setFontSize(10);
+      const totalAportes = state.contributions.reduce((s, c) => s + (+c.amount || 0), 0);
+      pdf.text(`Total integrantes: ${state.members.length}   ·   Total aportado (todos los ahorros): $${fmt(totalAportes)}`, 40, 115);
+
+      // Tabla
+      const data = buildMembersData();
+      pdf.autoTable({
+        startY: 135,
+        head: [['#', 'Nombre', 'Edad', 'Cumpleaños', 'Próximo cumple', 'Total aportado']],
+        body: data.map(d => [
+          d.num,
+          d.nombre,
+          d.edad,
+          d.cumpleanos,
+          d.proximoCumple,
+          '$' + fmt(d.totalAportado),
+        ]),
+        theme: 'grid',
+        headStyles: {
+          fillColor: [10, 15, 28],
+          textColor: [0, 217, 255],
+          fontStyle: 'bold',
+          fontSize: 9,
+          halign: 'left',
+        },
+        bodyStyles: {
+          fontSize: 10,
+          textColor: [40, 40, 40],
+        },
+        alternateRowStyles: {
+          fillColor: [245, 249, 253],
+        },
+        columnStyles: {
+          0: { cellWidth: 25, halign: 'center' },
+          1: { cellWidth: 130, fontStyle: 'bold' },
+          2: { cellWidth: 40, halign: 'center' },
+          3: { cellWidth: 110 },
+          4: { cellWidth: 90 },
+          5: { cellWidth: 100, halign: 'right', textColor: [0, 130, 80], fontStyle: 'bold' },
+        },
+        margin: { left: 40, right: 40 },
+        didDrawPage: (data) => {
+          // Footer
+          const pageHeight = pdf.internal.pageSize.getHeight();
+          pdf.setFontSize(8);
+          pdf.setTextColor(150, 150, 150);
+          pdf.text('Sistema de Ahorro Familiar · Familia Guevara', 40, pageHeight - 20);
+          pdf.text(`Página ${pdf.internal.getNumberOfPages()}`, pageWidth - 40, pageHeight - 20, { align: 'right' });
+        }
+      });
+
+      // Sección de cumpleaños próximos si hay
+      const upcoming = state.members
+        .filter(m => m.birthDate)
+        .map(m => ({ ...m, days: daysUntilBirthday(m.birthDate) }))
+        .filter(m => m.days !== null && m.days <= 30)
+        .sort((a, b) => a.days - b.days);
+
+      if (upcoming.length) {
+        const finalY = pdf.lastAutoTable.finalY + 30;
+        pdf.setFontSize(12);
+        pdf.setTextColor(255, 45, 146);
+        pdf.setFont('helvetica', 'bold');
+        pdf.text('🎂 CUMPLEAÑOS PRÓXIMOS (30 DÍAS)', 40, finalY);
+        pdf.setFont('helvetica', 'normal');
+        pdf.setFontSize(10);
+        pdf.setTextColor(60, 60, 60);
+        upcoming.forEach((m, i) => {
+          const txt = `${m.name} — ${m.days === 0 ? '¡hoy!' : m.days === 1 ? 'mañana' : `en ${m.days} días`}`;
+          pdf.text(`• ${txt}`, 50, finalY + 20 + (i * 15));
+        });
+      }
+
+      pdf.save(`integrantes-familia-guevara-${new Date().toISOString().slice(0,10)}.pdf`);
+      showToast('PDF descargado', 'success');
+    } catch (e) {
+      console.error(e);
+      showToast('Error generando PDF: ' + e.message, 'error');
+    }
+  };
+
+  window.exportMembersExcel = () => {
+    if (!state.members.length) return showToast('No hay integrantes para exportar', 'error');
+    try {
+      const data = buildMembersData();
+      const today = new Date().toLocaleDateString('es-CO', { day: '2-digit', month: 'long', year: 'numeric' });
+
+      // Hoja 1: Integrantes
+      const wsData = [
+        ['FAMILIA GUEVARA — LISTADO DE INTEGRANTES'],
+        [`Generado el ${today}`],
+        [],
+        ['#', 'Nombre', 'Edad', 'Fecha de nacimiento', 'Próximo cumpleaños', 'Total aportado (COP)'],
+        ...data.map(d => [
+          d.num,
+          d.nombre,
+          d.edad,
+          d.cumpleanos,
+          d.proximoCumple,
+          d.totalAportado,
+        ]),
+      ];
+      const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+      // Ancho de columnas
+      ws['!cols'] = [
+        { wch: 5 },   // #
+        { wch: 28 },  // Nombre
+        { wch: 8 },   // Edad
+        { wch: 22 },  // Fecha nacimiento
+        { wch: 20 },  // Próximo cumple
+        { wch: 20 },  // Total aportado
+      ];
+
+      // Combinar celdas del título
+      ws['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 5 } },
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 5 } },
+      ];
+
+      // Formato de moneda para columna total
+      const range = XLSX.utils.decode_range(ws['!ref']);
+      for (let R = 4; R <= range.e.r; ++R) {
+        const cellAddr = XLSX.utils.encode_cell({ r: R, c: 5 });
+        if (ws[cellAddr]) {
+          ws[cellAddr].t = 'n';
+          ws[cellAddr].z = '"$"#,##0';
+        }
+      }
+
+      // Hoja 2: Aportes detallados por integrante
+      const aportesData = [
+        ['DETALLE DE APORTES POR INTEGRANTE'],
+        [`Generado el ${today}`],
+        [],
+        ['Integrante', 'Ahorro', 'Fecha', 'Monto (COP)', 'Nota'],
+      ];
+      state.contributions.forEach(c => {
+        aportesData.push([
+          memberName(c.memberId),
+          savingName(c.savingId),
+          fmtDate(c.date),
+          +c.amount || 0,
+          c.note || '',
+        ]);
+      });
+      const wsAportes = XLSX.utils.aoa_to_sheet(aportesData);
+      wsAportes['!cols'] = [
+        { wch: 28 },
+        { wch: 25 },
+        { wch: 15 },
+        { wch: 18 },
+        { wch: 35 },
+      ];
+      wsAportes['!merges'] = [
+        { s: { r: 0, c: 0 }, e: { r: 0, c: 4 } },
+        { s: { r: 1, c: 0 }, e: { r: 1, c: 4 } },
+      ];
+      const aportesRange = XLSX.utils.decode_range(wsAportes['!ref']);
+      for (let R = 4; R <= aportesRange.e.r; ++R) {
+        const cellAddr = XLSX.utils.encode_cell({ r: R, c: 3 });
+        if (wsAportes[cellAddr]) {
+          wsAportes[cellAddr].t = 'n';
+          wsAportes[cellAddr].z = '"$"#,##0';
+        }
+      }
+
+      // Crear libro
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Integrantes');
+      XLSX.utils.book_append_sheet(wb, wsAportes, 'Aportes detallados');
+
+      XLSX.writeFile(wb, `integrantes-familia-guevara-${new Date().toISOString().slice(0,10)}.xlsx`);
+      showToast('Excel descargado', 'success');
+    } catch (e) {
+      console.error(e);
+      showToast('Error generando Excel: ' + e.message, 'error');
+    }
   };
 
   renderAll();

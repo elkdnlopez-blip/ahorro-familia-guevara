@@ -1075,6 +1075,76 @@
     display: flex; gap: 0.8rem; align-items: flex-start;
   }
   .ss-help-box strong { color: var(--purple); }
+
+  /* --- Buscador reutilizable --- */
+  .search-wrap {
+    position: relative;
+    margin-bottom: 0.6rem;
+  }
+  .search-icon {
+    position: absolute; left: 0.85rem; top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.85rem; opacity: 0.6;
+    pointer-events: none;
+  }
+  .search-input {
+    width: 100%;
+    padding: 0.7rem 2.4rem 0.7rem 2.4rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: rgba(0,0,0,0.3);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.92rem;
+    transition: all 0.15s;
+  }
+  .search-input:focus {
+    outline: none;
+    border-color: var(--cyan);
+    box-shadow: 0 0 0 3px rgba(0,217,255,0.15);
+    background: rgba(0,0,0,0.45);
+  }
+  .search-input::placeholder { color: var(--text-muted); }
+  .search-clear {
+    position: absolute; right: 0.6rem; top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    cursor: pointer; font-size: 0.7rem;
+    display: grid; place-items: center;
+    transition: all 0.15s; padding: 0;
+  }
+  .search-clear:hover { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .search-toolbar {
+    display: flex; justify-content: space-between;
+    align-items: center; gap: 0.5rem;
+    margin-bottom: 0.7rem; flex-wrap: wrap;
+  }
+  .sel-counter {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+  .sel-counter strong { color: var(--cyan); font-size: 0.85rem; }
+  .mini-btn {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 0.3rem 0.6rem;
+    border-radius: 5px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.72rem; cursor: pointer;
+    transition: all 0.15s; white-space: nowrap;
+  }
+  .mini-btn:hover { border-color: var(--cyan); color: var(--cyan); background: rgba(0,217,255,0.06); }
+  .no-results {
+    text-align: center; padding: 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem; color: var(--text-muted);
+  }
 </style>
 </head>
 <body>
@@ -1927,19 +1997,34 @@
         </div>
         <div class="form-group ${isGeneral?'hidden':''}" id="memberSelectGroup">
           <label>Integrantes del núcleo</label>
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input id="nucleoSearch" class="search-input" type="text" placeholder="Buscar integrante…" autocomplete="off" />
+            <button class="search-clear hidden" id="nucleoClear" onclick="window.clearSearch('nucleoSearch','memberCheckboxes')">✕</button>
+          </div>
+          <div class="search-toolbar">
+            <span class="sel-counter"><strong id="nucleoCount">${(s.memberIds||[]).length}</strong> seleccionados</span>
+            <div style="display:flex;gap:0.4rem">
+              <button class="mini-btn" onclick="window.bulkCheck('memberCheckboxes',true)">Marcar visibles</button>
+              <button class="mini-btn" onclick="window.bulkCheck('memberCheckboxes',false)">Desmarcar visibles</button>
+            </div>
+          </div>
           <div class="checkbox-group" id="memberCheckboxes">
-            ${state.members.map(mem => `
-              <label class="checkbox-item ${(s.memberIds||[]).includes(mem.id)?'checked':''}" data-id="${mem.id}">
-                <input type="checkbox" ${(s.memberIds||[]).includes(mem.id)?'checked':''} onchange="window.toggleMemberCheck(this)" value="${mem.id}" />
+            ${[...state.members].sort((a,b)=>a.name.localeCompare(b.name)).map(mem => `
+              <label class="checkbox-item ${(s.memberIds||[]).includes(mem.id)?'checked':''}" data-id="${mem.id}" data-name="${mem.name.toLowerCase()}">
+                <input type="checkbox" ${(s.memberIds||[]).includes(mem.id)?'checked':''} onchange="window.toggleMemberCheck(this);window.updateSelCount('memberCheckboxes','nucleoCount')" value="${mem.id}" />
                 <span>${mem.name}</span>
               </label>
             `).join('')}
           </div>
+          <div class="no-results hidden" id="nucleoNoResults">Sin coincidencias</div>
           ${!state.members.length ? '<p style="font-family:\'JetBrains Mono\',monospace;color:var(--text-muted);font-size:0.78rem;margin-top:0.5rem">// Agrega integrantes primero en la pestaña Integrantes</p>' : ''}
         </div>`;
       actions = `<button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
         <button class="btn btn-primary" id="modalSubmit">${editing ? 'Guardar cambios' : 'Crear ahorro'}</button>`;
-      setTimeout(() => { $('#modalSubmit').onclick = async () => {
+      setTimeout(() => {
+        window.attachSearch('nucleoSearch','memberCheckboxes','nucleoNoResults','nucleoClear');
+        $('#modalSubmit').onclick = async () => {
         const name = $('#inSavName').value.trim();
         const description = $('#inSavDesc').value.trim();
         const goal = parseFloat($('#inSavGoal').value) || null;
@@ -1959,7 +2044,8 @@
           }
           closeModal();
         } catch (e) { showToast('Error: ' + e.message, 'error'); }
-      }; }, 50);
+      };
+      }, 50);
 
     } else if (kind === 'contribution') {
       const saving = getActiveSaving();
@@ -2657,17 +2743,33 @@
 
       <div class="ss-admin-panel">
         <h4>Participantes y restricciones</h4>
-        <div style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap">
+        <div style="display:flex;gap:0.5rem;margin-bottom:0.8rem;flex-wrap:wrap">
           <button class="btn btn-ghost btn-sm" onclick="window.ssSetAllGroup('adulto')">Todos → Adultos</button>
           <button class="btn btn-ghost btn-sm" onclick="window.ssSetAllGroup('nino')">Todos → Niños</button>
           <button class="btn btn-ghost btn-sm" onclick="window.ssSetAllGroup(null)">Limpiar grupos</button>
         </div>
-        <div class="card" style="max-height:500px;overflow-y:auto">
+        <div class="search-wrap" style="margin-bottom:0.5rem">
+          <span class="search-icon">🔍</span>
+          <input id="partSearch" class="search-input" type="text" placeholder="Buscar entre ${state.members.length} integrantes…"
+            autocomplete="off" oninput="window.filterPartRows(this.value)" />
+          <button class="search-clear hidden" id="partClear"
+            onclick="document.getElementById('partSearch').value='';window.filterPartRows('')">✕</button>
+        </div>
+        <div class="search-toolbar" style="margin-bottom:0.8rem">
+          <span class="sel-counter">Mostrando <strong id="partVisible">${state.members.length}</strong> de ${state.members.length}</span>
+          <div style="display:flex;gap:0.4rem">
+            <button class="mini-btn" onclick="window.ssQuickFilter('nino')">Solo niños</button>
+            <button class="mini-btn" onclick="window.ssQuickFilter('adulto')">Solo adultos</button>
+            <button class="mini-btn" onclick="window.ssQuickFilter('sin')">Sin grupo</button>
+            <button class="mini-btn" onclick="window.ssQuickFilter('')">Todos</button>
+          </div>
+        </div>
+        <div class="card" style="max-height:500px;overflow-y:auto" id="partList">
           ${state.members.sort((a,b)=>a.name.localeCompare(b.name)).map(m => {
             const g = m.ssGroup;
             const ex = m.ssExclude || [];
             const tutor = m.ssTutor ? state.members.find(x => x.id === m.ssTutor) : null;
-            return `<div class="ss-part-row">
+            return `<div class="ss-part-row" data-name="${m.name.toLowerCase()}" data-group="${g || 'sin'}">
               <div class="ss-part-name">${m.name}
                 ${tutor ? `<span class="tutor-tag" title="Recibe el código: ${tutor.name}">👤 ${tutor.name.split(' ')[0]}</span>` : ''}
                 ${m.phone ? `<span class="phone-tag">📱</span>` : ''}
@@ -2683,9 +2785,46 @@
         </div>
       </div>
     `;
+
+    // Restaurar filtros activos tras el re-render
+    const savedQ = window._ssPartQuery || '';
+    if (savedQ) {
+      const inp = document.getElementById('partSearch');
+      if (inp) inp.value = savedQ;
+    }
+    if (savedQ || window._ssPartGroup) window._applyPartFilters();
   }
 
   // --- ACCIONES ADMIN ---
+  window.filterPartRows = (q) => {
+    const query = (q || '').trim().toLowerCase();
+    window._ssPartQuery = query;
+    window._applyPartFilters();
+    const clr = document.getElementById('partClear');
+    if (clr) clr.classList.toggle('hidden', !query);
+  };
+
+  window.ssQuickFilter = (group) => {
+    window._ssPartGroup = group;
+    window._applyPartFilters();
+  };
+
+  window._applyPartFilters = () => {
+    const q = window._ssPartQuery || '';
+    const g = window._ssPartGroup || '';
+    const rows = document.querySelectorAll('#partList .ss-part-row');
+    let visible = 0;
+    rows.forEach(r => {
+      const okName = !q || (r.dataset.name || '').includes(q);
+      const okGroup = !g || r.dataset.group === g;
+      const show = okName && okGroup;
+      r.style.display = show ? '' : 'none';
+      if (show) visible++;
+    });
+    const counter = document.getElementById('partVisible');
+    if (counter) counter.textContent = visible;
+  };
+
   window.ssSetGroup = async (memberId, group) => {
     try { await updateDoc(doc(db, 'members', memberId), { ssGroup: group }); }
     catch(e) { showToast('Error: ' + e.message, 'error'); }
@@ -2707,15 +2846,27 @@
     $('#modalTitle').textContent = 'Exclusiones';
     $('#modalSub').textContent = `// ${m.name} NO podrá sacar a los seleccionados`;
     $('#modalBody').innerHTML = `
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input id="exclSearch" class="search-input" type="text" placeholder="Buscar integrante…" autocomplete="off" />
+        <button class="search-clear hidden" id="exclClear" onclick="window.clearSearch('exclSearch','exclBoxes')">✕</button>
+      </div>
+      <div class="search-toolbar">
+        <span class="sel-counter"><strong id="exclCount">${current.length}</strong> seleccionados</span>
+        <div style="display:flex;gap:0.4rem">
+          <button class="mini-btn" onclick="window.bulkCheck('exclBoxes',true)">Marcar visibles</button>
+          <button class="mini-btn" onclick="window.bulkCheck('exclBoxes',false)">Desmarcar visibles</button>
+        </div>
+      </div>
       <div class="form-group">
-        <label>No puede regalarle a</label>
-        <div class="checkbox-group" id="exclBoxes" style="max-height:300px">
+        <div class="checkbox-group" id="exclBoxes" style="max-height:290px">
           ${others.map(o => `
-            <label class="checkbox-item ${current.includes(o.id)?'checked':''}">
-              <input type="checkbox" value="${o.id}" ${current.includes(o.id)?'checked':''} onchange="window.toggleMemberCheck(this)" />
+            <label class="checkbox-item ${current.includes(o.id)?'checked':''}" data-name="${o.name.toLowerCase()}">
+              <input type="checkbox" value="${o.id}" ${current.includes(o.id)?'checked':''} onchange="window.toggleMemberCheck(this);window.updateSelCount('exclBoxes','exclCount')" />
               <span>${o.name}</span>
             </label>`).join('')}
         </div>
+        <div class="no-results hidden" id="exclNoResults">Sin coincidencias</div>
       </div>
       <p style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted)">
         // Tip: usa esto para que familiares directos o parejas no se saquen entre sí
@@ -2723,14 +2874,61 @@
     $('#modalActions').innerHTML = `
       <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
       <button class="btn btn-primary" id="modalSubmit">Guardar</button>`;
-    setTimeout(() => { $('#modalSubmit').onclick = async () => {
-      const ids = Array.from($$('#exclBoxes input:checked')).map(i => i.value);
-      try {
-        await updateDoc(doc(db, 'members', memberId), { ssExclude: ids });
-        showToast('Exclusiones guardadas', 'success'); closeModal();
-      } catch(e) { showToast('Error: ' + e.message, 'error'); }
-    }; }, 50);
+    setTimeout(() => {
+      window.attachSearch('exclSearch','exclBoxes','exclNoResults','exclClear');
+      $('#modalSubmit').onclick = async () => {
+        const ids = Array.from($$('#exclBoxes input:checked')).map(i => i.value);
+        try {
+          await updateDoc(doc(db, 'members', memberId), { ssExclude: ids });
+          showToast('Exclusiones guardadas', 'success'); closeModal();
+        } catch(e) { showToast('Error: ' + e.message, 'error'); }
+      };
+    }, 50);
     $('#modalBackdrop').classList.add('show');
+  };
+
+  // --- Helpers de búsqueda reutilizables ---
+  window.attachSearch = (inputId, boxesId, noResId, clearId) => {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    input.focus();
+    input.addEventListener('input', () => {
+      const q = input.value.trim().toLowerCase();
+      const items = document.querySelectorAll(`#${boxesId} .checkbox-item`);
+      let visible = 0;
+      items.forEach(it => {
+        const match = !q || (it.dataset.name || it.textContent.toLowerCase()).includes(q);
+        it.style.display = match ? '' : 'none';
+        if (match) visible++;
+      });
+      const noRes = document.getElementById(noResId);
+      if (noRes) noRes.classList.toggle('hidden', visible > 0);
+      const clr = document.getElementById(clearId);
+      if (clr) clr.classList.toggle('hidden', !q);
+    });
+  };
+
+  window.clearSearch = (inputId, boxesId) => {
+    const input = document.getElementById(inputId);
+    if (!input) return;
+    input.value = '';
+    input.dispatchEvent(new Event('input'));
+    input.focus();
+  };
+
+  window.bulkCheck = (boxesId, checked) => {
+    document.querySelectorAll(`#${boxesId} .checkbox-item`).forEach(it => {
+      if (it.style.display === 'none') return;
+      const cb = it.querySelector('input');
+      if (cb) { cb.checked = checked; it.classList.toggle('checked', checked); }
+    });
+    const counterId = boxesId === 'exclBoxes' ? 'exclCount' : 'nucleoCount';
+    window.updateSelCount(boxesId, counterId);
+  };
+
+  window.updateSelCount = (boxesId, counterId) => {
+    const el = document.getElementById(counterId);
+    if (el) el.textContent = document.querySelectorAll(`#${boxesId} input:checked`).length;
   };
 
   window.ssOpenConfig = () => {

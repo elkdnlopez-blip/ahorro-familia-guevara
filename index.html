@@ -2,7 +2,10 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#050810" />
+<meta name="color-scheme" content="dark" />
+<meta name="description" content="Ahorro Familia Guevara — control de ahorros, aportes, gastos y amigo secreto." />
 <title>Ahorro Familia Guevara // Sistema</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,7 +24,9 @@
     --surface-2: rgba(20, 28, 48, 0.8);
     --border: rgba(0, 217, 255, 0.12);
     --border-strong: rgba(0, 217, 255, 0.3);
-    --text: #e6edf7; --text-dim: #8a9bb5; --text-muted: #5b6a82;
+    --text: #e9f0f9; --text-dim: #a7b8cf; --text-muted: #8698b2;
+    --surface-solid: #0e1526; --surface-solid-2: #131c31;
+    --header-h: 74px;
     --cyan: #00d9ff; --cyan-glow: rgba(0, 217, 255, 0.5);
     --magenta: #ff2d92; --magenta-glow: rgba(255, 45, 146, 0.5);
     --purple: #9d4edd; --green: #00ff9d; --gold: #ffb800;
@@ -1145,9 +1150,248 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.8rem; color: var(--text-muted);
   }
+
+  /* ==========================================================
+     MEJORAS DE UI · v2  (accesibilidad, móvil y rendimiento)
+     ========================================================== */
+
+  /* --- 1. Foco visible en todo lo interactivo --- */
+  :where(button, a, input, select, textarea, [tabindex], .saving-card, .checkbox-item, .radio-card):focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 3px;
+    border-radius: 8px;
+  }
+  :where(button, a, .saving-card, .tab) { -webkit-tap-highlight-color: transparent; }
+
+  /* --- 2. Respeto por "reducir movimiento" --- */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: .001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: .001ms !important;
+      scroll-behavior: auto !important;
+    }
+    .bg-orb { animation: none !important; }
+  }
+
+  /* --- 3. Barras de scroll coherentes con el tema --- */
+  * { scrollbar-width: thin; scrollbar-color: rgba(0,217,255,.28) transparent; }
+  *::-webkit-scrollbar { width: 8px; height: 8px; }
+  *::-webkit-scrollbar-track { background: transparent; }
+  *::-webkit-scrollbar-thumb { background: rgba(0,217,255,.22); border-radius: 8px; }
+  *::-webkit-scrollbar-thumb:hover { background: rgba(0,217,255,.4); }
+  body { overscroll-behavior-y: none; }
+
+  /* --- 4. Selects con flecha propia (la nativa se ve rota en oscuro) --- */
+  .filter-select,
+  .form-group select {
+    appearance: none; -webkit-appearance: none; -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238698b2' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right .75rem center;
+    background-size: 13px;
+    padding-right: 2.3rem;
+  }
+
+  /* --- 5. Áreas táctiles mínimas --- */
+  .icon-btn { width: 34px; height: 34px; font-size: .82rem; }
+  .btn { min-height: 40px; }
+  .btn-sm { min-height: 36px; }
+  .member-actions { gap: .4rem; }
+
+  /* --- 6. Legibilidad: los micro-textos eran demasiado pequeños --- */
+  .stat-label, .saving-card-type, .ss-stat-lbl, .ss-stat-label,
+  .progress-meta, th { font-size: .7rem; }
+  .radio-card-desc, .group-pill, .tutor-tag { font-size: .68rem; }
+  .section-subtitle, .savings-list-desc, .list-empty p { font-size: .8rem; }
+
+  /* --- 7. Botón de cierre del modal --- */
+  .modal-close {
+    position: absolute; top: .9rem; right: .9rem;
+    width: 34px; height: 34px; border-radius: 9px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid var(--border);
+    color: var(--text-dim); cursor: pointer;
+    display: grid; place-items: center;
+    font-size: .82rem; line-height: 1;
+    transition: all .15s; z-index: 3;
+  }
+  .modal-close:hover { background: var(--danger); border-color: var(--danger); color: #fff; }
+  .modal h2 { padding-right: 2.6rem; }
+
+  /* --- 8. Pestañas fijas bajo el encabezado + pista de scroll --- */
+  .tabs {
+    position: sticky; top: var(--header-h); z-index: 90;
+    scroll-snap-type: x proximity;
+    -webkit-mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 22px), transparent 100%);
+    mask-image: linear-gradient(90deg, #000 0, #000 calc(100% - 22px), transparent 100%);
+  }
+  .tab { scroll-snap-align: start; min-height: 40px; }
+  .section { scroll-margin-top: calc(var(--header-h) + 72px); }
+  .section:focus { outline: none; }
+
+  /* --- 9. Estado de carga (evita ver "$0" como si fuera el dato real) --- */
+  @keyframes shimmer { 0% { background-position: -220px 0; } 100% { background-position: 220px 0; } }
+  body.is-loading .stat-value,
+  body.is-loading .stat-sub,
+  body.is-loading #heroBalance,
+  body.is-loading #heroMeta {
+    color: transparent !important;
+    -webkit-text-fill-color: transparent !important;
+    border-radius: 6px;
+    background: linear-gradient(90deg, rgba(255,255,255,.04) 25%, rgba(0,217,255,.12) 50%, rgba(255,255,255,.04) 75%);
+    background-size: 440px 100%;
+    animation: shimmer 1.25s linear infinite;
+  }
+  body.is-loading .hero-balance .currency { opacity: .25; }
+
+  /* --- 10. Tablas legibles en teléfono: se convierten en tarjetas --- */
+  @media (min-width: 781px) {
+    .card:has(table) { overflow-x: auto; }
+  }
+  @media (max-width: 780px) {
+    .card:has(table) { background: transparent; border: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+    .card table, .card thead, .card tbody, .card tr, .card td { display: block; width: 100%; }
+    .card thead { display: none; }
+    .card tbody { display: grid; gap: .7rem; }
+    .card tr {
+      background: var(--surface-solid);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: .35rem 0;
+      position: relative;
+    }
+    .card tr:hover td { background: transparent; }
+    .card td {
+      border: none !important;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 1rem; padding: .5rem .95rem; font-size: .88rem;
+      text-align: right;
+    }
+    .card td::before {
+      content: attr(data-label);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .64rem; letter-spacing: .12em; text-transform: uppercase;
+      color: var(--text-muted); flex: 0 0 auto; text-align: left;
+    }
+    .card td:empty { display: none; }
+    .card td.td-amount { font-size: 1.05rem; }
+    .card td.td-actions { justify-content: flex-end; padding-top: .2rem; }
+    .card td.td-actions::before { content: none; }
+    .card td.td-actions .icon-btn { width: 38px; height: 38px; }
+  }
+
+  /* --- 11. Encabezado compacto en pantallas pequeñas --- */
+  @media (max-width: 620px) {
+    :root { --header-h: 64px; }
+    .header-inner { padding: .8rem .9rem; gap: .5rem; }
+    .brand { gap: .65rem; min-width: 0; }
+    .brand-mark { width: 36px; height: 36px; font-size: 1.15rem; border-radius: 9px; }
+    .brand-text h1 { font-size: 1rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .brand-text p { font-size: .6rem; }
+    .header-actions { gap: .35rem; flex-shrink: 0; }
+    .header-actions .btn { padding: .5rem .7rem; font-size: .78rem; }
+    .btn-label { display: none; }
+  }
+  @media (max-width: 500px) {
+    /* la insignia de rol queda como punto de color, sin perder el estado */
+    .role-badge { font-size: 0; padding: .5rem; gap: 0; border-radius: 50%; }
+    .role-badge::before { width: 9px; height: 9px; }
+  }
+
+  /* --- 12. Rendimiento en móvil: el desenfoque múltiple hacía ir lento el scroll --- */
+  @media (max-width: 900px) {
+    .bg-orb { animation: none; opacity: .3; filter: blur(65px); }
+    .bg-orb.o3 { display: none; }
+    .bg-grid { background-size: 44px 44px; }
+    header,
+    .card, .stat-card, .saving-card, .chart-card, .member-card,
+    .savings-list-card, .ss-stat, .ss-admin-panel, .tabs, .toast,
+    .filter-select, .saving-empty {
+      backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+    }
+    header { background: rgba(5,8,16,.96); }
+    .card, .stat-card, .chart-card, .member-card, .savings-list-card,
+    .ss-stat, .ss-admin-panel, .tabs, .saving-card { background: var(--surface-solid); }
+    .saving-card.active { background: linear-gradient(135deg, rgba(0,217,255,.1), var(--surface-solid)); }
+    .toast { background: var(--surface-solid-2); }
+  }
+
+  /* --- 13. Efectos de "hover" solo donde hay puntero real --- */
+  @media (hover: none) {
+    .saving-card:hover, .stat-card:hover, .member-card:hover,
+    .savings-list-card:hover, .btn-primary:hover { transform: none; }
+    .btn:hover::before { transform: translateX(-100%); }
+  }
+
+  /* --- 14. Modal como hoja inferior en teléfono (más cómodo con una mano) --- */
+  @media (max-width: 560px) {
+    .modal-backdrop { align-items: flex-end; padding: 0; }
+    .modal {
+      border-radius: 20px 20px 0 0;
+      max-height: 92vh; padding: 1.4rem 1.1rem calc(1.4rem + env(safe-area-inset-bottom));
+      animation: sheetIn .28s cubic-bezier(.4,0,.2,1);
+    }
+    .modal::after {
+      content: ''; position: absolute; top: .55rem; left: 50%;
+      transform: translateX(-50%);
+      width: 42px; height: 4px; border-radius: 4px;
+      background: rgba(255,255,255,.18);
+    }
+    .modal h2 { margin-top: .5rem; font-size: 1.18rem; }
+    .modal-actions { position: sticky; bottom: 0; }
+    .modal-actions .btn { flex: 1; justify-content: center; }
+    .radio-group { flex-direction: column; }
+    .checkbox-group { grid-template-columns: 1fr 1fr; }
+  }
+  @keyframes sheetIn {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* --- 15. Detalles varios --- */
+  .savings-scroll { scroll-snap-type: x proximity; }
+  .saving-card, .saving-card-new { scroll-snap-align: start; }
+  .stats { grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); }
+  .chart-container { height: clamp(200px, 32vw, 260px); }
+  .list-empty { padding: 2.6rem 1.2rem; }
+  .toast { bottom: calc(1.5rem + env(safe-area-inset-bottom)); max-width: min(92vw, 460px); text-align: center; }
+  main { padding-bottom: calc(4rem + env(safe-area-inset-bottom)); }
+  .hero-balance { max-width: 100%; overflow-wrap: anywhere; }
+  input, select, textarea { font-size: 16px; } /* evita el zoom automático de iOS */
+  .form-group input, .form-group select, .form-group textarea { font-size: 16px; }
+  @media (min-width: 561px) {
+    .form-group input, .form-group select, .form-group textarea { font-size: .95rem; }
+  }
+  .ss-code-box { font-size: 1.05rem; word-break: break-all; }
+  .wa-btn { min-height: 34px; }
+
+  /* --- 16. Impresión (para llevar el resumen en papel) --- */
+  @media print {
+    .bg-grid, .bg-orb, header, .tabs, .btn, .icon-btn, .filters, .modal-backdrop, .toast { display: none !important; }
+    body { background: #fff; color: #000; }
+    .card, .stat-card, .chart-card, .member-card { background: #fff; border: 1px solid #ccc; box-shadow: none; }
+    .section { display: block !important; page-break-inside: avoid; }
+    .hero-balance { -webkit-text-fill-color: #000; color: #000; }
+  }
+
+  /* --- 17. Correcciones de maquetación --- */
+  /* El rótulo y el saldo eran ambos elementos en línea: en pantallas anchas
+     quedaban uno al lado del otro en vez de uno encima del otro. */
+  .hero-label { display: flex; justify-content: center; align-items: center; width: 100%; }
+  .hero-balance { display: block; }
+  /* Halos de fondo algo más suaves para no restar contraste al texto */
+  .bg-orb { opacity: .3; }
+  @media (max-width: 900px) { .bg-orb { opacity: .22; } }
+  @media (max-width: 560px) {
+    /* iOS hace zoom si el campo mide menos de 16px */
+    .filter-select, .search-input { font-size: 16px; }
+    .filters { display: grid; grid-template-columns: 1fr 1fr; }
+    .filters .filter-select { width: 100%; }
+  }
 </style>
 </head>
-<body>
+<body class="is-loading">
 
 <div class="bg-grid"></div>
 <div class="bg-orb o1"></div>
@@ -1164,10 +1408,10 @@
       </div>
     </div>
     <div class="header-actions">
-      <span id="roleBadge" class="role-badge role-viewer">Solo lectura</span>
-      <button id="loginBtn" class="btn btn-ghost btn-sm">Admin</button>
+      <span id="roleBadge" class="role-badge role-viewer" title="Solo lectura" aria-live="polite">Solo lectura</span>
+      <button id="loginBtn" class="btn btn-ghost btn-sm" aria-label="Acceso administrador">Admin</button>
       <button id="logoutBtn" class="btn btn-ghost btn-sm hidden">Salir</button>
-      <button id="shareBtn" class="btn btn-ghost btn-sm">⌁ Compartir</button>
+      <button id="shareBtn" class="btn btn-ghost btn-sm" aria-label="Compartir enlace"><span aria-hidden="true">⌁</span><span class="btn-label">Compartir</span></button>
     </div>
   </div>
 </header>
@@ -1233,16 +1477,16 @@
     </div>
   </section>
 
-  <nav class="tabs">
-    <button class="tab active" data-tab="aportes">Aportes</button>
-    <button class="tab" data-tab="gastos">Gastos</button>
-    <button class="tab" data-tab="ahorros">Ahorros</button>
-    <button class="tab" data-tab="integrantes">Integrantes</button>
-    <button class="tab" data-tab="amigosecreto">🎁 Amigo Secreto</button>
-    <button class="tab" data-tab="actividad">Actividad</button>
+  <nav class="tabs" id="tabsNav" role="tablist" aria-label="Secciones">
+    <button class="tab active" data-tab="aportes" role="tab" aria-controls="section-aportes">Aportes</button>
+    <button class="tab" data-tab="gastos" role="tab" aria-controls="section-gastos">Gastos</button>
+    <button class="tab" data-tab="ahorros" role="tab" aria-controls="section-ahorros">Ahorros</button>
+    <button class="tab" data-tab="integrantes" role="tab" aria-controls="section-integrantes">Integrantes</button>
+    <button class="tab" data-tab="amigosecreto" role="tab" aria-controls="section-amigosecreto">🎁 Amigo Secreto</button>
+    <button class="tab" data-tab="actividad" role="tab" aria-controls="section-actividad">Actividad</button>
   </nav>
 
-  <section class="section active" id="section-aportes">
+  <section class="section active" id="section-aportes" role="tabpanel" tabindex="-1">
     <div class="section-header">
       <div>
         <h2 class="section-title">Aportes</h2>
@@ -1261,7 +1505,7 @@
     <div class="card"><div id="contributionsTable"></div></div>
   </section>
 
-  <section class="section" id="section-gastos">
+  <section class="section" id="section-gastos" role="tabpanel" tabindex="-1">
     <div class="section-header">
       <div>
         <h2 class="section-title">Gastos</h2>
@@ -1280,7 +1524,7 @@
     <div class="card"><div id="expensesTable"></div></div>
   </section>
 
-  <section class="section" id="section-ahorros">
+  <section class="section" id="section-ahorros" role="tabpanel" tabindex="-1">
     <div class="section-header">
       <div>
         <h2 class="section-title">Gestión de ahorros</h2>
@@ -1291,7 +1535,7 @@
     <div id="savingsList" class="savings-list"></div>
   </section>
 
-  <section class="section" id="section-integrantes">
+  <section class="section" id="section-integrantes" role="tabpanel" tabindex="-1">
     <div class="section-header">
       <div>
         <h2 class="section-title">Integrantes</h2>
@@ -1306,7 +1550,7 @@
     <div id="membersGrid" class="members-grid"></div>
   </section>
 
-  <section class="section" id="section-amigosecreto">
+  <section class="section" id="section-amigosecreto" role="tabpanel" tabindex="-1">
     <div class="section-header">
       <div>
         <h2 class="section-title">Amigo Secreto</h2>
@@ -1325,7 +1569,7 @@
     <div id="ssAdmin" class="admin-only hidden"></div>
   </section>
 
-  <section class="section" id="section-actividad">
+  <section class="section" id="section-actividad" role="tabpanel" tabindex="-1">
     <div class="section-header">
       <div>
         <h2 class="section-title">Actividad reciente</h2>
@@ -1337,7 +1581,8 @@
 </main>
 
 <div class="modal-backdrop" id="modalBackdrop">
-  <div class="modal">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <button class="modal-close" type="button" onclick="closeModal()" aria-label="Cerrar">✕</button>
     <h2 id="modalTitle">Título</h2>
     <p class="modal-sub" id="modalSub"></p>
     <div id="modalBody"></div>
@@ -1345,7 +1590,7 @@
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -1462,12 +1707,14 @@
     if (state.isAdmin) {
       $('#roleBadge').textContent = 'Administrador';
       $('#roleBadge').className = 'role-badge role-admin';
+      $('#roleBadge').title = 'Administrador';
       $('#loginBtn').classList.add('hidden');
       $('#logoutBtn').classList.remove('hidden');
       $$('.admin-only').forEach(el => el.classList.remove('hidden'));
     } else {
       $('#roleBadge').textContent = 'Solo lectura';
       $('#roleBadge').className = 'role-badge role-viewer';
+      $('#roleBadge').title = 'Solo lectura';
       $('#loginBtn').classList.remove('hidden');
       $('#logoutBtn').classList.add('hidden');
       $$('.admin-only').forEach(el => el.classList.add('hidden'));
@@ -1529,7 +1776,9 @@
     renderSavingsList();
     renderMembers();
     renderActivity();
-    renderCharts();
+    document.body.classList.remove('is-loading');
+    // Los gráficos dependen de una librería externa: si no carga, el resto debe seguir funcionando
+    try { renderCharts(); } catch (err) { console.warn('Gráficos no disponibles:', err); }
     populateFilters();
     if (typeof renderSecretSanta === 'function') renderSecretSanta();
   }
@@ -1685,11 +1934,11 @@
       <th>Fecha</th><th>Integrante</th><th>Monto</th><th>Nota</th>
       <th class="admin-only ${state.isAdmin?'':'hidden'}"></th></tr></thead><tbody>
       ${list.map(c => `<tr>
-        <td class="td-date">${fmtDate(c.date)}</td>
-        <td><span class="member-chip">${memberName(c.memberId)}</span></td>
-        <td class="td-amount positive">+$${fmt(c.amount)}</td>
-        <td class="td-note">${c.note || ''}</td>
-        <td class="admin-only ${state.isAdmin?'':'hidden'}">
+        <td class="td-date" data-label="Fecha">${fmtDate(c.date)}</td>
+        <td data-label="Integrante"><span class="member-chip">${memberName(c.memberId)}</span></td>
+        <td class="td-amount positive" data-label="Monto">+$${fmt(c.amount)}</td>
+        <td class="td-note" data-label="Nota">${c.note || ''}</td>
+        <td class="td-actions admin-only ${state.isAdmin?'':'hidden'}">
           <button class="icon-btn danger" onclick="window.deleteContribution('${c.id}')" title="Eliminar">✕</button>
         </td></tr>`).join('')}
       </tbody></table>`;
@@ -1709,11 +1958,11 @@
       <th>Fecha</th><th>Descripción</th><th>Categoría</th><th>Monto</th>
       <th class="admin-only ${state.isAdmin?'':'hidden'}"></th></tr></thead><tbody>
       ${list.map(e => `<tr>
-        <td class="td-date">${fmtDate(e.date)}</td>
-        <td>${e.description || '—'}</td>
-        <td>${e.category ? `<span class="category-tag">${e.category}</span>` : '—'}</td>
-        <td class="td-amount negative">−$${fmt(e.amount)}</td>
-        <td class="admin-only ${state.isAdmin?'':'hidden'}">
+        <td class="td-date" data-label="Fecha">${fmtDate(e.date)}</td>
+        <td data-label="Descripción">${e.description || '—'}</td>
+        <td data-label="Categoría">${e.category ? `<span class="category-tag">${e.category}</span>` : '—'}</td>
+        <td class="td-amount negative" data-label="Monto">−$${fmt(e.amount)}</td>
+        <td class="td-actions admin-only ${state.isAdmin?'':'hidden'}">
           <button class="icon-btn danger" onclick="window.deleteExpense('${e.id}')" title="Eliminar">✕</button>
         </td></tr>`).join('')}
       </tbody></table>`;
@@ -1815,11 +2064,11 @@
     if (!items.length) { container.innerHTML = `<div class="list-empty"><h3>Sin actividad</h3><p>// Los movimientos aparecerán aquí</p></div>`; return; }
     container.innerHTML = `<table><thead><tr><th>Fecha</th><th>Ahorro</th><th>Descripción</th><th>Detalle</th><th>Monto</th></tr></thead><tbody>
       ${items.map(it => `<tr>
-        <td class="td-date">${fmtDate(it.date)}</td>
-        <td>${it.savingId ? `<span class="saving-tag">${savingName(it.savingId)}</span>` : '—'}</td>
-        <td>${it.text}</td>
-        <td class="td-note">${it.note || ''}</td>
-        <td class="td-amount ${it.type==='contrib'?'positive':'negative'}">${it.type==='contrib'?'+':'−'}$${fmt(it.amount)}</td>
+        <td class="td-date" data-label="Fecha">${fmtDate(it.date)}</td>
+        <td data-label="Ahorro">${it.savingId ? `<span class="saving-tag">${savingName(it.savingId)}</span>` : '—'}</td>
+        <td data-label="Descripción">${it.text}</td>
+        <td class="td-note" data-label="Detalle">${it.note || ''}</td>
+        <td class="td-amount ${it.type==='contrib'?'positive':'negative'}" data-label="Monto">${it.type==='contrib'?'+':'−'}$${fmt(it.amount)}</td>
       </tr>`).join('')}
       </tbody></table>`;
   }
@@ -1907,11 +2156,16 @@
   };
 
   // === Tabs ===
-  $$('.tab').forEach(t => t.onclick = () => {
-    $$('.tab').forEach(x => x.classList.remove('active'));
-    t.classList.add('active');
-    $$('.section').forEach(s => s.classList.remove('active'));
-    $('#section-' + t.dataset.tab).classList.add('active');
+  $$('.tab').forEach(t => {
+    t.setAttribute('aria-selected', t.classList.contains('active') ? 'true' : 'false');
+    t.onclick = () => {
+      $$('.tab').forEach(x => { x.classList.remove('active'); x.setAttribute('aria-selected', 'false'); });
+      t.classList.add('active');
+      t.setAttribute('aria-selected', 'true');
+      $$('.section').forEach(s => s.classList.remove('active'));
+      $('#section-' + t.dataset.tab).classList.add('active');
+      t.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+    };
   });
 
   // === Modal ===
@@ -1920,7 +2174,27 @@
   window.closeModal = closeModal;
   backdrop.onclick = (e) => { if (e.target === backdrop) closeModal(); };
 
+  // Cerrar con ESC y devolver el foco al elemento que abrió el modal
+  let lastFocused = null;
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && backdrop.classList.contains('show')) closeModal();
+  });
+  const _closeModal = closeModal;
+  closeModal = function () {
+    _closeModal();
+    if (lastFocused && document.contains(lastFocused)) { try { lastFocused.focus(); } catch (_) {} }
+    lastFocused = null;
+  };
+  window.closeModal = closeModal;
+  const _obsBackdrop = new MutationObserver(() => {
+    if (!backdrop.classList.contains('show')) return;
+    const first = backdrop.querySelector('input:not([type=hidden]), select, textarea');
+    if (first) setTimeout(() => { try { first.focus(); } catch (_) {} }, 60);
+  });
+  _obsBackdrop.observe(backdrop, { attributes: true, attributeFilter: ['class'] });
+
   function openModal(kind, payload = {}) {
+    try { lastFocused = document.activeElement; } catch (_) {}
     let title = '', sub = '', body = '', actions = '';
 
     if (kind === 'login') {
@@ -3336,6 +3610,23 @@
   };
 
   renderAll();
+</script>
+<script>
+  /* Red por seguridad: si la conexión tarda, no dejar el efecto de carga eternamente */
+  setTimeout(function () { document.body.classList.remove('is-loading'); }, 8000);
+
+  /* Mide el alto real del encabezado para que las pestañas fijas queden justo debajo */
+  (function () {
+    var head = document.querySelector('header');
+    if (!head) return;
+    var sync = function () {
+      document.documentElement.style.setProperty('--header-h', Math.round(head.getBoundingClientRect().height) + 'px');
+    };
+    sync();
+    window.addEventListener('resize', sync, { passive: true });
+    window.addEventListener('orientationchange', sync);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(sync).catch(function(){});
+  })();
 </script>
 </body>
 </html>

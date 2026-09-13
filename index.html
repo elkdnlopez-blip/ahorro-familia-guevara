@@ -847,6 +847,234 @@
   }
   @keyframes countPulse { 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); } }
   .counting { animation: countPulse 0.6s ease; }
+
+  /* ============ AMIGO SECRETO ============ */
+  .ss-hero {
+    background: linear-gradient(135deg, rgba(255,45,146,0.1), rgba(157,78,221,0.08));
+    border: 1px solid rgba(255,45,146,0.25);
+    border-radius: 16px;
+    padding: 2rem 1.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    position: relative; overflow: hidden;
+  }
+  .ss-hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(255,45,146,0.15), transparent 70%);
+    pointer-events: none;
+  }
+  .ss-hero-icon { font-size: 2.6rem; margin-bottom: 0.5rem; }
+  .ss-hero h3 {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 1.5rem; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    background: linear-gradient(135deg, var(--pink), var(--purple));
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.4rem;
+  }
+  .ss-hero p {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem; color: var(--text-dim);
+    max-width: 520px; margin: 0 auto 1.2rem;
+  }
+  .ss-reveal-form {
+    display: flex; gap: 0.6rem; flex-wrap: wrap;
+    justify-content: center; align-items: flex-end;
+    max-width: 560px; margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+  .ss-reveal-form .form-group { margin: 0; flex: 1; min-width: 180px; text-align: left; }
+  .ss-status-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.8rem; margin-bottom: 1.5rem;
+  }
+  .ss-stat {
+    background: var(--surface); backdrop-filter: blur(20px);
+    border: 1px solid var(--border); border-radius: 12px;
+    padding: 1rem; text-align: center;
+  }
+  .ss-stat-num {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 1.7rem; font-weight: 700;
+    color: var(--accent, var(--cyan));
+  }
+  .ss-stat-lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.63rem; color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    margin-top: 0.2rem;
+  }
+  .ss-result {
+    background: linear-gradient(135deg, rgba(0,255,157,0.08), rgba(0,217,255,0.06));
+    border: 1px solid var(--green);
+    border-radius: 16px; padding: 2rem 1.5rem;
+    text-align: center; margin-top: 1.2rem;
+    animation: revealIn 0.7s cubic-bezier(.34,1.56,.64,1);
+    box-shadow: 0 0 40px rgba(0,255,157,0.15);
+  }
+  @keyframes revealIn {
+    0% { opacity: 0; transform: scale(0.8) rotateX(-20deg); }
+    100% { opacity: 1; transform: scale(1) rotateX(0); }
+  }
+  .ss-result-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem; color: var(--text-dim);
+    text-transform: uppercase; letter-spacing: 0.25em;
+    margin-bottom: 0.8rem;
+  }
+  .ss-result-name {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: clamp(1.6rem, 6vw, 2.6rem); font-weight: 700;
+    background: linear-gradient(135deg, var(--green), var(--cyan));
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.02em; line-height: 1.2;
+  }
+  .ss-result-wish {
+    margin-top: 1.2rem; padding-top: 1.2rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    font-size: 0.9rem; color: var(--text-dim);
+    text-align: left;
+  }
+  .ss-result-wish strong {
+    display: block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem; color: var(--cyan);
+    text-transform: uppercase; letter-spacing: 0.12em;
+    margin-bottom: 0.4rem;
+  }
+  .ss-admin-panel {
+    background: var(--surface); backdrop-filter: blur(20px);
+    border: 1px solid var(--border); border-radius: 14px;
+    padding: 1.4rem; margin-bottom: 1.2rem;
+  }
+  .ss-admin-panel h4 {
+    font-family: 'Chakra Petch', sans-serif;
+    font-size: 1rem; text-transform: uppercase;
+    letter-spacing: 0.05em; margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .ss-admin-panel h4::before {
+    content: ''; width: 3px; height: 15px;
+    background: linear-gradient(180deg, var(--pink), var(--purple));
+    border-radius: 2px;
+  }
+  .ss-part-row {
+    display: flex; align-items: center; gap: 0.7rem;
+    padding: 0.7rem 0.9rem;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    flex-wrap: wrap;
+  }
+  .ss-part-row:last-child { border-bottom: none; }
+  .ss-part-name {
+    flex: 1; min-width: 150px;
+    font-size: 0.9rem; font-weight: 500;
+  }
+  .group-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem; padding: 0.2rem 0.55rem;
+    border-radius: 4px; text-transform: uppercase;
+    letter-spacing: 0.08em; border: 1px solid;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .group-adulto { background: rgba(0,217,255,0.1); color: var(--cyan); border-color: rgba(0,217,255,0.3); }
+  .group-nino { background: rgba(255,184,0,0.1); color: var(--gold); border-color: rgba(255,184,0,0.3); }
+  .group-off { background: rgba(255,255,255,0.03); color: var(--text-muted); border-color: var(--border); }
+  .ss-excl-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; color: var(--text-muted);
+  }
+  .ss-code-box {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.1rem; font-weight: 700;
+    letter-spacing: 0.15em;
+    background: rgba(0,0,0,0.4);
+    border: 1px dashed var(--cyan);
+    color: var(--cyan);
+    padding: 0.5rem 0.8rem; border-radius: 6px;
+    text-align: center; user-select: all;
+  }
+  .ss-warning {
+    background: rgba(255,184,0,0.08);
+    border: 1px solid rgba(255,184,0,0.3);
+    border-radius: 10px; padding: 0.9rem 1.1rem;
+    font-size: 0.85rem; color: var(--gold);
+    margin-bottom: 1rem;
+    display: flex; gap: 0.7rem; align-items: flex-start;
+  }
+  .ss-codes-table { max-height: 420px; overflow-y: auto; }
+  .ss-codes-table td { padding: 0.6rem 0.9rem; }
+  .wa-btn {
+    background: rgba(37,211,102,0.12);
+    border: 1px solid rgba(37,211,102,0.4);
+    color: #25d366;
+    padding: 0.35rem 0.7rem; border-radius: 6px;
+    font-size: 0.72rem; cursor: pointer;
+    font-family: 'Outfit', sans-serif; font-weight: 600;
+    transition: all 0.15s; white-space: nowrap;
+  }
+  .wa-btn:hover { background: #25d366; color: #000; }
+  .ss-locked {
+    text-align: center; padding: 2.5rem 1.5rem;
+    color: var(--text-muted);
+  }
+  .ss-locked .lock-icon { font-size: 2.2rem; margin-bottom: 0.6rem; opacity: 0.5; }
+  .excl-chip {
+    display: inline-flex; align-items: center; gap: 0.3rem;
+    background: rgba(255,56,96,0.1);
+    border: 1px solid rgba(255,56,96,0.3);
+    color: var(--danger);
+    padding: 0.2rem 0.55rem; border-radius: 4px;
+    font-size: 0.72rem; margin: 0.15rem;
+  }
+  .tutor-tag {
+    display: inline-block; margin-left: 0.4rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem; padding: 0.15rem 0.45rem;
+    background: rgba(157,78,221,0.12);
+    border: 1px solid rgba(157,78,221,0.35);
+    color: var(--purple); border-radius: 4px;
+    vertical-align: middle;
+  }
+  .phone-tag { margin-left: 0.3rem; font-size: 0.7rem; opacity: 0.7; }
+  .tutor-note {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem; color: var(--purple);
+    margin-top: 0.15rem;
+  }
+  .ss-autohide {
+    margin-top: 1.3rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; color: var(--text-muted);
+    letter-spacing: 0.05em;
+  }
+  .ss-timer-bar {
+    width: 160px; height: 3px; margin: 0.5rem auto 0;
+    background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden;
+  }
+  .ss-timer-fill {
+    height: 100%; width: 100%;
+    background: linear-gradient(90deg, var(--green), var(--cyan));
+    border-radius: 2px;
+  }
+  .ss-hidden-msg {
+    text-align: center; padding: 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem; color: var(--text-muted);
+    border: 1px dashed var(--border-strong);
+    border-radius: 12px; margin-top: 1.2rem;
+    animation: fadeIn 0.3s ease;
+  }
+  .ss-help-box {
+    background: rgba(157,78,221,0.07);
+    border: 1px solid rgba(157,78,221,0.25);
+    border-radius: 12px; padding: 1rem 1.2rem;
+    margin-bottom: 1.2rem;
+    font-size: 0.85rem; color: var(--text-dim);
+    display: flex; gap: 0.8rem; align-items: flex-start;
+  }
+  .ss-help-box strong { color: var(--purple); }
 </style>
 </head>
 <body>
@@ -940,6 +1168,7 @@
     <button class="tab" data-tab="gastos">Gastos</button>
     <button class="tab" data-tab="ahorros">Ahorros</button>
     <button class="tab" data-tab="integrantes">Integrantes</button>
+    <button class="tab" data-tab="amigosecreto">🎁 Amigo Secreto</button>
     <button class="tab" data-tab="actividad">Actividad</button>
   </nav>
 
@@ -1007,6 +1236,25 @@
     <div id="membersGrid" class="members-grid"></div>
   </section>
 
+  <section class="section" id="section-amigosecreto">
+    <div class="section-header">
+      <div>
+        <h2 class="section-title">Amigo Secreto</h2>
+        <div class="section-subtitle" id="ssSubtitle">// Sorteo cifrado · cada quien ve solo lo suyo</div>
+      </div>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap" class="admin-only hidden">
+        <button class="btn btn-ghost btn-sm" onclick="window.ssOpenConfig()">⚙ Configurar</button>
+        <button class="btn btn-primary btn-sm" onclick="window.ssOpenDraw()">🎲 Realizar sorteo</button>
+      </div>
+    </div>
+
+    <!-- Panel público: revelar -->
+    <div id="ssPublic"></div>
+
+    <!-- Panel admin -->
+    <div id="ssAdmin" class="admin-only hidden"></div>
+  </section>
+
   <section class="section" id="section-actividad">
     <div class="section-header">
       <div>
@@ -1032,7 +1280,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+  import { getFirestore, collection, doc, addDoc, updateDoc, setDoc, deleteDoc, onSnapshot, query, orderBy, serverTimestamp, where, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   // === CONFIGURACIÓN FIREBASE ===
   const firebaseConfig = {
@@ -1213,6 +1461,7 @@
     renderActivity();
     renderCharts();
     populateFilters();
+    if (typeof renderSecretSanta === 'function') renderSecretSanta();
   }
 
   function renderSavingsBar() {
@@ -1626,19 +1875,25 @@
         <div class="form-group"><label>Nombre completo</label>
           <input id="inName" type="text" placeholder="Ej. María Pérez" value="${m.name || ''}" /></div>
         <div class="form-group"><label>Fecha de nacimiento (opcional)</label>
-          <input id="inBirth" type="date" value="${m.birthDate || ''}" /></div>`;
+          <input id="inBirth" type="date" value="${m.birthDate || ''}" /></div>
+        <div class="form-group"><label>🎁 Lista de deseos / ideas de regalo</label>
+          <textarea id="inWish" rows="3" placeholder="Ej. libros de misterio, talla M, le gusta el café...">${m.wishlist || ''}</textarea>
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.66rem;color:var(--text-muted);margin-top:0.3rem">
+            // Solo la verá quien le toque en el amigo secreto
+          </p></div>`;
       actions = `<button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
         <button class="btn btn-primary" id="modalSubmit">${editing ? 'Guardar cambios' : 'Agregar'}</button>`;
       setTimeout(() => { $('#modalSubmit').onclick = async () => {
         const name = $('#inName').value.trim();
         const birthDate = $('#inBirth').value || null;
+        const wishlist = $('#inWish').value.trim();
         if (!name) return showToast('Ingresa un nombre', 'error');
         try {
           if (editing) {
-            await updateDoc(doc(db, 'members', m.id), { name, birthDate });
+            await updateDoc(doc(db, 'members', m.id), { name, birthDate, wishlist });
             showToast('Integrante actualizado', 'success');
           } else {
-            await addDoc(collection(db, 'members'), { name, birthDate, createdAt: serverTimestamp() });
+            await addDoc(collection(db, 'members'), { name, birthDate, wishlist, createdAt: serverTimestamp() });
             showToast('Integrante agregado', 'success');
           }
           closeModal();
@@ -2061,6 +2316,825 @@
       console.error(e);
       showToast('Error generando Excel: ' + e.message, 'error');
     }
+  };
+
+  // ============================================================
+  // 🎁 MÓDULO AMIGO SECRETO
+  // ============================================================
+
+  // --- Estado propio del módulo ---
+  state.ssConfig = null;
+  state.ssAssignments = [];
+
+  onSnapshot(collection(db, 'secretsanta'), snap => {
+    const cfg = snap.docs.find(d => d.id === 'config');
+    state.ssConfig = cfg ? { id: cfg.id, ...cfg.data() } : null;
+    renderSecretSanta();
+  });
+  onSnapshot(collection(db, 'ss_assignments'), snap => {
+    state.ssAssignments = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderSecretSanta();
+  });
+
+  // --- CRIPTOGRAFÍA (Web Crypto API) ---
+  const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // sin O,0,I,1,L
+
+  function genCode() {
+    const arr = new Uint32Array(8);
+    crypto.getRandomValues(arr);
+    const chars = Array.from(arr, n => ALPHABET[n % ALPHABET.length]);
+    return chars.slice(0,4).join('') + '-' + chars.slice(4,8).join('');
+  }
+
+  async function deriveKey(secret, salt) {
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+      'raw', enc.encode(secret), 'PBKDF2', false, ['deriveKey']
+    );
+    return crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: enc.encode('sshg::' + salt), iterations: 150000, hash: 'SHA-256' },
+      keyMaterial,
+      { name: 'AES-GCM', length: 256 },
+      false,
+      ['encrypt', 'decrypt']
+    );
+  }
+
+  const b64 = {
+    enc: buf => btoa(String.fromCharCode(...new Uint8Array(buf))),
+    dec: str => Uint8Array.from(atob(str), c => c.charCodeAt(0)),
+  };
+
+  async function encryptPayload(obj, secret, salt) {
+    const key = await deriveKey(secret, salt);
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const data = new TextEncoder().encode(JSON.stringify(obj));
+    const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, data);
+    return { iv: b64.enc(iv), ct: b64.enc(ct) };
+  }
+
+  async function decryptPayload(blob, secret, salt) {
+    const key = await deriveKey(secret, salt);
+    const plain = await crypto.subtle.decrypt(
+      { name: 'AES-GCM', iv: b64.dec(blob.iv) }, key, b64.dec(blob.ct)
+    );
+    return JSON.parse(new TextDecoder().decode(plain));
+  }
+
+  // --- ALGORITMO DE SORTEO (ciclo hamiltoniano con restricciones) ---
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function canGive(giverId, receiverId, exclusions) {
+    if (giverId === receiverId) return false;
+    const ex = exclusions[giverId] || [];
+    return !ex.includes(receiverId);
+  }
+
+  function buildCycle(ids, exclusions) {
+    const n = ids.length;
+    if (n < 3) return null;
+    const start = ids[0];
+    const path = [start];
+    const used = new Set([start]);
+
+    function backtrack() {
+      if (path.length === n) {
+        return canGive(path[n-1], start, exclusions);
+      }
+      const current = path[path.length - 1];
+      const candidates = shuffle(ids.filter(id =>
+        !used.has(id) && canGive(current, id, exclusions)
+      ));
+      for (const cand of candidates) {
+        path.push(cand); used.add(cand);
+        if (backtrack()) return true;
+        path.pop(); used.delete(cand);
+      }
+      return false;
+    }
+
+    return backtrack() ? path : null;
+  }
+
+  function generateDraw(ids, exclusions, attempts = 400) {
+    for (let i = 0; i < attempts; i++) {
+      const shuffled = shuffle(ids);
+      const cycle = buildCycle(shuffled, exclusions);
+      if (cycle) {
+        const result = {};
+        for (let k = 0; k < cycle.length; k++) {
+          result[cycle[k]] = cycle[(k + 1) % cycle.length];
+        }
+        return result;
+      }
+    }
+    return null;
+  }
+
+  // --- HELPERS ---
+  const ssParticipants = () => state.members.filter(m => m.ssGroup === 'adulto' || m.ssGroup === 'nino');
+  const ssByGroup = g => state.members.filter(m => m.ssGroup === g);
+  const ssExclusionsMap = () => {
+    const map = {};
+    state.members.forEach(m => { map[m.id] = m.ssExclude || []; });
+    return map;
+  };
+  const ssIsDrawn = () => state.ssAssignments.length > 0;
+
+  // --- RENDER ---
+  function renderSecretSanta() {
+    renderSSPublic();
+    renderSSAdmin();
+  }
+
+  function renderSSPublic() {
+    const cont = $('#ssPublic');
+    const cfg = state.ssConfig;
+    const drawn = ssIsDrawn();
+
+    if (!drawn) {
+      cont.innerHTML = `
+        <div class="ss-hero">
+          <div class="ss-hero-icon">🎁</div>
+          <h3>${cfg?.title || 'Amigo Secreto Familia Guevara'}</h3>
+          <p>// El sorteo aún no se ha realizado. Cuando el administrador lo ejecute, cada participante recibirá su código privado por WhatsApp para descubrir a quién le toca regalar.</p>
+        </div>`;
+      return;
+    }
+
+    const adultos = ssByGroup('adulto').length;
+    const ninos = ssByGroup('nino').length;
+
+    cont.innerHTML = `
+      <div class="ss-hero">
+        <div class="ss-hero-icon">🎁</div>
+        <h3>${cfg?.title || 'Amigo Secreto Familia Guevara'}</h3>
+        <p>// Ingresa tu nombre y el código privado que recibiste para descubrir a quién le regalas. Nadie más puede ver tu resultado.</p>
+        <div class="ss-reveal-form">
+          <div class="form-group">
+            <label>¿Quién eres?</label>
+            <select id="ssWhoAmI">
+              <option value="">Selecciona tu nombre…</option>
+              ${ssParticipants().sort((a,b)=>a.name.localeCompare(b.name)).map(m =>
+                `<option value="${m.id}">${m.name}</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Tu código</label>
+            <input id="ssMyCode" type="text" placeholder="XXXX-XXXX" maxlength="9"
+              style="text-transform:uppercase;font-family:'JetBrains Mono',monospace;letter-spacing:0.1em" />
+          </div>
+          <button class="btn btn-primary" id="ssRevealBtn" style="height:44px">Revelar 🔓</button>
+        </div>
+      </div>
+
+      <div class="ss-status-grid">
+        <div class="ss-stat" style="--accent:var(--green)">
+          <div class="ss-stat-num">${state.ssAssignments.length}</div>
+          <div class="ss-stat-lbl">Participantes</div>
+        </div>
+        <div class="ss-stat" style="--accent:var(--cyan)">
+          <div class="ss-stat-num">${adultos}</div>
+          <div class="ss-stat-lbl">Adultos</div>
+        </div>
+        <div class="ss-stat" style="--accent:var(--gold)">
+          <div class="ss-stat-num">${ninos}</div>
+          <div class="ss-stat-lbl">Niños</div>
+        </div>
+        ${cfg?.budget ? `<div class="ss-stat" style="--accent:var(--magenta)">
+          <div class="ss-stat-num" style="font-size:1.25rem">$${fmt(cfg.budget)}</div>
+          <div class="ss-stat-lbl">Presupuesto</div>
+        </div>` : ''}
+        ${cfg?.eventDate ? `<div class="ss-stat" style="--accent:var(--pink)">
+          <div class="ss-stat-num" style="font-size:1.1rem">${new Date(cfg.eventDate+'T12:00').toLocaleDateString('es-CO',{day:'2-digit',month:'short'})}</div>
+          <div class="ss-stat-lbl">Intercambio</div>
+        </div>` : ''}
+      </div>
+
+      <div id="ssRevealResult"></div>
+
+      <div class="ss-help-box" style="margin-top:1.2rem">
+        <span>👨‍👩‍👧</span>
+        <div><strong>¿Comparten un celular?</strong> Cada quien revela lo suyo y toca "Ocultar y pasar el celular".
+        El resultado también se oculta solo a los 30 segundos, así el siguiente no alcanza a verlo.</div>
+      </div>
+    `;
+
+    const btn = $('#ssRevealBtn');
+    if (btn) btn.onclick = ssReveal;
+    const codeInput = $('#ssMyCode');
+    if (codeInput) codeInput.addEventListener('keydown', e => { if (e.key === 'Enter') ssReveal(); });
+  }
+
+  async function ssReveal() {
+    const memberId = $('#ssWhoAmI').value;
+    const code = ($('#ssMyCode').value || '').trim().toUpperCase();
+    const out = $('#ssRevealResult');
+    if (!memberId) return showToast('Selecciona tu nombre', 'error');
+    if (!code) return showToast('Ingresa tu código', 'error');
+
+    const rec = state.ssAssignments.find(a => a.giverId === memberId);
+    if (!rec) return showToast('No tienes asignación en este sorteo', 'error');
+
+    out.innerHTML = `<div class="ss-result" style="border-color:var(--cyan)">
+      <div class="ss-result-label">Descifrando…</div>
+      <div class="ss-result-name" style="font-size:1.2rem">🔐</div></div>`;
+
+    try {
+      const data = await decryptPayload(rec.personal, code, memberId);
+      const receiver = state.members.find(m => m.id === data.r);
+      const name = receiver ? receiver.name : data.n || 'Desconocido';
+      const wish = receiver?.wishlist;
+      out.innerHTML = `
+        <div class="ss-result">
+          <div class="ss-result-label">Te toca regalarle a</div>
+          <div class="ss-result-name">${name}</div>
+          ${wish ? `<div class="ss-result-wish"><strong>Lista de deseos / ideas</strong>${wish}</div>` : ''}
+          <div class="ss-autohide">
+            <span>Se ocultará solo en <strong id="ssTimer">30</strong>s</span>
+            <div class="ss-timer-bar"><div class="ss-timer-fill" id="ssTimerFill"></div></div>
+          </div>
+          <div style="margin-top:1rem;display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap">
+            <button class="btn btn-ghost btn-sm" onclick="window.ssHideResult()">🙈 Ocultar y pasar el celular</button>
+            <button class="btn btn-ghost btn-sm" onclick="window.ssStopTimer()">⏸ Dejar visible</button>
+          </div>
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);margin-top:1rem">
+            // Guarda bien el secreto · no compartas esta pantalla
+          </p>
+        </div>`;
+      showToast('¡Revelado! 🎁', 'success');
+      ssStartTimer(30);
+    } catch (e) {
+      out.innerHTML = '';
+      showToast('Código incorrecto', 'error');
+    }
+  }
+
+  let _ssTimerId = null;
+  function ssStartTimer(seconds) {
+    ssStopTimerInternal();
+    let left = seconds;
+    const fill = $('#ssTimerFill');
+    if (fill) { fill.style.transition = `width ${seconds}s linear`; setTimeout(()=>{ fill.style.width = '0%'; }, 50); }
+    _ssTimerId = setInterval(() => {
+      left--;
+      const el = $('#ssTimer');
+      if (el) el.textContent = left;
+      if (left <= 0) window.ssHideResult();
+    }, 1000);
+  }
+  function ssStopTimerInternal() { if (_ssTimerId) { clearInterval(_ssTimerId); _ssTimerId = null; } }
+
+  window.ssStopTimer = () => {
+    ssStopTimerInternal();
+    const box = $('.ss-autohide');
+    if (box) box.innerHTML = '<span style="color:var(--gold)">⏸ Temporizador detenido</span>';
+  };
+
+  window.ssHideResult = () => {
+    ssStopTimerInternal();
+    const out = $('#ssRevealResult');
+    if (out) out.innerHTML = `<div class="ss-hidden-msg">🙈 Resultado oculto · el siguiente puede usar el formulario</div>`;
+    const code = $('#ssMyCode'); if (code) code.value = '';
+    const who = $('#ssWhoAmI'); if (who) who.value = '';
+    setTimeout(() => { if (out && out.querySelector('.ss-hidden-msg')) out.innerHTML = ''; }, 4000);
+    const form = document.querySelector('.ss-reveal-form');
+    if (form) form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  };
+
+  function renderSSAdmin() {
+    const cont = $('#ssAdmin');
+    if (!state.isAdmin) { cont.innerHTML = ''; return; }
+
+    const parts = ssParticipants();
+    const adultos = ssByGroup('adulto');
+    const ninos = ssByGroup('nino');
+    const sinGrupo = state.members.filter(m => !m.ssGroup);
+    const drawn = ssIsDrawn();
+
+    cont.innerHTML = `
+      <div class="ss-admin-panel">
+        <h4>Panel del organizador</h4>
+        ${drawn ? `
+          <div class="ss-warning">
+            <span>⚠️</span>
+            <div>Sorteo ya realizado con <strong>${state.ssAssignments.length} participantes</strong>.
+            Las asignaciones están cifradas — ni tú puedes verlas. Si necesitas rehacerlo, ejecuta un nuevo sorteo (se borrará el anterior).</div>
+          </div>
+          <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+            <button class="btn btn-ghost btn-sm" onclick="window.ssExportCardsPDF()">🎫 Tarjetas recortables</button>
+            <button class="btn btn-ghost btn-sm" onclick="window.ssExportCodesPDF()">⬇ Lista PDF</button>
+            <button class="btn btn-ghost btn-sm" onclick="window.ssOpenRecover()">🔑 Recuperar código</button>
+            <button class="btn btn-danger btn-sm" onclick="window.ssResetDraw()">🗑 Borrar sorteo</button>
+          </div>
+        ` : `
+          <div class="ss-warning">
+            <span>ℹ️</span>
+            <div>Asigna un grupo (adulto/niño) a cada integrante. Solo los que tengan grupo participarán.
+            Luego configura las exclusiones y ejecuta el sorteo.</div>
+          </div>
+          <div class="ss-help-box">
+            <span>👤</span>
+            <div><strong>¿Participantes sin celular?</strong> Usa el botón 👤 de cada fila para asignarle un
+            responsable adulto. El código le llegará a esa persona, que le ayudará a revelar su amigo secreto.
+            También puedes imprimir <strong>tarjetas recortables</strong> después del sorteo.</div>
+          </div>
+        `}
+        <div class="ss-status-grid" style="margin-top:1rem;margin-bottom:0">
+          <div class="ss-stat" style="--accent:var(--cyan)"><div class="ss-stat-num">${adultos.length}</div><div class="ss-stat-lbl">Adultos</div></div>
+          <div class="ss-stat" style="--accent:var(--gold)"><div class="ss-stat-num">${ninos.length}</div><div class="ss-stat-lbl">Niños</div></div>
+          <div class="ss-stat" style="--accent:var(--text-muted)"><div class="ss-stat-num">${sinGrupo.length}</div><div class="ss-stat-lbl">Sin grupo</div></div>
+          <div class="ss-stat" style="--accent:var(--green)"><div class="ss-stat-num">${parts.length}</div><div class="ss-stat-lbl">Total juegan</div></div>
+        </div>
+      </div>
+
+      <div class="ss-admin-panel">
+        <h4>Participantes y restricciones</h4>
+        <div style="display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap">
+          <button class="btn btn-ghost btn-sm" onclick="window.ssSetAllGroup('adulto')">Todos → Adultos</button>
+          <button class="btn btn-ghost btn-sm" onclick="window.ssSetAllGroup('nino')">Todos → Niños</button>
+          <button class="btn btn-ghost btn-sm" onclick="window.ssSetAllGroup(null)">Limpiar grupos</button>
+        </div>
+        <div class="card" style="max-height:500px;overflow-y:auto">
+          ${state.members.sort((a,b)=>a.name.localeCompare(b.name)).map(m => {
+            const g = m.ssGroup;
+            const ex = m.ssExclude || [];
+            const tutor = m.ssTutor ? state.members.find(x => x.id === m.ssTutor) : null;
+            return `<div class="ss-part-row">
+              <div class="ss-part-name">${m.name}
+                ${tutor ? `<span class="tutor-tag" title="Recibe el código: ${tutor.name}">👤 ${tutor.name.split(' ')[0]}</span>` : ''}
+                ${m.phone ? `<span class="phone-tag">📱</span>` : ''}
+              </div>
+              <span class="group-pill ${g==='adulto'?'group-adulto':'group-off'}" onclick="window.ssSetGroup('${m.id}','adulto')">Adulto</span>
+              <span class="group-pill ${g==='nino'?'group-nino':'group-off'}" onclick="window.ssSetGroup('${m.id}','nino')">Niño</span>
+              <span class="group-pill group-off" onclick="window.ssSetGroup('${m.id}',null)" title="No participa">—</span>
+              <span class="ss-excl-count">${ex.length} excl.</span>
+              <button class="icon-btn edit" onclick="window.ssOpenContact('${m.id}')" title="Responsable y teléfono">👤</button>
+              <button class="icon-btn edit" onclick="window.ssOpenExclusions('${m.id}')" title="Configurar exclusiones">🚫</button>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // --- ACCIONES ADMIN ---
+  window.ssSetGroup = async (memberId, group) => {
+    try { await updateDoc(doc(db, 'members', memberId), { ssGroup: group }); }
+    catch(e) { showToast('Error: ' + e.message, 'error'); }
+  };
+
+  window.ssSetAllGroup = async (group) => {
+    if (!confirm(group ? `¿Asignar TODOS los integrantes al grupo "${group}"?` : '¿Quitar el grupo a todos?')) return;
+    try {
+      for (const m of state.members) await updateDoc(doc(db, 'members', m.id), { ssGroup: group });
+      showToast('Grupos actualizados', 'success');
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  };
+
+  window.ssOpenExclusions = (memberId) => {
+    const m = state.members.find(x => x.id === memberId);
+    if (!m) return;
+    const current = m.ssExclude || [];
+    const others = state.members.filter(x => x.id !== memberId).sort((a,b)=>a.name.localeCompare(b.name));
+    $('#modalTitle').textContent = 'Exclusiones';
+    $('#modalSub').textContent = `// ${m.name} NO podrá sacar a los seleccionados`;
+    $('#modalBody').innerHTML = `
+      <div class="form-group">
+        <label>No puede regalarle a</label>
+        <div class="checkbox-group" id="exclBoxes" style="max-height:300px">
+          ${others.map(o => `
+            <label class="checkbox-item ${current.includes(o.id)?'checked':''}">
+              <input type="checkbox" value="${o.id}" ${current.includes(o.id)?'checked':''} onchange="window.toggleMemberCheck(this)" />
+              <span>${o.name}</span>
+            </label>`).join('')}
+        </div>
+      </div>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted)">
+        // Tip: usa esto para que familiares directos o parejas no se saquen entre sí
+      </p>`;
+    $('#modalActions').innerHTML = `
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" id="modalSubmit">Guardar</button>`;
+    setTimeout(() => { $('#modalSubmit').onclick = async () => {
+      const ids = Array.from($$('#exclBoxes input:checked')).map(i => i.value);
+      try {
+        await updateDoc(doc(db, 'members', memberId), { ssExclude: ids });
+        showToast('Exclusiones guardadas', 'success'); closeModal();
+      } catch(e) { showToast('Error: ' + e.message, 'error'); }
+    }; }, 50);
+    $('#modalBackdrop').classList.add('show');
+  };
+
+  window.ssOpenConfig = () => {
+    const c = state.ssConfig || {};
+    $('#modalTitle').textContent = 'Configurar amigo secreto';
+    $('#modalSub').textContent = '// Datos del evento';
+    $('#modalBody').innerHTML = `
+      <div class="form-group"><label>Título</label>
+        <input id="ssTitle" type="text" value="${c.title || 'Amigo Secreto Familia Guevara'}" /></div>
+      <div class="form-row">
+        <div class="form-group"><label>Presupuesto sugerido (COP)</label>
+          <input id="ssBudget" type="number" step="10000" value="${c.budget || ''}" placeholder="50000" /></div>
+        <div class="form-group"><label>Fecha del intercambio</label>
+          <input id="ssDate" type="date" value="${c.eventDate || ''}" /></div>
+      </div>
+      <div class="form-group"><label>Reglas / notas</label>
+        <textarea id="ssRules" rows="3" placeholder="Ej. El intercambio será el 24 de diciembre en casa de la abuela">${c.rules || ''}</textarea></div>`;
+    $('#modalActions').innerHTML = `
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" id="modalSubmit">Guardar</button>`;
+    setTimeout(() => { $('#modalSubmit').onclick = async () => {
+      try {
+        await setDoc(doc(db, 'secretsanta', 'config'), {
+          title: $('#ssTitle').value.trim() || 'Amigo Secreto Familia Guevara',
+          budget: parseFloat($('#ssBudget').value) || null,
+          eventDate: $('#ssDate').value || null,
+          rules: $('#ssRules').value.trim(),
+          updatedAt: serverTimestamp(),
+        }, { merge: true });
+        showToast('Configuración guardada', 'success'); closeModal();
+      } catch(e) { showToast('Error: ' + e.message, 'error'); }
+    }; }, 50);
+    $('#modalBackdrop').classList.add('show');
+  };
+
+  window.ssOpenDraw = () => {
+    const adultos = ssByGroup('adulto');
+    const ninos = ssByGroup('nino');
+    const exclusions = ssExclusionsMap();
+
+    const problems = [];
+    if (adultos.length && adultos.length < 3) problems.push(`Adultos: solo ${adultos.length} (mínimo 3)`);
+    if (ninos.length && ninos.length < 3) problems.push(`Niños: solo ${ninos.length} (mínimo 3)`);
+    if (!adultos.length && !ninos.length) problems.push('No hay participantes con grupo asignado');
+
+    $('#modalTitle').textContent = 'Realizar sorteo';
+    $('#modalSub').textContent = '// Esta acción genera y cifra las asignaciones';
+    $('#modalBody').innerHTML = `
+      <div class="ss-warning" style="margin-bottom:1.2rem">
+        <span>🔐</span>
+        <div>Las asignaciones se cifran al instante. <strong>Ni siquiera tú podrás verlas</strong> —
+        así puedes jugar también. Cada persona recibirá un código único.</div>
+      </div>
+      <div style="margin-bottom:1.2rem">
+        <div style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-dim);line-height:1.9">
+          · Adultos: <strong style="color:var(--cyan)">${adultos.length}</strong> participantes<br>
+          · Niños: <strong style="color:var(--gold)">${ninos.length}</strong> participantes<br>
+          · Sorteos independientes (los niños entre niños)
+        </div>
+      </div>
+      ${problems.length ? `<div class="ss-warning" style="border-color:var(--danger);color:var(--danger);background:rgba(255,56,96,0.08)">
+        <span>⛔</span><div>${problems.join('<br>')}</div></div>` : ''}
+      <div class="form-group">
+        <label>Contraseña maestra (para recuperar códigos)</label>
+        <input id="ssMaster" type="password" placeholder="Elige una contraseña segura" />
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);margin-top:0.4rem">
+          // Guárdala bien. Sirve solo para regenerar el código de alguien que lo pierda. No se almacena en ningún lado.
+        </p>
+      </div>
+      ${ssIsDrawn() ? `<div class="ss-warning" style="border-color:var(--danger);color:var(--danger);background:rgba(255,56,96,0.08)">
+        <span>⚠️</span><div>Ya existe un sorteo. Al continuar se <strong>borrará y reemplazará</strong>.</div></div>` : ''}`;
+    $('#modalActions').innerHTML = `
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" id="modalSubmit" ${problems.length?'disabled style="opacity:0.4;cursor:not-allowed"':''}>🎲 Sortear ahora</button>`;
+    setTimeout(() => {
+      const btn = $('#modalSubmit');
+      if (problems.length) return;
+      btn.onclick = () => ssRunDraw($('#ssMaster').value);
+    }, 50);
+    $('#modalBackdrop').classList.add('show');
+  };
+
+  async function ssRunDraw(masterPass) {
+    if (!masterPass || masterPass.length < 6) return showToast('Contraseña maestra: mínimo 6 caracteres', 'error');
+
+    const exclusions = ssExclusionsMap();
+    const groups = [
+      { name: 'adulto', ids: ssByGroup('adulto').map(m => m.id) },
+      { name: 'nino',   ids: ssByGroup('nino').map(m => m.id) },
+    ].filter(g => g.ids.length >= 3);
+
+    const btn = $('#modalSubmit');
+    btn.disabled = true; btn.textContent = 'Sorteando…';
+
+    // 1. Generar asignaciones
+    const allAssign = {};
+    for (const g of groups) {
+      const res = generateDraw(g.ids, exclusions);
+      if (!res) {
+        btn.disabled = false; btn.textContent = '🎲 Sortear ahora';
+        return showToast(`Imposible sortear "${g.name}": demasiadas exclusiones`, 'error');
+      }
+      Object.assign(allAssign, res);
+    }
+
+    // 2. Borrar sorteo anterior
+    btn.textContent = 'Cifrando…';
+    try {
+      for (const a of state.ssAssignments) await deleteDoc(doc(db, 'ss_assignments', a.id));
+    } catch(e) { /* continuar */ }
+
+    // 3. Cifrar y guardar
+    const codes = [];
+    try {
+      for (const [giverId, receiverId] of Object.entries(allAssign)) {
+        const code = genCode();
+        const payload = { r: receiverId, n: memberName(receiverId) };
+        const personal = await encryptPayload(payload, code, giverId);
+        const master = await encryptPayload({ ...payload, code }, masterPass, giverId);
+        await setDoc(doc(db, 'ss_assignments', giverId), {
+          giverId, personal, master, createdAt: serverTimestamp(),
+        });
+        codes.push({ memberId: giverId, name: memberName(giverId), code });
+      }
+      await setDoc(doc(db, 'secretsanta', 'config'), { drawnAt: serverTimestamp() }, { merge: true });
+      closeModal();
+      showToast('¡Sorteo realizado! 🎉', 'success');
+      ssShowCodes(codes);
+    } catch(e) {
+      btn.disabled = false; btn.textContent = '🎲 Sortear ahora';
+      showToast('Error: ' + e.message, 'error');
+    }
+  }
+
+  function ssShowCodes(codes) {
+    window._ssLastCodes = codes;
+    $('#modalTitle').textContent = 'Códigos generados';
+    $('#modalSub').textContent = '// Entrégalos a cada persona en privado';
+    $('#modalBody').innerHTML = `
+      <div class="ss-warning">
+        <span>🚨</span>
+        <div><strong>Esta lista se muestra UNA sola vez.</strong> Descárgala o envía los códigos ahora.
+        Si cierras sin guardar, tendrás que usar la contraseña maestra para recuperarlos uno a uno.</div>
+      </div>
+      <div class="card ss-codes-table">
+        <table><tbody>
+          ${codes.sort((a,b)=>a.name.localeCompare(b.name)).map(c => {
+            const m = state.members.find(x => x.id === c.memberId);
+            const tutor = m?.ssTutor ? state.members.find(x => x.id === m.ssTutor) : null;
+            return `<tr>
+              <td style="font-weight:500">${c.name}
+                ${tutor ? `<div class="tutor-note">→ vía ${tutor.name}</div>` : ''}
+              </td>
+              <td><span class="ss-code-box">${c.code}</span></td>
+              <td><button class="wa-btn" onclick="window.ssSendWhatsApp('${c.memberId}','${c.code}')">WhatsApp</button></td>
+            </tr>`;
+          }).join('')}
+        </tbody></table>
+      </div>`;
+    $('#modalActions').innerHTML = `
+      <button class="btn btn-ghost" onclick="window.ssExportCardsPDF()">🎫 Tarjetas</button>
+      <button class="btn btn-ghost" onclick="window.ssExportCodesPDF()">⬇ Lista PDF</button>
+      <button class="btn btn-primary" onclick="closeModal()">Ya los guardé</button>`;
+    $('#modalBackdrop').classList.add('show');
+  }
+
+  window.ssOpenContact = (memberId) => {
+    const m = state.members.find(x => x.id === memberId);
+    if (!m) return;
+    const adults = state.members.filter(x => x.id !== memberId && x.ssGroup !== 'nino')
+      .sort((a,b)=>a.name.localeCompare(b.name));
+    $('#modalTitle').textContent = 'Responsable y contacto';
+    $('#modalSub').textContent = `// ${m.name}`;
+    $('#modalBody').innerHTML = `
+      <div class="ss-warning" style="margin-bottom:1.2rem">
+        <span>📱</span>
+        <div>Si esta persona <strong>no tiene celular</strong> (niños pequeños), asígnale un responsable.
+        El código llegará al WhatsApp del adulto, que le ayudará a revelar su amigo secreto.</div>
+      </div>
+      <div class="form-group">
+        <label>Responsable que recibe el código</label>
+        <select id="inTutor">
+          <option value="">— Tiene celular propio —</option>
+          ${adults.map(a => `<option value="${a.id}" ${m.ssTutor===a.id?'selected':''}>${a.name}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Teléfono WhatsApp (opcional)</label>
+        <input id="inPhone" type="tel" placeholder="3124302119" value="${m.phone || ''}" />
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.66rem;color:var(--text-muted);margin-top:0.3rem">
+          // Solo el número, sin +57. Permite enviar el código directo sin buscar el contacto.
+        </p>
+      </div>`;
+    $('#modalActions').innerHTML = `
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" id="modalSubmit">Guardar</button>`;
+    setTimeout(() => { $('#modalSubmit').onclick = async () => {
+      try {
+        await updateDoc(doc(db, 'members', memberId), {
+          ssTutor: $('#inTutor').value || null,
+          phone: $('#inPhone').value.replace(/\D/g,'') || null,
+        });
+        showToast('Contacto guardado', 'success'); closeModal();
+      } catch(e) { showToast('Error: ' + e.message, 'error'); }
+    }; }, 50);
+    $('#modalBackdrop').classList.add('show');
+  };
+
+  window.ssSendWhatsApp = (memberId, code) => {
+    const cfg = state.ssConfig || {};
+    const m = state.members.find(x => x.id === memberId);
+    if (!m) return;
+    const tutor = m.ssTutor ? state.members.find(x => x.id === m.ssTutor) : null;
+    const url = window.location.origin + window.location.pathname;
+    const firstName = n => n.split(' ')[0];
+    let msg;
+
+    if (tutor) {
+      msg = `🎁 *${cfg.title || 'Amigo Secreto Familia Guevara'}*\n\n` +
+        `Hola ${firstName(tutor.name)}! Ya se realizó el sorteo.\n\n` +
+        `Te enviamos el código de *${m.name}* porque figuras como su responsable:\n\n` +
+        `🔑 Código: *${code}*\n\n` +
+        `Ayúdale a entrar aquí 👉 ${url}\n` +
+        `Pestaña "🎁 Amigo Secreto" → selecciona *${m.name}* → escribe el código.\n\n` +
+        (cfg.budget ? `💰 Presupuesto: $${fmt(cfg.budget)}\n` : '') +
+        (cfg.eventDate ? `📅 Intercambio: ${new Date(cfg.eventDate+'T12:00').toLocaleDateString('es-CO',{day:'2-digit',month:'long'})}\n` : '') +
+        `\n🤫 Guarden bien el secreto.`;
+    } else {
+      msg = `🎁 *${cfg.title || 'Amigo Secreto Familia Guevara'}*\n\n` +
+        `Hola ${firstName(m.name)}! Ya se realizó el sorteo.\n\n` +
+        `Tu código privado es: *${code}*\n\n` +
+        `Entra aquí 👉 ${url}\n` +
+        `Ve a la pestaña "🎁 Amigo Secreto", selecciona tu nombre e ingresa el código.\n\n` +
+        (cfg.budget ? `💰 Presupuesto: $${fmt(cfg.budget)}\n` : '') +
+        (cfg.eventDate ? `📅 Intercambio: ${new Date(cfg.eventDate+'T12:00').toLocaleDateString('es-CO',{day:'2-digit',month:'long'})}\n` : '') +
+        `\n🤫 No compartas tu código con nadie.`;
+    }
+
+    const phone = tutor?.phone || m.phone;
+    const base = phone ? `https://wa.me/57${phone}?text=` : 'https://wa.me/?text=';
+    window.open(base + encodeURIComponent(msg), '_blank');
+  };
+
+  window.ssExportCardsPDF = () => {
+    const codes = window._ssLastCodes;
+    if (!codes || !codes.length) return showToast('No hay códigos en memoria. Usa "Recuperar código".', 'error');
+    try {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ unit: 'pt', format: 'a4' });
+      const cfg = state.ssConfig || {};
+      const url = (window.location.origin + window.location.pathname).replace(/^https?:\/\//,'');
+      const PW = pdf.internal.pageSize.getWidth();
+      const PH = pdf.internal.pageSize.getHeight();
+      const M = 28, COLS = 2, ROWS = 5;
+      const CW = (PW - M*2) / COLS;
+      const CH = (PH - M*2) / ROWS;
+      const sorted = codes.sort((a,b)=>a.name.localeCompare(b.name));
+
+      sorted.forEach((c, i) => {
+        const pos = i % (COLS*ROWS);
+        if (i > 0 && pos === 0) pdf.addPage();
+        const col = pos % COLS, row = Math.floor(pos / COLS);
+        const x = M + col*CW, y = M + row*CH;
+
+        // Marco punteado para recortar
+        pdf.setDrawColor(190,190,200);
+        pdf.setLineDashPattern([3,3], 0);
+        pdf.setLineWidth(0.7);
+        pdf.rect(x+4, y+4, CW-8, CH-8);
+        pdf.setLineDashPattern([], 0);
+
+        // Banda superior
+        pdf.setFillColor(12, 18, 34);
+        pdf.rect(x+4, y+4, CW-8, 26, 'F');
+        pdf.setFillColor(255, 45, 146);
+        pdf.rect(x+4, y+29, CW-8, 1.5, 'F');
+        pdf.setTextColor(255,255,255);
+        pdf.setFont('helvetica','bold'); pdf.setFontSize(9);
+        pdf.text('AMIGO SECRETO', x+14, y+21);
+        pdf.setTextColor(255,120,180); pdf.setFontSize(7);
+        pdf.text((cfg.title || 'Familia Guevara').toUpperCase().slice(0,26), x+CW-14, y+21, { align:'right' });
+
+        // Nombre del participante
+        pdf.setTextColor(30,30,40);
+        pdf.setFont('helvetica','normal'); pdf.setFontSize(7.5);
+        pdf.text('PARA:', x+14, y+50);
+        pdf.setFont('helvetica','bold'); pdf.setFontSize(12);
+        const nameLines = pdf.splitTextToSize(c.name, CW-28);
+        pdf.text(nameLines.slice(0,2), x+14, y+65);
+
+        const afterName = y + 65 + (nameLines.length > 1 ? 14 : 0);
+
+        // Código destacado
+        pdf.setDrawColor(0,150,200); pdf.setLineWidth(1);
+        pdf.setFillColor(240, 250, 255);
+        pdf.roundedRect(x+14, afterName+8, CW-28, 30, 4, 4, 'FD');
+        pdf.setFont('courier','bold'); pdf.setFontSize(16);
+        pdf.setTextColor(0,110,160);
+        pdf.text(c.code, x+CW/2, afterName+28, { align:'center' });
+
+        // Instrucciones
+        pdf.setFont('helvetica','normal'); pdf.setFontSize(7);
+        pdf.setTextColor(90,90,105);
+        pdf.text('1. Entra a:', x+14, afterName+54);
+        pdf.setFont('helvetica','bold'); pdf.setTextColor(0,110,160);
+        pdf.text(url.slice(0,44), x+14, afterName+64);
+        pdf.setFont('helvetica','normal'); pdf.setTextColor(90,90,105);
+        pdf.text('2. Pestana "Amigo Secreto"', x+14, afterName+75);
+        pdf.text('3. Elige tu nombre y escribe el codigo', x+14, afterName+85);
+
+        // Pie
+        pdf.setFontSize(6.5); pdf.setTextColor(160,60,110);
+        pdf.text('No compartas este codigo con nadie', x+14, y+CH-16);
+      });
+
+      pdf.save(`tarjetas-amigo-secreto-${new Date().toISOString().slice(0,10)}.pdf`);
+      showToast('Tarjetas descargadas', 'success');
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  };
+
+  window.ssExportCodesPDF = () => {
+    const codes = window._ssLastCodes;
+    if (!codes || !codes.length) return showToast('No hay códigos en memoria. Usa "Recuperar código".', 'error');
+    try {
+      const { jsPDF } = window.jspdf;
+      const pdf = new jsPDF({ unit: 'pt', format: 'a4' });
+      const pw = pdf.internal.pageSize.getWidth();
+      const cfg = state.ssConfig || {};
+      pdf.setFillColor(5,8,16); pdf.rect(0,0,pw,85,'F');
+      pdf.setFillColor(255,45,146); pdf.rect(0,83,pw,2,'F');
+      pdf.setTextColor(255,255,255); pdf.setFont('helvetica','bold'); pdf.setFontSize(18);
+      pdf.text('AMIGO SECRETO — CÓDIGOS PRIVADOS', 40, 40);
+      pdf.setFont('helvetica','normal'); pdf.setFontSize(10); pdf.setTextColor(255,45,146);
+      pdf.text(cfg.title || 'Familia Guevara', 40, 58);
+      pdf.setTextColor(180,190,210); pdf.setFontSize(9);
+      pdf.text(`Generado el ${new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'})}`, 40, 72);
+      pdf.setTextColor(180,60,60); pdf.setFontSize(9); pdf.setFont('helvetica','bold');
+      pdf.text('CONFIDENCIAL — entregar cada código solo a su destinatario', 40, 108);
+      pdf.autoTable({
+        startY: 125,
+        head: [['#','Participante','Código privado']],
+        body: codes.sort((a,b)=>a.name.localeCompare(b.name)).map((c,i)=>[i+1, c.name, c.code]),
+        theme:'grid',
+        headStyles:{ fillColor:[10,15,28], textColor:[255,45,146], fontStyle:'bold', fontSize:9 },
+        bodyStyles:{ fontSize:10 },
+        alternateRowStyles:{ fillColor:[250,245,250] },
+        columnStyles:{ 0:{cellWidth:30,halign:'center'}, 1:{cellWidth:270,fontStyle:'bold'}, 2:{cellWidth:130,halign:'center',font:'courier',fontStyle:'bold',textColor:[0,90,140]} },
+        margin:{left:40,right:40},
+      });
+      pdf.save(`codigos-amigo-secreto-${new Date().toISOString().slice(0,10)}.pdf`);
+      showToast('PDF descargado', 'success');
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
+  };
+
+  window.ssOpenRecover = () => {
+    $('#modalTitle').textContent = 'Recuperar código';
+    $('#modalSub').textContent = '// Genera un código nuevo para quien perdió el suyo';
+    $('#modalBody').innerHTML = `
+      <div class="form-group"><label>Participante</label>
+        <select id="ssRecMember">
+          ${state.ssAssignments.map(a => `<option value="${a.giverId}">${memberName(a.giverId)}</option>`)
+            .sort().join('')}
+        </select></div>
+      <div class="form-group"><label>Contraseña maestra</label>
+        <input id="ssRecMaster" type="password" placeholder="La que definiste al sortear" /></div>
+      <p style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted)">
+        // Se generará un código nuevo sin revelarte la asignación
+      </p>`;
+    $('#modalActions').innerHTML = `
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" id="modalSubmit">Generar nuevo código</button>`;
+    setTimeout(() => { $('#modalSubmit').onclick = async () => {
+      const gid = $('#ssRecMember').value;
+      const mp = $('#ssRecMaster').value;
+      const rec = state.ssAssignments.find(a => a.giverId === gid);
+      if (!rec) return showToast('Sin asignación', 'error');
+      try {
+        const data = await decryptPayload(rec.master, mp, gid);
+        const newCode = genCode();
+        const personal = await encryptPayload({ r: data.r, n: data.n }, newCode, gid);
+        const master = await encryptPayload({ r: data.r, n: data.n, code: newCode }, mp, gid);
+        await setDoc(doc(db, 'ss_assignments', gid), { giverId: gid, personal, master, createdAt: serverTimestamp() });
+        const nm = memberName(gid);
+        $('#modalBody').innerHTML = `
+          <p style="margin-bottom:1rem;color:var(--text-dim)">Nuevo código para <strong style="color:var(--text)">${nm}</strong>:</p>
+          <div class="ss-code-box" style="font-size:1.5rem;padding:1rem">${newCode}</div>
+          <div style="margin-top:1rem;text-align:center">
+            <button class="wa-btn" onclick="window.ssSendWhatsApp('${gid}','${newCode}')">Enviar por WhatsApp</button>
+          </div>`;
+        $('#modalActions').innerHTML = `<button class="btn btn-primary" onclick="closeModal()">Listo</button>`;
+        showToast('Código regenerado', 'success');
+      } catch(e) { showToast('Contraseña maestra incorrecta', 'error'); }
+    }; }, 50);
+    $('#modalBackdrop').classList.add('show');
+  };
+
+  window.ssResetDraw = async () => {
+    if (!confirm('¿Borrar el sorteo completo?\n\nSe eliminarán TODAS las asignaciones y códigos. Esta acción no se puede deshacer.')) return;
+    if (!confirm('Confirma de nuevo: esto borra el sorteo actual.')) return;
+    try {
+      for (const a of state.ssAssignments) await deleteDoc(doc(db, 'ss_assignments', a.id));
+      window._ssLastCodes = null;
+      showToast('Sorteo borrado', 'success');
+    } catch(e) { showToast('Error: ' + e.message, 'error'); }
   };
 
   renderAll();

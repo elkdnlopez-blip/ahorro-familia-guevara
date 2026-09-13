@@ -1339,10 +1339,21 @@
       background: rgba(255,255,255,.18);
     }
     .modal h2 { margin-top: .5rem; font-size: 1.18rem; }
-    .modal-actions { position: sticky; bottom: 0; }
+    .modal-actions {
+      position: sticky; bottom: 0;
+      background: var(--bg-2);
+      box-shadow: 0 -10px 14px 6px var(--bg-2);
+      padding-top: .7rem; margin-top: 1rem;
+    }
     .modal-actions .btn { flex: 1; justify-content: center; }
     .radio-group { flex-direction: column; }
     .checkbox-group { grid-template-columns: 1fr 1fr; }
+  }
+  /* Con un modal abierto el aviso sube: abajo tapaba los botones */
+  @media (max-width: 560px) {
+    .modal-backdrop.show ~ .toast {
+      bottom: auto; top: calc(.8rem + env(safe-area-inset-top));
+    }
   }
   @keyframes sheetIn {
     from { opacity: 0; transform: translateY(28px); }
@@ -1383,6 +1394,82 @@
   /* Halos de fondo algo más suaves para no restar contraste al texto */
   .bg-orb { opacity: .3; }
   @media (max-width: 900px) { .bg-orb { opacity: .22; } }
+
+  /* --- 19. Exclusiones visibles en la fila de cada participante --- */
+  .excl-line {
+    flex: 1 0 100%;
+    display: flex; flex-wrap: wrap; align-items: center; gap: .3rem;
+    margin-top: .35rem;
+  }
+  .excl-line-lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .6rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--text-muted); margin-right: .15rem;
+  }
+  .excl-chip {
+    display: inline-flex; align-items: center; gap: .05rem;
+    background: rgba(255,56,96,.09);
+    border: 1px solid rgba(255,56,96,.28);
+    color: var(--danger);
+    border-radius: 6px; padding: .1rem .1rem .1rem .25rem;
+    font-size: .74rem; margin: 0;
+    max-width: 100%;
+  }
+  .excl-chip-name { padding: 0 .12rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .excl-chip.one-way { background: rgba(255,184,0,.09); border-color: rgba(255,184,0,.3); color: var(--gold); }
+  .excl-dir, .excl-x {
+    background: none; border: none; cursor: pointer; color: inherit;
+    font-size: .74rem; line-height: 1; padding: .25rem .3rem;
+    border-radius: 4px; opacity: .75; transition: all .15s;
+  }
+  .excl-dir[disabled] { cursor: default; opacity: .55; }
+  .excl-dir:not([disabled]):hover { opacity: 1; background: rgba(255,184,0,.18); }
+  .excl-x:hover { opacity: 1; background: var(--danger); color: #fff; }
+  @media (max-width: 560px) {
+    .excl-dir, .excl-x { padding: .35rem .4rem; font-size: .8rem; }
+    .excl-chip { font-size: .78rem; }
+  }
+  @media (max-width: 780px) {
+    /* Un scroll dentro de otro scroll es incómodo en el móvil: que ruede la página */
+    #partList { max-height: none !important; overflow-y: visible !important; }
+    .ss-part-row { padding: .85rem .9rem; gap: .4rem; }
+    .ss-part-name { flex: 1 0 100%; min-width: 0; margin-bottom: .3rem; }
+    /* compacta los controles para que quepan en una sola línea */
+    .ss-part-row .group-pill { padding: .3rem .5rem; font-size: .62rem; }
+    .ss-part-row .ss-excl-count { font-size: .66rem; }
+    .ss-part-row .icon-btn { width: 32px; height: 32px; }
+  }
+
+  /* --- 18. Copiar exclusiones de otro integrante (amigo secreto) --- */
+  .excl-copy {
+    background: rgba(157,78,221,.07);
+    border: 1px solid rgba(157,78,221,.28);
+    border-radius: 11px;
+    padding: .85rem .9rem;
+    margin-bottom: .9rem;
+  }
+  .excl-copy-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .66rem; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--purple); margin-bottom: .65rem;
+    display: flex; align-items: center; gap: .45rem;
+  }
+  .excl-copy-title::before { content: '⧉'; font-size: .9rem; }
+  .excl-copy-row { display: flex; gap: .45rem; flex-wrap: wrap; align-items: center; }
+  .excl-copy-row .filter-select { flex: 1 1 165px; min-width: 0; }
+  .excl-copy-row .mini-btn { min-height: 38px; padding: .5rem .85rem; font-size: .76rem; }
+  .excl-copy-row .mini-btn:hover {
+    border-color: var(--purple); color: var(--purple); background: rgba(157,78,221,.12);
+  }
+  .excl-copy-opt {
+    display: flex; align-items: center; gap: .5rem;
+    margin-top: .65rem; font-size: .82rem; color: var(--text-dim); cursor: pointer;
+  }
+  .excl-copy-opt input { width: auto; margin: 0; accent-color: var(--purple); cursor: pointer; }
+  @media (max-width: 560px) {
+    .excl-copy-row { flex-direction: column; align-items: stretch; }
+    .excl-copy-row .filter-select, .excl-copy-row .mini-btn { width: 100%; flex: 0 0 auto; }
+  }
   @media (max-width: 560px) {
     /* iOS hace zoom si el campo mide menos de 16px */
     .filter-select, .search-input { font-size: 16px; }
@@ -2188,8 +2275,12 @@
   window.closeModal = closeModal;
   const _obsBackdrop = new MutationObserver(() => {
     if (!backdrop.classList.contains('show')) return;
+    if (backdrop.contains(document.activeElement)) return;
     const first = backdrop.querySelector('input:not([type=hidden]), select, textarea');
-    if (first) setTimeout(() => { try { first.focus(); } catch (_) {} }, 60);
+    if (first) setTimeout(() => {
+      if (backdrop.contains(document.activeElement)) return;
+      try { first.focus(); } catch (_) {}
+    }, 60);
   });
   _obsBackdrop.observe(backdrop, { attributes: true, attributeFilter: ['class'] });
 
@@ -3054,6 +3145,22 @@
               <span class="ss-excl-count">${ex.length} excl.</span>
               <button class="icon-btn edit" onclick="window.ssOpenContact('${m.id}')" title="Responsable y teléfono">👤</button>
               <button class="icon-btn edit" onclick="window.ssOpenExclusions('${m.id}')" title="Configurar exclusiones">🚫</button>
+              <div class="excl-line">
+                ${ex.length ? `<span class="excl-line-lbl">No puede sacar a</span>` : ''}
+                ${ex.map(id => {
+                  const otro = state.members.find(x => x.id === id);
+                  if (!otro) return '';
+                  const mutua = (otro.ssExclude || []).includes(m.id);
+                  return `<span class="excl-chip ${mutua ? '' : 'one-way'}">
+                    <button class="excl-dir" title="${mutua
+                      ? 'Mutua: tampoco puede sacarlo a él/ella'
+                      : `Solo en un sentido · ${otro.name} SÍ podría sacar a ${m.name}. Clic para hacerla mutua`}"
+                      onclick="window.ssMakeMutual('${m.id}','${id}')" ${mutua ? 'disabled' : ''}>${mutua ? '⇄' : '→'}</button>
+                    <span class="excl-chip-name">${otro.name}</span>
+                    <button class="excl-x" title="Quitar esta exclusión" onclick="window.ssRemoveExcl('${m.id}','${id}')">✕</button>
+                  </span>`;
+                }).join('')}
+              </div>
             </div>`;
           }).join('')}
         </div>
@@ -3120,6 +3227,21 @@
     $('#modalTitle').textContent = 'Exclusiones';
     $('#modalSub').textContent = `// ${m.name} NO podrá sacar a los seleccionados`;
     $('#modalBody').innerHTML = `
+      <div class="excl-copy">
+        <div class="excl-copy-title">Copiar exclusiones de otra persona</div>
+        <div class="excl-copy-row">
+          <select id="exclCopyFrom" class="filter-select" aria-label="Copiar exclusiones de">
+            <option value="">Elegir integrante…</option>
+            ${others.map(o => `<option value="${o.id}">${o.name} (${(o.ssExclude || []).length})</option>`).join('')}
+          </select>
+          <button type="button" class="mini-btn" onclick="window.ssCopyExcl('${memberId}','replace')" title="Dejar exactamente las mismas">Reemplazar</button>
+          <button type="button" class="mini-btn" onclick="window.ssCopyExcl('${memberId}','add')" title="Añadir a las que ya están marcadas">Sumar</button>
+        </div>
+        <label class="excl-copy-opt">
+          <input type="checkbox" id="exclCopyMutual" checked />
+          <span>Excluir también a esa persona</span>
+        </label>
+      </div>
       <div class="search-wrap">
         <span class="search-icon">🔍</span>
         <input id="exclSearch" class="search-input" type="text" placeholder="Buscar integrante…" autocomplete="off" />
@@ -3133,7 +3255,7 @@
         </div>
       </div>
       <div class="form-group">
-        <div class="checkbox-group" id="exclBoxes" style="max-height:290px">
+        <div class="checkbox-group" id="exclBoxes" style="max-height:240px">
           ${others.map(o => `
             <label class="checkbox-item ${current.includes(o.id)?'checked':''}" data-name="${o.name.toLowerCase()}">
               <input type="checkbox" value="${o.id}" ${current.includes(o.id)?'checked':''} onchange="window.toggleMemberCheck(this);window.updateSelCount('exclBoxes','exclCount')" />
@@ -3143,7 +3265,7 @@
         <div class="no-results hidden" id="exclNoResults">Sin coincidencias</div>
       </div>
       <p style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted)">
-        // Tip: usa esto para que familiares directos o parejas no se saquen entre sí
+        // Tip: copia las exclusiones de alguien de la misma casa y luego ajusta los chulos que quieras
       </p>`;
     $('#modalActions').innerHTML = `
       <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
@@ -3161,11 +3283,69 @@
     $('#modalBackdrop').classList.add('show');
   };
 
+  /* Quita una sola exclusión desde la fila, sin abrir el modal */
+  window.ssRemoveExcl = async (memberId, excludedId) => {
+    const m = state.members.find(x => x.id === memberId);
+    if (!m) return;
+    const ids = (m.ssExclude || []).filter(id => id !== excludedId);
+    try {
+      await updateDoc(doc(db, 'members', memberId), { ssExclude: ids });
+      showToast(`Ya puede sacar a ${memberName(excludedId).split(' ')[0]}`, 'success');
+    } catch (e) { showToast('Error: ' + e.message, 'error'); }
+  };
+
+  /* Hace recíproca una exclusión que estaba en un solo sentido */
+  window.ssMakeMutual = async (memberId, otherId) => {
+    const otro = state.members.find(x => x.id === otherId);
+    if (!otro) return;
+    const ids = Array.from(new Set([...(otro.ssExclude || []), memberId]));
+    try {
+      await updateDoc(doc(db, 'members', otherId), { ssExclude: ids });
+      showToast(`Exclusión mutua con ${otro.name.split(' ')[0]}`, 'success');
+    } catch (e) { showToast('Error: ' + e.message, 'error'); }
+  };
+
+  /* Copia las exclusiones de otro integrante a los chulos del modal abierto.
+     mode 'replace' deja exactamente las de esa persona; 'add' las suma a lo ya marcado.
+     Nadie puede quedar excluido de sí mismo. */
+  window.ssCopyExcl = (memberId, mode) => {
+    const sel = document.getElementById('exclCopyFrom');
+    if (!sel || !sel.value) { showToast('Primero elige de quién copiar', 'error'); return; }
+    const src = state.members.find(x => x.id === sel.value);
+    if (!src) return;
+    const alsoSource = !!(document.getElementById('exclCopyMutual') || {}).checked;
+    let ids = (src.ssExclude || []).filter(id => id !== memberId);
+    if (alsoSource) ids.push(src.id);
+    ids = Array.from(new Set(ids));
+
+    // Si hay una búsqueda activa, se limpia para que se vea todo el resultado
+    const search = document.getElementById('exclSearch');
+    if (search && search.value) { search.value = ''; search.dispatchEvent(new Event('input')); }
+
+    let marcados = 0;
+    document.querySelectorAll('#exclBoxes .checkbox-item').forEach(it => {
+      const cb = it.querySelector('input');
+      if (!cb) return;
+      const should = ids.includes(cb.value);
+      cb.checked = (mode === 'add') ? (cb.checked || should) : should;
+      it.classList.toggle('checked', cb.checked);
+      if (should) marcados++;
+    });
+    window.updateSelCount('exclBoxes', 'exclCount');
+
+    const nombre = src.name.split(' ')[0];
+    if (!marcados) { showToast(`${nombre} no tiene exclusiones configuradas`, 'error'); return; }
+    const verbo = mode === 'add' ? (marcados === 1 ? 'Sumada' : 'Sumadas') : (marcados === 1 ? 'Copiada' : 'Copiadas');
+    const sust = marcados === 1 ? 'exclusión' : 'exclusiones';
+    showToast(`${verbo} ${marcados} ${sust} de ${nombre}`, 'success');
+  };
+
   // --- Helpers de búsqueda reutilizables ---
   window.attachSearch = (inputId, boxesId, noResId, clearId) => {
     const input = document.getElementById(inputId);
     if (!input) return;
-    input.focus();
+    // En táctil no se enfoca solo: abrir el teclado tapa medio modal
+    if (window.matchMedia && window.matchMedia('(hover: hover)').matches) input.focus();
     input.addEventListener('input', () => {
       const q = input.value.trim().toLowerCase();
       const items = document.querySelectorAll(`#${boxesId} .checkbox-item`);

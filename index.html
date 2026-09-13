@@ -1395,6 +1395,55 @@
   .bg-orb { opacity: .3; }
   @media (max-width: 900px) { .bg-orb { opacity: .22; } }
 
+  /* --- 25. Modo enfoque (llegada por link del sorteo) --- */
+  .ss-focus-bar { display: none; }
+  body.ss-focus .savings-bar, body.ss-focus #birthdayBanner, body.ss-focus .hero,
+  body.ss-focus .stats, body.ss-focus .charts-row, body.ss-focus .tabs { display: none !important; }
+  body.ss-focus #section-amigosecreto { display: block !important; }
+  body.ss-focus .section:not(#section-amigosecreto) { display: none !important; }
+  body.ss-focus .ss-focus-bar { display: flex; justify-content: space-between; align-items: center; gap: .6rem; flex-wrap: wrap;
+    margin-bottom: 1rem; padding: .55rem .8rem; border: 1px solid var(--border); border-radius: 10px; background: var(--surface);
+    font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: var(--text-dim); }
+  body.ss-focus main { padding-top: 1rem; }
+
+  /* --- 24. Sorteo por grupos: lista de nombres, ruleta, links --- */
+  .ss-group-buttons { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; margin-top: 1rem; position: relative; z-index: 1; }
+  .ss-hero-group { border-color: color-mix(in srgb, var(--g) 45%, transparent); }
+  .ss-group-tag { display: inline-flex; align-items: center; gap: .35rem; font-family: 'JetBrains Mono', monospace; font-size: .7rem; letter-spacing: .15em; text-transform: uppercase; color: var(--g, var(--cyan)); border: 1px solid color-mix(in srgb, var(--g, var(--cyan)) 40%, transparent); background: color-mix(in srgb, var(--g, var(--cyan)) 10%, transparent); padding: .3rem .7rem; border-radius: 6px; margin-bottom: .8rem; }
+  .ss-hero-p strong { color: var(--text); }
+  .ss-pick-card { position: relative; z-index: 1; margin-top: 1.2rem; }
+  .ss-pick-hello { font-family: 'Chakra Petch', sans-serif; font-size: 1.6rem; font-weight: 600; color: var(--text); }
+  .ss-pick-sub { color: var(--text-dim); font-size: .95rem; margin: .3rem 0 1rem; }
+  .ss-big-btn { min-height: 58px; font-size: 1.1rem !important; padding: .9rem 1.6rem; width: 100%; max-width: 420px; justify-content: center; animation: ssPulse 1.8s ease-out infinite; }
+  .ss-namelist-head { position: relative; z-index: 1; margin-top: 1.2rem; text-align: left; }
+  .ss-namelist-head h4 { font-family: 'Chakra Petch', sans-serif; font-size: 1.15rem; font-weight: 600; }
+  .ss-namelist-head p { font-size: .85rem; color: var(--text-dim); margin: .2rem 0 .7rem; }
+  .ss-namelist { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: .5rem; text-align: left; }
+  .ss-name { display: flex; align-items: center; justify-content: space-between; gap: .6rem; width: 100%; min-height: 52px; padding: .7rem .95rem; border-radius: 12px; border: 1px solid var(--border); background: rgba(255,255,255,.03); color: var(--text); font-family: 'Outfit', sans-serif; font-size: 1rem; font-weight: 500; cursor: pointer; transition: all .15s; text-align: left; }
+  .ss-name:hover { border-color: var(--g, var(--cyan)); background: color-mix(in srgb, var(--g, var(--cyan)) 10%, transparent); transform: translateY(-1px); }
+  .ss-name-mark { font-family: 'Chakra Petch', sans-serif; font-size: 1.2rem; color: var(--text-muted); }
+  .ss-name.done { opacity: .55; cursor: not-allowed; background: rgba(0,255,157,.04); border-color: rgba(0,255,157,.25); }
+  .ss-name.done:hover { transform: none; }
+  .ss-name.done .ss-name-mark { color: var(--green); text-shadow: 0 0 8px rgba(0,255,157,.5); }
+  .ss-name.done .ss-name-txt { text-decoration: line-through; text-decoration-color: rgba(255,255,255,.35); }
+  .ss-confirm-name { font-family: 'Chakra Petch', sans-serif; font-size: 1.6rem; font-weight: 600; text-align: center; padding: .9rem; border: 1px dashed var(--border-strong); border-radius: 12px; color: var(--cyan); }
+  .ss-group-card { border: 1px solid color-mix(in srgb, var(--g, var(--cyan)) 35%, transparent); background: color-mix(in srgb, var(--g, var(--cyan)) 6%, transparent); border-radius: 12px; padding: .9rem 1rem; margin-bottom: .9rem; }
+  .ss-group-card-head { display: flex; justify-content: space-between; align-items: center; gap: .6rem; flex-wrap: wrap; margin-bottom: .5rem; }
+  .ss-group-card .ss-group-tag { margin-bottom: 0; margin-right: .5rem; }
+  .ss-group-n { font-family: 'JetBrains Mono', monospace; font-size: .72rem; color: var(--text-muted); }
+  .ss-group-done { font-family: 'Chakra Petch', sans-serif; font-size: 1.05rem; color: var(--green); }
+  .ss-group-card .progress-fill { background: linear-gradient(90deg, var(--g, var(--cyan)), var(--green)); box-shadow: 0 0 8px var(--g, var(--cyan)); }
+  .ss-link-row { display: flex; gap: .45rem; align-items: center; flex-wrap: wrap; margin-top: .7rem; }
+  .ss-link-input { flex: 1 1 220px; min-width: 0; padding: .5rem .7rem; border: 1px solid var(--border); border-radius: 8px; background: rgba(0,0,0,.35); color: var(--text-dim); font-family: 'JetBrains Mono', monospace; font-size: .74rem; }
+  .ss-reel-window { height: 64px; overflow: hidden; position: relative; margin: .6rem auto 0; max-width: 420px; border-radius: 12px; border: 1px solid var(--border-strong); background: rgba(0,0,0,.35); contain: paint; -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 25%, #000 75%, transparent 100%); mask-image: linear-gradient(180deg, transparent 0, #000 25%, #000 75%, transparent 100%); }
+  .ss-reel { will-change: transform; }
+  .ss-reel-item { height: 64px; display: grid; place-items: center; font-family: 'Chakra Petch', sans-serif; font-size: clamp(1.1rem, 4.5vw, 1.6rem); font-weight: 600; color: var(--text); padding: 0 .8rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ss-reeling .ss-result-label::after { content: '…'; }
+  @media (max-width: 560px) {
+    .ss-namelist { grid-template-columns: 1fr; }
+    .ss-link-row .btn, .ss-link-row .wa-btn { flex: 1 1 auto; justify-content: center; }
+  }
+
   @media (max-width: 560px) {
     .pair-table td:nth-child(5) { display: none; }   /* el código va en el PDF; aquí estorba */
   }
@@ -1712,6 +1761,10 @@
   </section>
 
   <section class="section" id="section-amigosecreto" role="tabpanel" tabindex="-1">
+    <div class="ss-focus-bar">
+      <span>🎁 Estás en el sorteo del amigo secreto</span>
+      <button class="mini-btn" onclick="window.ssFocusOff()">Ver la app completa →</button>
+    </div>
     <div class="section-header">
       <div>
         <h2 class="section-title">Amigo Secreto</h2>
@@ -2864,11 +2917,9 @@
   // --- CRIPTOGRAFÍA (Web Crypto API) ---
   const ALPHABET = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'; // sin O,0,I,1,L
 
-  function genCode() {
-    const arr = new Uint32Array(8);
-    crypto.getRandomValues(arr);
-    const chars = Array.from(arr, n => ALPHABET[n % ALPHABET.length]);
-    return chars.slice(0,4).join('') + '-' + chars.slice(4,8).join('');
+  function genCode(n = 8) {
+    const chars = Array.from({ length: n }, () => ALPHABET[randInt(ALPHABET.length)]);
+    return n === 8 ? chars.slice(0,4).join('') + '-' + chars.slice(4,8).join('') : chars.join('');
   }
 
   async function deriveKey(secret, salt) {
@@ -3006,40 +3057,122 @@
   };
   const ssIsDrawn = () => state.ssAssignments.length > 0;
 
-  /* Link personal: lleva a la app con nombre y código ya puestos. Va en el fragmento (#),
-     que nunca viaja al servidor ni queda en el Referer; además se borra del historial al leerlo. */
-  const ssPersonalLink = (memberId, code) =>
-    `${window.location.origin}${window.location.pathname}#r=${encodeURIComponent(memberId)}.${encodeURIComponent(code)}`;
+  /* ===== GRUPOS Y LINKS =====
+     Cada grupo (adultos / niños) es un sorteo aparte con su propio link.
+     El link lleva en el fragmento (#) el secreto del grupo, que es la llave con la que
+     se descifran las asignaciones de ese grupo. El fragmento nunca viaja al servidor. */
+  const GROUPS = {
+    adulto: { key: 'adultos', label: 'Adultos', emoji: '🧑', accent: 'var(--cyan)' },
+    nino:   { key: 'ninos',   label: 'Niños',   emoji: '🧒', accent: 'var(--gold)' },
+  };
+  const groupFromKey = k => Object.keys(GROUPS).find(g => GROUPS[g].key === k) || null;
+  const LS = { secret: g => 'ss_secret_' + g, me: g => 'ss_me_' + g };
+  const lsGet = k => { try { return localStorage.getItem(k); } catch (_) { return null; } };
+  const lsSet = (k, v) => { try { v === null ? localStorage.removeItem(k) : localStorage.setItem(k, v); } catch (_) {} };
 
-  let _ssPrefill = null;
-  (function readPersonalLink() {
-    const m = /^#r=([^.]+)\.([A-Za-z0-9-]{9})$/.exec(window.location.hash || '');
+  let _ssGroup = null;                 // grupo abierto en esta pantalla
+  const _ssSecrets = {};               // secretos conocidos por este dispositivo
+  Object.keys(GROUPS).forEach(g => { const s = lsGet(LS.secret(g)); if (s) _ssSecrets[g] = s; });
+
+  const ssGroupLink = (g, secret) =>
+    `${window.location.origin}${window.location.pathname}#g=${GROUPS[g].key}.${secret || _ssSecrets[g] || ''}`;
+
+  function readGroupLink() {
+    const m = /^#g=(adultos|ninos)\.([A-Z0-9]{8,24})$/i.exec(window.location.hash || '');
     if (!m) return;
-    _ssPrefill = { memberId: decodeURIComponent(m[1]), code: decodeURIComponent(m[2]).toUpperCase() };
-    history.replaceState(null, '', window.location.pathname + window.location.search);
-    // Abrir directamente la pestaña del juego
-    setTimeout(() => { const t = document.querySelector('.tab[data-tab="amigosecreto"]'); if (t) t.click(); }, 0);
-  })();
+    const g = groupFromKey(m[1].toLowerCase());
+    if (!g) return;
+    _ssGroup = g;
+    _ssSecrets[g] = m[2].toUpperCase();
+    lsSet(LS.secret(g), _ssSecrets[g]);
+    ssFocus(true);
+  }
+  /* Modo enfoque: quien llega por el link del sorteo ve solo el juego, no el tablero de ahorros */
+  function ssFocus(on) {
+    document.body.classList.toggle('ss-focus', !!on);
+    const t = document.querySelector('.tab[data-tab="amigosecreto"]');
+    if (on && t) setTimeout(() => { t.click(); window.scrollTo({ top: 0, behavior: 'auto' }); }, 0);
+  }
+  window.ssFocusOff = () => { ssFocus(false); };
+  readGroupLink();
+  window.addEventListener('hashchange', () => { readGroupLink(); _ssRevealOpen = false; renderSecretSanta(); });
 
-  // --- RENDER ---
+  window.ssEnterGroup = (g) => {
+    if (!_ssSecrets[g]) return;
+    _ssGroup = g;
+    ssFocus(true);
+    history.replaceState(null, '', ssGroupLink(g));
+    _ssRevealOpen = false;
+    renderSecretSanta();
+  };
+
+  // Llave AES del grupo, derivada del secreto (una sola vez por sesión)
+  const _ssKeyCache = {};
+  const ssGroupKey = (g) => {
+    const s = _ssSecrets[g];
+    if (!s) return Promise.reject(new Error('sin secreto'));
+    if (!_ssKeyCache[g + ':' + s]) _ssKeyCache[g + ':' + s] = deriveKey(s, 'group:' + g);
+    return _ssKeyCache[g + ':' + s];
+  };
+  async function encryptWithKey(key, obj) {
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(JSON.stringify(obj)));
+    return { iv: b64.enc(iv), ct: b64.enc(ct) };
+  }
+  async function decryptWithKey(key, blob) {
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64.dec(blob.iv) }, key, b64.dec(blob.ct));
+    return JSON.parse(new TextDecoder().decode(plain));
+  }
+  async function ssReceiverOf(a) {        // a = documento de ss_assignments
+    const key = await ssGroupKey(a.group);
+    const d = await decryptWithKey(key, { iv: a.iv, ct: a.ct });
+    return d.r;
+  }
+
   function renderSecretSanta() {
     renderSSPublic();
     renderSSAdmin();
   }
 
   let _ssRevealOpen = false;   // mientras hay un resultado en pantalla, nadie lo repinta
+  let _ssPicked = null;        // persona confirmada, esperando "Revelar"
+
+  function ssStatsHtml(g) {
+    const cfg = state.ssConfig || {};
+    const list = g ? state.ssAssignments.filter(a => a.group === g) : state.ssAssignments;
+    const done = list.filter(a => a.revealedAt).length;
+    return `
+      <div class="ss-status-grid">
+        <div class="ss-stat" style="--accent:var(--green)">
+          <div class="ss-stat-num">${done}<span style="font-size:.55em;color:var(--text-muted)"> / ${list.length}</span></div>
+          <div class="ss-stat-lbl">Ya revelaron</div>
+        </div>
+        ${cfg.budget ? `<div class="ss-stat" style="--accent:var(--magenta)">
+          <div class="ss-stat-num" style="font-size:1.25rem">$${fmt(cfg.budget)}</div>
+          <div class="ss-stat-lbl">Presupuesto</div></div>` : ''}
+        ${cfg.eventDate ? `<div class="ss-stat" style="--accent:var(--pink)">
+          <div class="ss-stat-num" style="font-size:1.1rem">${new Date(cfg.eventDate+'T12:00').toLocaleDateString('es-CO',{day:'2-digit',month:'short'})}</div>
+          <div class="ss-stat-lbl">Intercambio</div></div>
+        <div class="ss-stat" style="--accent:var(--gold)">
+          <div class="ss-stat-num" id="ssCountdown" aria-live="off">—</div>
+          <div class="ss-stat-lbl">Faltan</div></div>` : ''}
+      </div>`;
+  }
+
   function renderSSPublic() {
     const cont = $('#ssPublic');
     if (_ssRevealOpen) return;   // hay un resultado en pantalla: no tocarlo
     const cfg = state.ssConfig;
+    const title = escHtml(cfg?.title || 'Amigo Secreto Familia Guevara');
     const drawn = ssIsDrawn();
 
     if (!drawn) {
+      _ssPicked = null;
       cont.innerHTML = `
         <div class="ss-hero">
           <div class="ss-hero-icon">🎁</div>
-          <h3>${cfg?.title || 'Amigo Secreto Familia Guevara'}</h3>
-          <p>// El sorteo aún no se ha realizado. Cuando el administrador lo ejecute, cada participante recibirá su link privado por WhatsApp para descubrir a quién le toca regalar.</p>
+          <h3>${title}</h3>
+          <p>// El sorteo aún no se ha realizado. Cuando el organizador lo ejecute, cada grupo (adultos y niños) recibirá su link por WhatsApp para descubrir a quién le toca regalar.</p>
           <p style="margin-top:.2rem">Mientras tanto, deja tus ideas de regalo: así quien te saque sabrá qué comprarte.</p>
           <button class="btn btn-primary" onclick="window.ssOpenWishlist()">✏️ Mi lista de deseos</button>
         </div>
@@ -3047,92 +3180,115 @@
       return;
     }
 
-    const adultos = ssByGroup('adulto').length;
-    const ninos = ssByGroup('nino').length;
+    const g = _ssGroup;
+    const cached = Object.keys(GROUPS).filter(k => _ssSecrets[k] && state.ssAssignments.some(a => a.group === k));
+
+    // --- Vista general: sin link de grupo ---
+    if (!g || !_ssSecrets[g]) {
+      _ssPicked = null;
+      cont.innerHTML = `
+        <div class="ss-hero">
+          <div class="ss-hero-icon">🎁</div>
+          <h3>${title}</h3>
+          <p>// Hay dos sorteos: uno de adultos y otro de niños. Cada uno se abre con el link que llegó al grupo de WhatsApp. Busca ese mensaje y entra desde ahí.</p>
+          ${cached.length ? `<div class="ss-group-buttons">${cached.map(k => `<button class="btn btn-primary" onclick="window.ssEnterGroup('${k}')">${GROUPS[k].emoji} Entrar al sorteo de ${GROUPS[k].label.toLowerCase()}</button>`).join('')}</div>` : ''}
+          <button class="mini-btn" style="margin-top:.9rem;position:relative;z-index:1" onclick="window.ssOpenWishlist()">✏️ Escribir o cambiar mi lista de deseos</button>
+        </div>
+        ${ssStatsHtml(null)}
+        <div id="ssRevealResult"></div>
+        ${ssWishWallHtml()}`;
+      ssMountCountdown();
+      return;
+    }
+
+    // --- Vista de grupo ---
+    const G = GROUPS[g];
+    const members = ssByGroup(g).slice().sort((a, b) => a.name.localeCompare(b.name));
+    const byGiver = {}; state.ssAssignments.filter(a => a.group === g).forEach(a => { byGiver[a.giverId] = a; });
+    const meId = lsGet(LS.me(g));
+    const me = meId ? members.find(m => m.id === meId) : null;
+    const mine = me ? byGiver[me.id] : null;
+
+    let body;
+    if (_ssPicked && byGiver[_ssPicked] && !byGiver[_ssPicked].revealedAt) {
+      // Persona confirmada: botón grande para revelar
+      const p = members.find(m => m.id === _ssPicked);
+      body = `
+        <div class="ss-pick-card">
+          <div class="ss-pick-hello">¡Hola, ${escHtml(p.name.split(' ')[0])}! 👋</div>
+          <p class="ss-pick-sub">Cuando nadie esté mirando tu pantalla…</p>
+          <button class="btn btn-primary ss-big-btn" id="ssRevealBtn" onclick="window.ssDoReveal('${p.id}')">🎁 ¡Revelar mi amigo secreto!</button>
+          <button class="mini-btn" style="margin-top:.8rem" onclick="window.ssUnpick()">← No soy ${escHtml(p.name.split(' ')[0])}</button>
+        </div>`;
+    } else if (me && mine && mine.revealedAt) {
+      // Este celular ya reveló: puede volver a ver lo suyo
+      body = `
+        <div class="ss-pick-card">
+          <div class="ss-pick-hello">¡Hola, ${escHtml(me.name.split(' ')[0])}! ✓</div>
+          <p class="ss-pick-sub">Ya revelaste tu amigo secreto en este celular.</p>
+          <button class="btn btn-primary ss-big-btn" onclick="window.ssShowMine('${me.id}')">👀 Ver de nuevo a quién le regalo</button>
+          <button class="mini-btn" style="margin-top:.8rem" onclick="window.ssForgetMe('${g}')">No soy ${escHtml(me.name.split(' ')[0])} · elegir otro nombre</button>
+        </div>`;
+    } else {
+      body = `
+        <div class="ss-namelist-head">
+          <h4>¿Quién eres tú?</h4>
+          <p>Toca tu nombre. Los que tienen ✓ ya revelaron y no se pueden abrir.</p>
+        </div>
+        <div class="ss-namelist" role="list">
+          ${members.map(m => {
+            const a = byGiver[m.id];
+            if (!a) return '';
+            const done = !!a.revealedAt;
+            return `<button type="button" role="listitem" class="ss-name ${done ? 'done' : ''}" ${done ? 'disabled aria-disabled="true"' : ''} onclick="window.ssPick('${m.id}')">
+              <span class="ss-name-txt">${escHtml(m.name)}</span>
+              <span class="ss-name-mark">${done ? '✓' : '›'}</span></button>`;
+          }).join('')}
+        </div>`;
+    }
 
     cont.innerHTML = `
-      <div class="ss-hero">
-        <div class="ss-hero-icon">🎁</div>
-        <h3>${cfg?.title || 'Amigo Secreto Familia Guevara'}</h3>
-        <p>// Ingresa tu nombre y el código privado que recibiste para descubrir a quién le regalas. Nadie más puede ver tu resultado.</p>
-        <div class="ss-reveal-form">
-          <div class="form-group">
-            <label>¿Quién eres?</label>
-            <select id="ssWhoAmI">
-              <option value="">Selecciona tu nombre…</option>
-              ${ssParticipants().sort((a,b)=>a.name.localeCompare(b.name)).map(m =>
-                `<option value="${m.id}">${m.name}</option>`).join('')}
-            </select>
-          </div>
-          <div class="form-group">
-            <label>Tu código</label>
-            <input id="ssMyCode" type="text" placeholder="XXXX-XXXX" maxlength="9" autocomplete="off" autocapitalize="characters" spellcheck="false"
-              style="text-transform:uppercase;font-family:'JetBrains Mono',monospace;letter-spacing:0.1em" />
-          </div>
-          <button class="btn btn-primary" id="ssRevealBtn" style="height:44px">Revelar 🔓</button>
-        </div>
-        <button class="mini-btn" style="margin-top:.9rem;position:relative;z-index:1" onclick="window.ssOpenWishlist()">✏️ Escribir o cambiar mi lista de deseos</button>
+      <div class="ss-hero ss-hero-group" style="--g:${G.accent}">
+        <div class="ss-group-tag">${G.emoji} Sorteo de ${G.label}</div>
+        <h3>${title}</h3>
+        <p class="ss-hero-p">// Cada nombre se abre <strong>una sola vez</strong>. Abre solo el tuyo.</p>
+        ${body}
       </div>
-
-      <div class="ss-status-grid">
-        <div class="ss-stat" style="--accent:var(--green)">
-          <div class="ss-stat-num">${state.ssAssignments.filter(a => a.revealedAt).length}<span style="font-size:.55em;color:var(--text-muted)"> / ${state.ssAssignments.length}</span></div>
-          <div class="ss-stat-lbl">Ya revelaron</div>
-        </div>
-        <div class="ss-stat" style="--accent:var(--cyan)">
-          <div class="ss-stat-num">${adultos}</div>
-          <div class="ss-stat-lbl">Adultos</div>
-        </div>
-        <div class="ss-stat" style="--accent:var(--gold)">
-          <div class="ss-stat-num">${ninos}</div>
-          <div class="ss-stat-lbl">Niños</div>
-        </div>
-        ${cfg?.budget ? `<div class="ss-stat" style="--accent:var(--magenta)">
-          <div class="ss-stat-num" style="font-size:1.25rem">$${fmt(cfg.budget)}</div>
-          <div class="ss-stat-lbl">Presupuesto</div>
-        </div>` : ''}
-        ${cfg?.eventDate ? `<div class="ss-stat" style="--accent:var(--pink)">
-          <div class="ss-stat-num" style="font-size:1.1rem">${new Date(cfg.eventDate+'T12:00').toLocaleDateString('es-CO',{day:'2-digit',month:'short'})}</div>
-          <div class="ss-stat-lbl">Intercambio</div>
-        </div>
-        <div class="ss-stat" style="--accent:var(--gold)">
-          <div class="ss-stat-num" id="ssCountdown" aria-live="off">—</div>
-          <div class="ss-stat-lbl">Faltan</div>
-        </div>` : ''}
-      </div>
-
       <div id="ssRevealResult"></div>
-
-      ${ssWishWallHtml()}
-
+      ${ssStatsHtml(g)}
       <div class="ss-help-box" style="margin-top:1.2rem">
-        <span>👨‍👩‍👧</span>
-        <div><strong>¿Comparten un celular?</strong> Cada quien revela lo suyo y toca "Ocultar y pasar el celular".
-        El resultado también se oculta solo al cabo de un rato, así el siguiente no alcanza a verlo.</div>
+        <span>✏️</span>
+        <div><strong>¿Quieres que te acierten el regalo?</strong> Escribe tus ideas en tu lista de deseos: quien te sacó las verá al revelar.
+          <div style="margin-top:.5rem"><button class="mini-btn" onclick="window.ssOpenWishlist()">Mi lista de deseos</button></div></div>
       </div>
-    `;
-
+      ${ssWishWallHtml()}`;
     ssMountCountdown();
-    const btn = $('#ssRevealBtn');
-    if (btn) btn.onclick = ssReveal;
-    const codeInput = $('#ssMyCode');
-    if (codeInput) codeInput.addEventListener('keydown', e => { if (e.key === 'Enter') ssReveal(); });
-
-    // Llegó por su link personal: nombre y código ya puestos, solo falta tocar Revelar
-    if (_ssPrefill) {
-      const who = $('#ssWhoAmI');
-      const exists = who && [...who.options].some(o => o.value === _ssPrefill.memberId);
-      if (exists) {
-        who.value = _ssPrefill.memberId;
-        codeInput.value = _ssPrefill.code;
-        const me = state.members.find(x => x.id === _ssPrefill.memberId);
-        const hero = cont.querySelector('.ss-hero p');
-        if (hero && me) hero.innerHTML = `// Hola, <strong style="color:var(--text)">${me.name.split(' ')[0]}</strong> 👋 Tu código ya está puesto. Toca <strong style="color:var(--cyan)">Revelar</strong> cuando nadie esté mirando tu pantalla.`;
-        if (btn) { btn.classList.add('ss-pulse'); setTimeout(() => { try { btn.focus({ preventScroll: true }); } catch(_){} }, 100); }
-        who.addEventListener('change', () => { _ssPrefill = null; btn && btn.classList.remove('ss-pulse'); }, { once: true });
-      }
-    }
   }
+
+  // Toca un nombre → confirma que es él/ella
+  window.ssPick = (memberId) => {
+    const m = state.members.find(x => x.id === memberId);
+    const a = state.ssAssignments.find(x => x.giverId === memberId);
+    if (!m || !a) return;
+    if (a.revealedAt) { showToast('Ese nombre ya fue abierto', 'error'); renderSSPublic(); return; }
+    const first = escHtml(m.name.split(' ')[0]);
+    $('#modalTitle').textContent = '¿Eres tú?';
+    $('#modalSub').textContent = '// Confirma antes de continuar';
+    $('#modalBody').innerHTML = `
+      <div class="ss-confirm-name">${escHtml(m.name)}</div>
+      <div class="ss-warning" style="margin-top:1rem">
+        <span>⚠️</span>
+        <div>Este link es <strong>de un solo uso por persona</strong>. Cuando reveles, tu nombre quedará marcado con ✓ y nadie más podrá abrirlo.
+        <br><br>Si abres el nombre de otra persona, le dañas la sorpresa y queda registrado.</div>
+      </div>`;
+    $('#modalActions').innerHTML = `
+      <button class="btn btn-ghost" onclick="closeModal()">No, volver</button>
+      <button class="btn btn-primary" id="modalSubmit">Sí, soy ${first}</button>`;
+    setTimeout(() => { $('#modalSubmit').onclick = () => { closeModal(); _ssPicked = memberId; renderSSPublic(); }; }, 50);
+    $('#modalBackdrop').classList.add('show');
+  };
+  window.ssUnpick = () => { _ssPicked = null; renderSSPublic(); };
+  window.ssForgetMe = (g) => { lsSet(LS.me(g), null); _ssPicked = null; renderSSPublic(); };
 
   function ssWishWallHtml() {
     const withWish = state.members.filter(m => m.wishlist && m.wishlist.trim()).sort((a, b) => a.name.localeCompare(b.name));
@@ -3255,20 +3411,17 @@
 
   window.ssOpenWishlist = () => {
     const parts = (ssIsDrawn() ? ssParticipants() : state.members).slice().sort((a, b) => a.name.localeCompare(b.name));
-    const drawn = ssIsDrawn();
     $('#modalTitle').textContent = 'Mi lista de deseos';
     $('#modalSub').textContent = '// Ideas para quien te regala · las ve solo tu amigo secreto';
     $('#modalBody').innerHTML = `
       <div class="form-group"><label>¿Quién eres?</label>
         <select id="wlWho"><option value="">Selecciona tu nombre…</option>
           ${parts.map(m => `<option value="${m.id}">${escHtml(m.name)}</option>`).join('')}</select></div>
-      <div class="form-group">
-        <label>${drawn ? 'Tu código' : 'Tu fecha de nacimiento (día y mes)'}</label>
-        ${drawn
-          ? `<input id="wlProof" type="text" placeholder="XXXX-XXXX" maxlength="9" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase;font-family:'JetBrains Mono',monospace;letter-spacing:.1em" />`
-          : `<input id="wlProof" type="text" inputmode="numeric" placeholder="dd/mm" maxlength="5" autocomplete="off" />`}
+      <div class="form-group" id="wlProofGroup">
+        <label>Tu fecha de nacimiento (día y mes)</label>
+        <input id="wlProof" type="text" inputmode="numeric" placeholder="dd/mm" maxlength="5" autocomplete="off" />
         <p style="font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-muted);margin-top:.3rem">
-          // ${drawn ? 'El mismo código con el que revelas tu amigo secreto' : 'Solo para confirmar que eres tú'}
+          // Solo para confirmar que eres tú
         </p>
       </div>
       <div class="form-group"><label>Ideas de regalo</label>
@@ -3280,25 +3433,23 @@
       <button class="btn btn-primary" id="modalSubmit">Guardar</button>`;
     setTimeout(() => {
       const who = $('#wlWho'), proof = $('#wlProof'), text = $('#wlText');
-      who.addEventListener('change', () => { const m = state.members.find(x => x.id === who.value); text.value = (m && m.wishlist) || ''; $('#wlCount').textContent = `${text.value.length} / 600`; });
+      const trusted = id => { const m = state.members.find(x => x.id === id); return !!(m && m.ssGroup && lsGet(LS.me(m.ssGroup)) === id); };
+      who.addEventListener('change', () => {
+        const m = state.members.find(x => x.id === who.value); text.value = (m && m.wishlist) || ''; $('#wlCount').textContent = `${text.value.length} / 600`;
+        $('#wlProofGroup').classList.toggle('hidden', trusted(who.value));   // este celular ya reveló como esa persona
+      });
       text.addEventListener('input', () => { $('#wlCount').textContent = `${text.value.length} / 600`; });
       $('#modalSubmit').onclick = async () => {
         const id = who.value; if (!id) return showToast('Selecciona tu nombre', 'error');
         const m = state.members.find(x => x.id === id);
-        const val = (proof.value || '').trim();
-        if (!val) return showToast(drawn ? 'Ingresa tu código' : 'Ingresa tu fecha de nacimiento', 'error');
-        try {
-          if (drawn) {
-            const rec = state.ssAssignments.find(a => a.giverId === id);
-            if (!rec) throw new Error('sin asignación');
-            await decryptPayload(rec.personal, val.toUpperCase(), id);
-          } else {
-            if (!m.birthDate) return showToast('No tenemos tu fecha de nacimiento: pídele al organizador que la registre', 'error');
-            const [y, mo, d] = m.birthDate.split('-');
-            const ok = val.replace(/[^\d/]/g, '').split('/').map(x => x.padStart(2, '0')).join('/') === `${d}/${mo}`;
-            if (!ok) throw new Error('fecha');
-          }
-        } catch (e) { shakeEl($('#modalBody')); return showToast(drawn ? 'Código incorrecto' : 'Fecha incorrecta', 'error'); }
+        if (!trusted(id)) {
+          const val = (proof.value || '').trim();
+          if (!val) return showToast('Ingresa tu fecha de nacimiento', 'error');
+          if (!m.birthDate) return showToast('No tenemos tu fecha de nacimiento: pídele al organizador que la registre', 'error');
+          const [y, mo, d] = m.birthDate.split('-');
+          const ok = val.replace(/[^\d/]/g, '').split('/').map(x => x.padStart(2, '0')).join('/') === `${d}/${mo}`;
+          if (!ok) { shakeEl($('#modalBody')); return showToast('Fecha incorrecta', 'error'); }
+        }
         try {
           await updateDoc(doc(db, 'members', id), { wishlist: text.value.trim().slice(0, 600) });
           showToast('Lista guardada 🎁', 'success'); closeModal();
@@ -3461,53 +3612,63 @@
   }
 
   function markRevealed(memberId) {
-    // Marca "ya reveló" sin bloquear; si las reglas no lo permiten, no pasa nada.
+    // Marca "ya reveló" (una sola vez). Si las reglas lo rechazan, no rompe nada.
     try { updateDoc(doc(db, 'ss_assignments', memberId), { revealedAt: serverTimestamp() }).catch(() => {}); } catch (_) {}
   }
 
-  async function ssReveal() {
-    const memberId = $('#ssWhoAmI').value;
-    const code = ($('#ssMyCode').value || '').trim().toUpperCase();
+  async function ssResolveMine(memberId) {
+    const a = state.ssAssignments.find(x => x.giverId === memberId);
+    if (!a) throw new Error('sin asignación');
+    const rid = await ssReceiverOf(a);
+    const receiver = state.members.find(m => m.id === rid);
+    return { a, receiver, name: receiver ? receiver.name : 'Desconocido' };
+  }
+
+  // Botón grande "¡Revelar!": descifra, anima y quema el nombre
+  window.ssDoReveal = async (memberId) => {
+    const g = _ssGroup;
+    const me = state.members.find(m => m.id === memberId);
     const out = $('#ssRevealResult');
-    const form = document.querySelector('.ss-reveal-form');
-    if (!memberId) { shakeEl(form); return showToast('Selecciona tu nombre', 'error'); }
-    if (!code) { shakeEl(form); return showToast('Ingresa tu código', 'error'); }
-
-    const rec = state.ssAssignments.find(a => a.giverId === memberId);
-    if (!rec) { shakeEl(form); return showToast('No tienes asignación en este sorteo', 'error'); }
-
     const btn = $('#ssRevealBtn');
-    if (btn) { btn.disabled = true; btn.textContent = 'Descifrando…'; btn.classList.remove('ss-pulse'); }
+    if (!me || !out) return;
+    const a = state.ssAssignments.find(x => x.giverId === memberId);
+    if (!a) return showToast('No tienes asignación en este sorteo', 'error');
+    if (a.revealedAt) { showToast('Ese nombre ya fue abierto', 'error'); _ssPicked = null; return renderSSPublic(); }
+    if (btn) { btn.disabled = true; btn.textContent = 'Un momento…'; }
 
-    // 1. Validar primero (falla rápido si el código está mal)
-    let data;
+    let res;
     const t0 = performance.now();
-    try {
-      data = await decryptPayload(rec.personal, code, memberId);
-    } catch (e) {
-      if (btn) { btn.disabled = false; btn.textContent = 'Revelar 🔓'; }
-      shakeEl(form);
-      const codeInput = $('#ssMyCode'); if (codeInput) { codeInput.select(); }
-      return showToast('Código incorrecto', 'error');
+    try { res = await ssResolveMine(memberId); }
+    catch (e) {
+      if (btn) { btn.disabled = false; btn.textContent = '🎁 ¡Revelar mi amigo secreto!'; }
+      return showToast('No se pudo abrir. Vuelve a entrar desde el link del grupo.', 'error');
     }
-    // Si el celular tardó mucho en descifrar, el resto de la sesión va en modo ligero
     if (performance.now() - t0 > 1800) { try { sessionStorage.setItem('ssLite', '1'); } catch (_) {} }
 
-    const receiver = state.members.find(m => m.id === data.r);
-    const name = receiver ? receiver.name : (data.n || 'Desconocido');
-    const me = state.members.find(m => m.id === memberId);
-    const isKid = me && me.ssGroup === 'nino';
-
-    _ssPrefill = null;
+    _ssPicked = null;
     _ssRevealOpen = true;
+    lsSet(LS.me(g), memberId);
+    // quitar la tarjeta de "Hola" para que el resultado tome su lugar
+    const pick = document.querySelector('.ss-pick-card'); if (pick) pick.remove();
 
-    // 2. Teatralizar después, ya con el nombre en mano
-    if (isKid && typeof ssRenderKidResult === 'function') ssRenderKidResult(out, me, receiver, name);
-    else ssRenderAdultResult(out, me, receiver, name);
-    if (btn) { btn.disabled = false; btn.textContent = 'Revelar 🔓'; }
-    // 3. Marcar "ya reveló" al final: el snapshot que dispara no repinta gracias a _ssRevealOpen
+    const isKid = me.ssGroup === 'nino';
+    if (isKid) ssRenderKidResult(out, me, res.receiver, res.name);
+    else ssRenderAdultResult(out, me, res.receiver, res.name, { reel: true });
     markRevealed(memberId);
-  }
+  };
+
+  // Volver a ver el propio resultado en el mismo celular
+  window.ssShowMine = async (memberId) => {
+    const me = state.members.find(m => m.id === memberId);
+    const out = $('#ssRevealResult');
+    if (!me || !out) return;
+    try {
+      const res = await ssResolveMine(memberId);
+      _ssRevealOpen = true;
+      const pick = document.querySelector('.ss-pick-card'); if (pick) pick.remove();
+      ssRenderAdultResult(out, me, res.receiver, res.name, { reel: false });
+    } catch (e) { showToast('No se pudo abrir. Vuelve a entrar desde el link del grupo.', 'error'); }
+  };
 
   function ssAfterBlock(receiver) {
     // Bloque bajo el resultado: deseos + herramientas (cuenta regresiva, calendario, tarjeta)
@@ -3518,19 +3679,32 @@
       <div id="ssAfterTools">${typeof ssRenderAfterTools === 'function' ? ssRenderAfterTools(receiver) : ''}</div>`;
   }
 
-  function ssRenderAdultResult(out, me, receiver, name) {
+  function ssRenderAdultResult(out, me, receiver, name, opts = {}) {
+    const g = me.ssGroup;
+    // Nombres del grupo que pasan por la ventanilla; en grupos pequeños se repiten para que haya recorrido
+    let base = shuffle(ssByGroup(g).map(m => m.name).filter(n => n !== name));
+    if (!base.length) base = [name];
+    const pool = [];
+    while (pool.length < 18) pool.push(...shuffle(base));
+    const items = pool.slice(0, 18).concat([name]);
+    const lite = (() => { try { return sessionStorage.getItem('ssLite') === '1'; } catch (_) { return false; } })();
+    const useReel = opts.reel !== false && !RM() && !lite;
+
     out.innerHTML = `
-      <div class="ss-result" role="status" aria-live="off" aria-atomic="true">
-        <div class="ss-result-label">Descifrando tu asignación…</div>
-        <div class="ss-result-name" id="ssName" style="min-height:1.25em">&nbsp;</div>
-        <div id="ssResultRest" class="hidden">
+      <div class="ss-result ${useReel ? 'ss-reeling' : 'ss-solved'}" role="status" aria-live="polite" aria-atomic="true">
+        <div class="ss-result-label">${escHtml(me.name.split(' ')[0])}, te toca regalarle a</div>
+        <div class="ss-reel-window" aria-hidden="${useReel}">
+          <div class="ss-reel" id="ssReel">${items.map(n => `<div class="ss-reel-item">${escHtml(n)}</div>`).join('')}</div>
+        </div>
+        <div class="ss-result-name" id="ssName" style="${useReel ? 'display:none' : ''}">${escHtml(name.toUpperCase())}</div>
+        <div id="ssResultRest" class="${useReel ? 'hidden' : ''}">
           ${ssAfterBlock(receiver)}
           <div class="ss-autohide">
-            <span>Se ocultará solo en <strong id="ssTimer">45</strong>s</span>
+            <span>Se ocultará solo en <strong id="ssTimer">60</strong>s</span>
             <div class="ss-timer-bar"><div class="ss-timer-fill" id="ssTimerFill"></div></div>
           </div>
           <div style="margin-top:1rem;display:flex;gap:0.5rem;justify-content:center;flex-wrap:wrap">
-            <button class="btn btn-ghost btn-sm" onclick="window.ssHideResult()">🙈 Ocultar y pasar el celular</button>
+            <button class="btn btn-ghost btn-sm" onclick="window.ssHideResult()">🙈 Ocultar</button>
             <button class="btn btn-ghost btn-sm" onclick="window.ssStopTimer()">⏸ Dejar visible</button>
           </div>
           <p style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);margin-top:1rem">
@@ -3540,16 +3714,30 @@
       </div>`;
     const box = out.querySelector('.ss-result');
     try { box.scrollIntoView({ behavior: RM() ? 'auto' : 'smooth', block: 'center' }); } catch (_) {}
-    const lite = (() => { try { return sessionStorage.getItem('ssLite') === '1'; } catch (_) { return false; } })();
-    scrambleTo($('#ssName'), name.toUpperCase(), lite ? 800 : 1700, () => {
-      box.querySelector('.ss-result-label').textContent = 'Te toca regalarle a';
-      box.setAttribute('aria-live', 'polite');
-      box.classList.add('ss-solved');
+
+    const finish = () => {
+      box.classList.remove('ss-reeling'); box.classList.add('ss-solved');
+      const win = box.querySelector('.ss-reel-window'); if (win) win.remove();
+      $('#ssName').style.display = '';
       $('#ssResultRest').classList.remove('hidden');
+      ssConfetti(box);
       showToast('¡Revelado! 🎁', 'success');
-      ssStartTimer(45);
       try { navigator.vibrate && navigator.vibrate([40, 60, 40]); } catch (_) {}
+      ssStartTimer(60);
+    };
+    if (!useReel) { finish(); return; }
+
+    // Ruleta: los nombres pasan rápido, frenan y caen en el definitivo
+    const reel = $('#ssReel');
+    const itemH = 64;
+    requestAnimationFrame(() => {
+      reel.style.transition = 'transform 3.8s cubic-bezier(.22,.61,.36,1)';
+      reel.style.transform = `translateY(-${(items.length - 1) * itemH}px)`;
     });
+    let done = false;
+    const end = () => { if (done) return; done = true; finish(); };
+    reel.addEventListener('transitionend', end, { once: true });
+    setTimeout(end, 4300);   // por si el evento no llega
   }
 
   let _ssTimerId = null, _ssTimerLeft = 0, _ssTimerPaused = false;
@@ -3587,6 +3775,7 @@
   window.ssHideResult = () => {
     ssStopTimerInternal();
     _ssRevealOpen = false;
+    _ssPicked = null;
     const out = $('#ssRevealResult');
     if (out) out.innerHTML = `<div class="ss-hidden-msg">🙈 Resultado oculto · el siguiente puede usar el formulario</div>`;
     const code = $('#ssMyCode'); if (code) code.value = '';
@@ -3610,45 +3799,54 @@
       <div class="ss-admin-panel">
         <h4>Panel del organizador</h4>
         ${drawn ? `
-          ${(() => {
-            const done = state.ssAssignments.filter(a => a.revealedAt).length;
-            const total = state.ssAssignments.length;
-            const pend = state.ssAssignments.filter(a => !a.revealedAt).map(a => state.members.find(m => m.id === a.giverId)).filter(Boolean).sort((a,b)=>a.name.localeCompare(b.name));
-            return `<div class="ss-progress">
-              <div class="ss-progress-head"><span>✓ Ya revelaron</span><strong>${done} / ${total}</strong></div>
-              <div class="progress-bar"><div class="progress-fill" style="width:${total ? Math.round(done/total*100) : 0}%"></div></div>
+          ${Object.keys(GROUPS).map(gk => {
+            const list = state.ssAssignments.filter(a => a.group === gk);
+            if (!list.length) return '';
+            const G = GROUPS[gk];
+            const done = list.filter(a => a.revealedAt);
+            const pend = list.filter(a => !a.revealedAt).map(a => state.members.find(m => m.id === a.giverId)).filter(Boolean).sort((a,b)=>a.name.localeCompare(b.name));
+            const doneM = done.map(a => state.members.find(m => m.id === a.giverId)).filter(Boolean).sort((a,b)=>a.name.localeCompare(b.name));
+            const hasLink = !!_ssSecrets[gk];
+            return `<div class="ss-group-card" style="--g:${G.accent}">
+              <div class="ss-group-card-head">
+                <div><span class="ss-group-tag">${G.emoji} ${G.label}</span><span class="ss-group-n">${list.length} participantes</span></div>
+                <strong class="ss-group-done">${done.length} / ${list.length} ✓</strong>
+              </div>
+              <div class="progress-bar"><div class="progress-fill" style="width:${Math.round(done.length/list.length*100)}%"></div></div>
+              ${hasLink ? `
+                <div class="ss-link-row">
+                  <input class="ss-link-input" readonly value="${ssGroupLink(gk)}" onclick="this.select()" aria-label="Link del grupo ${G.label}" />
+                  <button class="btn btn-ghost btn-sm" onclick="window.ssCopyGroupLink('${gk}')">📋 Copiar</button>
+                  <button class="wa-btn" style="min-height:36px;padding:.4rem .8rem" onclick="window.ssSendGroupWhatsApp('${gk}')">WhatsApp al grupo</button>
+                </div>` : `
+                <div class="ss-link-row"><span class="sel-counter">Este dispositivo no tiene el link guardado.</span>
+                  <button class="btn btn-ghost btn-sm" onclick="window.ssRecoverLinks()">🔑 Recuperar links</button></div>`}
               ${pend.length ? `<details class="ss-pending"><summary>Faltan ${pend.length} · ver lista</summary>
-                <div class="ss-pending-list">${pend.map(m => {
-                  const tutor = m.ssTutor ? state.members.find(x => x.id === m.ssTutor) : null;
-                  return `<span class="ss-pending-item">${m.name}${tutor ? `<span class="tutor-tag">👤 ${tutor.name.split(' ')[0]}</span>` : ''}
-                    <button class="wa-btn" style="padding:.2rem .5rem" title="Recordarle por WhatsApp" onclick="window.ssRemind('${m.id}')">WA</button></span>`;
-                }).join('')}</div></details>` : `<div class="ss-pending-done">🎉 Todos ya saben a quién le regalan</div>`}
+                <div class="ss-pending-list">${pend.map(m => `<span class="ss-pending-item">${escHtml(m.name)}
+                  <button class="wa-btn" style="padding:.2rem .5rem" title="Recordarle por WhatsApp" onclick="window.ssRemind('${m.id}')">WA</button></span>`).join('')}</div></details>`
+                : `<div class="ss-pending-done">🎉 Todos ya saben a quién le regalan</div>`}
+              ${doneM.length ? `<details class="ss-pending"><summary>Ya revelaron ${doneM.length} · desbloquear si alguien abrió un nombre ajeno</summary>
+                <div class="ss-pending-list">${doneM.map(m => `<span class="ss-pending-item">✓ ${escHtml(m.name)}
+                  <button class="mini-btn" title="Permitir que lo abra de nuevo su dueño" onclick="window.ssUnlock('${m.id}')">↺</button></span>`).join('')}</div></details>` : ''}
             </div>`;
-          })()}
+          }).join('')}
           <div class="ss-warning">
-            <span>⚠️</span>
-            <div>Sorteo ya realizado con <strong>${state.ssAssignments.length} participantes</strong>.
-            Las asignaciones están cifradas: solo se abren con el código de cada quien o con tu contraseña maestra. Si necesitas rehacerlo, ejecuta un nuevo sorteo (se reemplazará el anterior).</div>
+            <span>ℹ️</span>
+            <div>Envía <strong>cada link a su grupo de WhatsApp</strong>. Cada persona abre el link, toca su nombre y ve a quién le regala; ese nombre queda marcado con ✓ y nadie más puede abrirlo. Si alguien abre un nombre ajeno, desbloquéalo aquí con ↺.</div>
           </div>
           <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
-            <button class="btn btn-ghost btn-sm" onclick="window.ssExportCardsPDF()">🎫 Tarjetas recortables</button>
-            <button class="btn btn-ghost btn-sm" onclick="window.ssExportCodesPDF()">⬇ Lista PDF</button>
             <button class="btn btn-ghost btn-sm" onclick="window.ssOpenPairings()">👁 Ver emparejamientos</button>
-            <button class="btn btn-ghost btn-sm" onclick="window.ssOpenRecover()">🔑 Recuperar código</button>
-            ${window._ssLastCodes ? `<button class="btn btn-ghost btn-sm" onclick="window.ssShowCodes(window._ssLastCodes)">🧾 Ver últimos códigos</button>` : ''}
             <button class="btn btn-danger btn-sm" onclick="window.ssResetDraw()">🗑 Borrar sorteo</button>
           </div>
         ` : `
           <div class="ss-warning">
             <span>ℹ️</span>
             <div>Asigna un grupo (adulto/niño) a cada integrante. Solo los que tengan grupo participarán.
-            Luego configura las exclusiones y ejecuta el sorteo.</div>
+            Luego configura las exclusiones y ejecuta el sorteo: saldrán <strong>dos links</strong>, uno por grupo.</div>
           </div>
           <div class="ss-help-box">
-            <span>👤</span>
-            <div><strong>¿Participantes sin celular?</strong> Usa el botón 👤 de cada fila para asignarle un
-            responsable adulto. El código le llegará a esa persona, que le ayudará a revelar su amigo secreto.
-            También puedes imprimir <strong>tarjetas recortables</strong> después del sorteo.</div>
+            <span>📱</span>
+            <div><strong>¿Niños sin celular?</strong> No hay problema: el link de niños lo abre un adulto de la casa y el niño toca su propio nombre. El teléfono que registres con 👤 sirve para enviar recordatorios.</div>
           </div>
         `}
         <div class="ss-status-grid" style="margin-top:1rem;margin-bottom:0">
@@ -3987,8 +4185,8 @@
     $('#modalBody').innerHTML = `
       <div class="ss-warning" style="margin-bottom:1.2rem">
         <span>🔐</span>
-        <div>Las asignaciones se cifran al instante. Cada persona recibirá un código único y
-        <strong>solo tú, con la contraseña maestra</strong>, podrás ver el cuadro completo.</div>
+        <div>Se generan <strong>dos links</strong>: uno para el grupo de adultos y otro para el de niños. Cada persona abre el de su grupo, toca su nombre y ve a quién le regala, una sola vez.
+        Las asignaciones quedan cifradas en la base; la llave va en cada link.</div>
       </div>
       <div style="margin-bottom:1.2rem">
         <div style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:var(--text-dim);line-height:1.9">
@@ -4003,11 +4201,11 @@
       ${problems.length ? `<div class="ss-warning" style="border-color:var(--danger);color:var(--danger);background:rgba(255,56,96,0.08)">
         <span>⛔</span><div>${problems.join('<br>')}</div></div>` : ''}
       <div class="form-group">
-        <label>Contraseña maestra (para recuperar códigos)</label>
+        <label>Contraseña maestra (para recuperar los links)</label>
         <input id="ssMaster" type="password" autocomplete="new-password" minlength="12" placeholder="Mínimo 12 caracteres, mejor una frase" />
         <p style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);margin-top:0.4rem">
-          // Guárdala bien: abre el cuadro de emparejamientos y regenera códigos perdidos. No se almacena en ningún lado.
-          Usa una frase larga (p. ej. tres palabras y un número): una corta se puede adivinar.
+          // Con ella recuperas los links desde otro celular y abres el cuadro de emparejamientos. No se almacena en claro.
+          Usa una frase larga (p. ej. tres palabras y un número).
         </p>
       </div>
       ${ssIsDrawn() ? `<div class="ss-warning" style="border-color:var(--danger);color:var(--danger);background:rgba(255,56,96,0.08)">
@@ -4027,104 +4225,92 @@
     if (!masterPass || masterPass.length < 12) return showToast('Contraseña maestra: mínimo 12 caracteres', 'error');
 
     const exclusions = ssExclusionsMap();
-    const groups = [
-      { name: 'adultos', ids: ssByGroup('adulto').map(m => m.id) },
-      { name: 'niños',   ids: ssByGroup('nino').map(m => m.id) },
-    ].filter(g => g.ids.length >= 3);
+    const groups = Object.keys(GROUPS)
+      .map(g => ({ g, ids: ssByGroup(g).map(m => m.id) }))
+      .filter(x => x.ids.length >= 3);
     if (!groups.length) return showToast('Ningún grupo tiene al menos 3 participantes', 'error');
 
     const btn = $('#modalSubmit');
     const restore = () => { if (btn) { btn.disabled = false; btn.textContent = '🎲 Sortear ahora'; } };
     btn.disabled = true; btn.textContent = 'Revisando…';
-    await new Promise(r => setTimeout(r, 40));   // deja que el botón se repinte antes del cálculo
+    await new Promise(r => setTimeout(r, 40));
 
-    // 0. Prechequeo rápido de factibilidad
-    for (const g of groups) {
-      const probs = drawFeasibilityProblems(g.ids, exclusions);
-      if (probs.length) {
-        restore();
-        return showToast(`${memberName(probs[0].id)} ${probs[0].why} (grupo ${g.name}). Revisa sus exclusiones.`, 'error');
-      }
+    for (const x of groups) {
+      const probs = drawFeasibilityProblems(x.ids, exclusions);
+      if (probs.length) { restore(); return showToast(`${memberName(probs[0].id)} ${probs[0].why} (${GROUPS[x.g].label.toLowerCase()}). Revisa sus exclusiones.`, 'error'); }
     }
 
-    // 1. Generar asignaciones (en memoria, sin tocar la base)
     btn.textContent = 'Sorteando…';
     await new Promise(r => setTimeout(r, 20));
-    const allAssign = {};
-    for (const g of groups) {
-      const res = generateDraw(g.ids, exclusions);
-      if (!res) { restore(); return showToast(`No se encontró un sorteo válido para ${g.name}: demasiadas exclusiones cruzadas`, 'error'); }
-      Object.assign(allAssign, res);
+    const perGroup = {};
+    for (const x of groups) {
+      const res = generateDraw(x.ids, exclusions);
+      if (!res) { restore(); return showToast(`No se encontró un sorteo válido para ${GROUPS[x.g].label.toLowerCase()}: demasiadas exclusiones cruzadas`, 'error'); }
+      perGroup[x.g] = res;
     }
 
-    // 2. Cifrar todo en memoria. El orden se baraja para que la base no delate la cadena.
+    // Un secreto por grupo (va en el link) + copia cifrada con la maestra para recuperarlo
     btn.textContent = 'Cifrando…';
-    const entries = shuffle(Object.entries(allAssign));
-    const docsOut = [], codes = [];
+    const secrets = {}, groupKeys = {}, docsOut = [];
     try {
-      for (const [giverId, receiverId] of entries) {
-        const code = genCode();
-        const personal = await encryptPayload(padPayload({ r: receiverId }), code, giverId);
-        const master   = await encryptPayload(padPayload({ r: receiverId, code }), masterPass, giverId);
-        docsOut.push({ giverId, personal, master });
-        codes.push({ memberId: giverId, name: memberName(giverId), code });
+      for (const x of groups) {
+        const g = x.g;
+        secrets[g] = genCode(12).replace('-', '');
+        const key = await deriveKey(secrets[g], 'group:' + g);
+        for (const [giverId, receiverId] of shuffle(Object.entries(perGroup[g]))) {
+          const blob = await encryptWithKey(key, padPayload({ r: receiverId }));
+          docsOut.push({ giverId, group: g, iv: blob.iv, ct: blob.ct, revealedAt: null });
+        }
+        groupKeys[g] = await encryptPayload({ s: secrets[g] }, masterPass, 'master:' + g);
       }
     } catch (e) { restore(); return showToast('Error al cifrar: ' + e.message, 'error'); }
 
-    // Los códigos quedan a salvo ANTES de escribir: si la red falla, no se pierden.
-    window._ssLastCodes = codes;
+    // Los links quedan a salvo en este dispositivo ANTES de escribir
+    Object.keys(secrets).forEach(g => { _ssSecrets[g] = secrets[g]; lsSet(LS.secret(g), secrets[g]); });
+    Object.keys(GROUPS).forEach(g => { if (!secrets[g]) { delete _ssSecrets[g]; lsSet(LS.secret(g), null); lsSet(LS.me(g), null); } });
+    Object.keys(_ssKeyCache).forEach(k => delete _ssKeyCache[k]);
 
-    // 3. Escribir todo de un solo golpe (o nada)
     btn.textContent = 'Guardando…';
     try {
       const batch = writeBatch(db);
       const newIds = new Set(docsOut.map(d => d.giverId));
-      docsOut.forEach(d => batch.set(doc(db, 'ss_assignments', d.giverId), { giverId: d.giverId, personal: d.personal, master: d.master }));
+      docsOut.forEach(d => batch.set(doc(db, 'ss_assignments', d.giverId), d));
       state.ssAssignments.forEach(a => { if (!newIds.has(a.id)) batch.delete(doc(db, 'ss_assignments', a.id)); });
-      batch.set(doc(db, 'secretsanta', 'config'), { drawnAt: serverTimestamp(), drawSize: docsOut.length }, { merge: true });
+      batch.set(doc(db, 'secretsanta', 'config'), { drawnAt: serverTimestamp(), drawSize: docsOut.length, groupKeys }, { merge: true });
       await batch.commit();
       closeModal();
       showToast('¡Sorteo realizado! 🎉', 'success');
-      ssShowCodes(codes);
+      ssShowLinks();
     } catch (e) {
       restore();
-      showToast('No se pudo guardar: ' + e.message + '. Los códigos siguen en memoria (botón "Ver últimos códigos").', 'error');
+      showToast('No se pudo guardar: ' + e.message, 'error');
     }
   }
 
-  window.ssShowCodes = (codes) => ssShowCodes(codes);
-  function ssShowCodes(codes) {
-    window._ssLastCodes = codes;
-    $('#modalTitle').textContent = 'Códigos generados';
-    $('#modalSub').textContent = '// Entrégalos a cada persona en privado';
+  window.ssShowLinks = () => ssShowLinks();
+  function ssShowLinks() {
+    const groups = Object.keys(GROUPS).filter(g => _ssSecrets[g] && state.ssAssignments.some(a => a.group === g));
+    $('#modalTitle').textContent = 'Links del sorteo';
+    $('#modalSub').textContent = '// Uno por grupo · envíalo al WhatsApp de ese grupo';
     $('#modalBody').innerHTML = `
-      <div class="ss-warning">
-        <span>🚨</span>
-        <div><strong>Esta lista se muestra UNA sola vez.</strong> Descárgala o envía los códigos ahora.
-        Si cierras sin guardar, tendrás que usar la contraseña maestra para recuperarlos uno a uno.</div>
+      <div class="ss-warning" style="margin-bottom:1rem">
+        <span>📣</span>
+        <div>El link de <strong>adultos</strong> solo muestra a los adultos y el de <strong>niños</strong> solo a los niños. Cada persona toca su nombre una sola vez.</div>
       </div>
-      <div class="card ss-codes-table">
-        <table><tbody>
-          ${codes.sort((a,b)=>a.name.localeCompare(b.name)).map(c => {
-            const m = state.members.find(x => x.id === c.memberId);
-            const tutor = m?.ssTutor ? state.members.find(x => x.id === m.ssTutor) : null;
-            return `<tr>
-              <td style="font-weight:500">${c.name}
-                ${tutor ? `<div class="tutor-note">→ vía ${tutor.name}</div>` : ''}
-              </td>
-              <td><span class="ss-code-box">${c.code}</span></td>
-              <td style="white-space:nowrap">
-                <button class="wa-btn" onclick="window.ssSendWhatsApp('${c.memberId}','${c.code}')">WhatsApp</button>
-                <button class="mini-btn" title="Copiar link personal" onclick="window.ssCopyLink('${c.memberId}','${c.code}')">🔗</button>
-              </td>
-            </tr>`;
-          }).join('')}
-        </tbody></table>
-      </div>`;
-    $('#modalActions').innerHTML = `
-      <button class="btn btn-ghost" onclick="window.ssExportCardsPDF()">🎫 Tarjetas</button>
-      <button class="btn btn-ghost" onclick="window.ssExportCodesPDF()">⬇ Lista PDF</button>
-      <button class="btn btn-primary" onclick="closeModal()">Ya los guardé</button>`;
+      ${groups.map(g => `
+        <div class="ss-group-card" style="--g:${GROUPS[g].accent}">
+          <div class="ss-group-card-head"><span class="ss-group-tag">${GROUPS[g].emoji} ${GROUPS[g].label}</span>
+            <span class="ss-group-n">${state.ssAssignments.filter(a => a.group === g).length} participantes</span></div>
+          <div class="ss-link-row">
+            <input class="ss-link-input" readonly value="${ssGroupLink(g)}" onclick="this.select()" />
+            <button class="btn btn-ghost btn-sm" onclick="window.ssCopyGroupLink('${g}')">📋 Copiar</button>
+            <button class="wa-btn" style="min-height:36px;padding:.4rem .8rem" onclick="window.ssSendGroupWhatsApp('${g}')">WhatsApp</button>
+          </div>
+        </div>`).join('')}
+      <p style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-muted)">
+        // Los links quedan guardados en este dispositivo y, cifrados con tu contraseña maestra, en la base. Desde otro celular puedes recuperarlos con la maestra.
+      </p>`;
+    $('#modalActions').innerHTML = `<button class="btn btn-primary" onclick="closeModal()">Listo</button>`;
     $('#modalBackdrop').classList.add('show');
   }
 
@@ -4133,19 +4319,19 @@
     const m = state.members.find(x => x.id === memberId);
     if (!m) return;
     const tutor = m.ssTutor ? state.members.find(x => x.id === m.ssTutor) : null;
-    const url = window.location.origin + window.location.pathname;
+    const g = m.ssGroup;
+    const link = g && _ssSecrets[g] ? ssGroupLink(g) : null;
     const who = tutor ? `${tutor.name.split(' ')[0]}! ${m.name.split(' ')[0]} todavía no ha abierto su amigo secreto.` : `${m.name.split(' ')[0]}! Todavía no has abierto tu amigo secreto 👀`;
     const msg = `🎁 *${cfg.title || 'Amigo Secreto Familia Guevara'}*\n\nHola ${who}\n\n` +
-      `Busca el link personal que te enviamos (o entra a ${url} → pestaña 🎁 Amigo Secreto con tu código).\n` +
-      `Si no lo encuentras, avísame y te lo reenvío.` +
+      (link ? `Entra aquí, toca ${tutor ? 'su' : 'tu'} nombre y listo:\n${link}` : `Busca el link del grupo de ${g ? GROUPS[g].label.toLowerCase() : 'tu grupo'} en WhatsApp.`) +
       (cfg.eventDate ? `\n\n📅 Intercambio: ${new Date(cfg.eventDate+'T12:00').toLocaleDateString('es-CO',{day:'2-digit',month:'long'})}` : '');
     const phone = tutor?.phone || m.phone;
     window.open((phone ? `https://wa.me/57${phone}?text=` : 'https://wa.me/?text=') + encodeURIComponent(msg), '_blank');
   };
 
-  window.ssCopyLink = async (memberId, code) => {
-    const link = ssPersonalLink(memberId, code);
-    try { await navigator.clipboard.writeText(link); showToast('Link personal copiado', 'success'); }
+  window.ssCopyGroupLink = async (g) => {
+    const link = ssGroupLink(g);
+    try { await navigator.clipboard.writeText(link); showToast(`Link de ${GROUPS[g].label.toLowerCase()} copiado`, 'success'); }
     catch (_) { prompt('Copia este link:', link); }
   };
 
@@ -4159,11 +4345,11 @@
     $('#modalBody').innerHTML = `
       <div class="ss-warning" style="margin-bottom:1.2rem">
         <span>📱</span>
-        <div>Si esta persona <strong>no tiene celular</strong> (niños pequeños), asígnale un responsable.
-        El código llegará al WhatsApp del adulto, que le ayudará a revelar su amigo secreto.</div>
+        <div>Si esta persona <strong>no tiene celular</strong> (niños pequeños), asígnale un responsable:
+        los recordatorios le llegarán a ese adulto, que abrirá el link de niños con él.</div>
       </div>
       <div class="form-group">
-        <label>Responsable que recibe el código</label>
+        <label>Responsable (recibe los recordatorios)</label>
         <select id="inTutor">
           <option value="">— Tiene celular propio —</option>
           ${adults.map(a => `<option value="${a.id}" ${m.ssTutor===a.id?'selected':''}>${a.name}</option>`).join('')}
@@ -4173,7 +4359,7 @@
         <label>Teléfono WhatsApp (opcional)</label>
         <input id="inPhone" type="tel" placeholder="3124302119" value="${m.phone || ''}" />
         <p style="font-family:'JetBrains Mono',monospace;font-size:0.66rem;color:var(--text-muted);margin-top:0.3rem">
-          // Solo el número, sin +57. Permite enviar el código directo sin buscar el contacto.
+          // Solo el número, sin +57. Sirve para enviarle recordatorios directo por WhatsApp.
         </p>
       </div>`;
     $('#modalActions').innerHTML = `
@@ -4191,226 +4377,106 @@
     $('#modalBackdrop').classList.add('show');
   };
 
-  window.ssSendWhatsApp = (memberId, code) => {
+  window.ssSendGroupWhatsApp = (g) => {
     const cfg = state.ssConfig || {};
-    const m = state.members.find(x => x.id === memberId);
-    if (!m) return;
-    const tutor = m.ssTutor ? state.members.find(x => x.id === m.ssTutor) : null;
-    const url = window.location.origin + window.location.pathname;
-    const link = ssPersonalLink(memberId, code);
-    const firstName = n => n.split(' ')[0];
-    let msg;
+    const link = ssGroupLink(g);
+    const G = GROUPS[g];
+    const msg = `🎁 *${cfg.title || 'Amigo Secreto Familia Guevara'} — ${G.label}*\n\n` +
+      `¡Ya está el sorteo! 🎉\n\n` +
+      `👉 Abre este link, toca tu nombre y descubre a quién le regalas:\n${link}\n\n` +
+      `⚠️ Cada nombre se abre UNA sola vez. Abre solo el tuyo: si abres el de otra persona le dañas la sorpresa y queda registrado.\n` +
+      (g === 'nino' ? `👨‍👩‍👧 Papás: abran el link con el niño y que él toque su nombre.\n` : '') +
+      (cfg.budget ? `\n💰 Presupuesto: $${fmt(cfg.budget)}` : '') +
+      (cfg.eventDate ? `\n📅 Intercambio: ${new Date(cfg.eventDate+'T12:00').toLocaleDateString('es-CO',{day:'2-digit',month:'long'})}` : '') +
+      (cfg.rules ? `\n📝 ${cfg.rules}` : '') +
+      `\n\n✏️ En la misma página puedes escribir tu lista de deseos.\n🤫 Guarden el secreto.`;
+    window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  };
 
-    if (tutor) {
-      msg = `🎁 *${cfg.title || 'Amigo Secreto Familia Guevara'}*\n\n` +
-        `Hola ${firstName(tutor.name)}! Ya se realizó el sorteo.\n\n` +
-        `Te enviamos el acceso de *${m.name}* porque figuras como su responsable.\n\n` +
-        `👉 Ábranlo juntos aquí, con nadie más mirando:\n${link}\n\n` +
-        `Ya va con su nombre y su código. Solo hay que tocar *Revelar*.\n` +
-        `🔑 Por si el link falla, el código es *${code}* (entrar a ${url}, pestaña 🎁 Amigo Secreto).\n\n` +
-        (cfg.budget ? `💰 Presupuesto: $${fmt(cfg.budget)}\n` : '') +
-        (cfg.eventDate ? `📅 Intercambio: ${new Date(cfg.eventDate+'T12:00').toLocaleDateString('es-CO',{day:'2-digit',month:'long'})}\n` : '') +
-        `\n🤫 Guarden bien el secreto.`;
-    } else {
-      msg = `🎁 *${cfg.title || 'Amigo Secreto Familia Guevara'}*\n\n` +
-        `Hola ${firstName(m.name)}! Ya se realizó el sorteo.\n\n` +
-        `👉 Tu link personal (ábrelo cuando nadie mire tu pantalla):\n${link}\n\n` +
-        `Ya va con tu nombre y tu código. Solo toca *Revelar*.\n` +
-        `🔑 Por si el link falla, tu código es *${code}* (entrar a ${url}, pestaña 🎁 Amigo Secreto).\n\n` +
-        (cfg.budget ? `💰 Presupuesto: $${fmt(cfg.budget)}\n` : '') +
-        (cfg.eventDate ? `📅 Intercambio: ${new Date(cfg.eventDate+'T12:00').toLocaleDateString('es-CO',{day:'2-digit',month:'long'})}\n` : '') +
-        `\n🤫 No compartas tu código con nadie.`;
+  /* Recupera los secretos de los grupos con la contraseña maestra (desde otro dispositivo) */
+  async function ssUnlockSecrets(masterPass) {
+    const keys = (state.ssConfig || {}).groupKeys || {};
+    const found = [];
+    for (const g of Object.keys(keys)) {
+      const d = await decryptPayload(keys[g], masterPass, 'master:' + g);   // lanza si la maestra está mal
+      _ssSecrets[g] = d.s; lsSet(LS.secret(g), d.s); found.push(g);
     }
+    Object.keys(_ssKeyCache).forEach(k => delete _ssKeyCache[k]);
+    return found;
+  }
 
-    const phone = tutor?.phone || m.phone;
-    const base = phone ? `https://wa.me/57${phone}?text=` : 'https://wa.me/?text=';
-    window.open(base + encodeURIComponent(msg), '_blank');
-  };
-
-  window.ssExportCardsPDF = () => {
-    const codes = window._ssLastCodes;
-    if (!codes || !codes.length) return showToast('No hay códigos en memoria. Usa "Recuperar código".', 'error');
-    try {
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ unit: 'pt', format: 'a4' });
-      const cfg = state.ssConfig || {};
-      const url = (window.location.origin + window.location.pathname).replace(/^https?:\/\//,'');
-      const PW = pdf.internal.pageSize.getWidth();
-      const PH = pdf.internal.pageSize.getHeight();
-      const M = 28, COLS = 2, ROWS = 5;
-      const CW = (PW - M*2) / COLS;
-      const CH = (PH - M*2) / ROWS;
-      const sorted = codes.sort((a,b)=>a.name.localeCompare(b.name));
-
-      sorted.forEach((c, i) => {
-        const pos = i % (COLS*ROWS);
-        if (i > 0 && pos === 0) pdf.addPage();
-        const col = pos % COLS, row = Math.floor(pos / COLS);
-        const x = M + col*CW, y = M + row*CH;
-
-        // Marco punteado para recortar
-        pdf.setDrawColor(190,190,200);
-        pdf.setLineDashPattern([3,3], 0);
-        pdf.setLineWidth(0.7);
-        pdf.rect(x+4, y+4, CW-8, CH-8);
-        pdf.setLineDashPattern([], 0);
-
-        // Banda superior
-        pdf.setFillColor(12, 18, 34);
-        pdf.rect(x+4, y+4, CW-8, 26, 'F');
-        pdf.setFillColor(255, 45, 146);
-        pdf.rect(x+4, y+29, CW-8, 1.5, 'F');
-        pdf.setTextColor(255,255,255);
-        pdf.setFont('helvetica','bold'); pdf.setFontSize(9);
-        pdf.text('AMIGO SECRETO', x+14, y+21);
-        pdf.setTextColor(255,120,180); pdf.setFontSize(7);
-        pdf.text((cfg.title || 'Familia Guevara').toUpperCase().slice(0,26), x+CW-14, y+21, { align:'right' });
-
-        // Nombre del participante
-        pdf.setTextColor(30,30,40);
-        pdf.setFont('helvetica','normal'); pdf.setFontSize(7.5);
-        pdf.text('PARA:', x+14, y+50);
-        pdf.setFont('helvetica','bold'); pdf.setFontSize(12);
-        const nameLines = pdf.splitTextToSize(c.name, CW-28);
-        pdf.text(nameLines.slice(0,2), x+14, y+65);
-
-        const afterName = y + 65 + (nameLines.length > 1 ? 14 : 0);
-
-        // Código destacado
-        pdf.setDrawColor(0,150,200); pdf.setLineWidth(1);
-        pdf.setFillColor(240, 250, 255);
-        pdf.roundedRect(x+14, afterName+8, CW-28, 30, 4, 4, 'FD');
-        pdf.setFont('courier','bold'); pdf.setFontSize(16);
-        pdf.setTextColor(0,110,160);
-        pdf.text(c.code, x+CW/2, afterName+28, { align:'center' });
-
-        // Instrucciones
-        pdf.setFont('helvetica','normal'); pdf.setFontSize(7);
-        pdf.setTextColor(90,90,105);
-        pdf.text('1. Entra a:', x+14, afterName+54);
-        pdf.setFont('helvetica','bold'); pdf.setTextColor(0,110,160);
-        pdf.text(url.slice(0,44), x+14, afterName+64);
-        pdf.setFont('helvetica','normal'); pdf.setTextColor(90,90,105);
-        pdf.text('2. Pestana "Amigo Secreto"', x+14, afterName+75);
-        pdf.text('3. Elige tu nombre y escribe el codigo', x+14, afterName+85);
-
-        // Pie
-        pdf.setFontSize(6.5); pdf.setTextColor(160,60,110);
-        pdf.text('No compartas este codigo con nadie', x+14, y+CH-16);
-      });
-
-      pdf.save(`tarjetas-amigo-secreto-${new Date().toISOString().slice(0,10)}.pdf`);
-      showToast('Tarjetas descargadas', 'success');
-    } catch(e) { showToast('Error: ' + e.message, 'error'); }
-  };
-
-  window.ssExportCodesPDF = () => {
-    const codes = window._ssLastCodes;
-    if (!codes || !codes.length) return showToast('No hay códigos en memoria. Usa "Recuperar código".', 'error');
-    try {
-      const { jsPDF } = window.jspdf;
-      const pdf = new jsPDF({ unit: 'pt', format: 'a4' });
-      const pw = pdf.internal.pageSize.getWidth();
-      const cfg = state.ssConfig || {};
-      pdf.setFillColor(5,8,16); pdf.rect(0,0,pw,85,'F');
-      pdf.setFillColor(255,45,146); pdf.rect(0,83,pw,2,'F');
-      pdf.setTextColor(255,255,255); pdf.setFont('helvetica','bold'); pdf.setFontSize(18);
-      pdf.text('AMIGO SECRETO — CÓDIGOS PRIVADOS', 40, 40);
-      pdf.setFont('helvetica','normal'); pdf.setFontSize(10); pdf.setTextColor(255,45,146);
-      pdf.text(cfg.title || 'Familia Guevara', 40, 58);
-      pdf.setTextColor(180,190,210); pdf.setFontSize(9);
-      pdf.text(`Generado el ${new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'})}`, 40, 72);
-      pdf.setTextColor(180,60,60); pdf.setFontSize(9); pdf.setFont('helvetica','bold');
-      pdf.text('CONFIDENCIAL — entregar cada código solo a su destinatario', 40, 108);
-      pdf.autoTable({
-        startY: 125,
-        head: [['#','Participante','Código privado']],
-        body: codes.sort((a,b)=>a.name.localeCompare(b.name)).map((c,i)=>[i+1, c.name, c.code]),
-        theme:'grid',
-        headStyles:{ fillColor:[10,15,28], textColor:[255,45,146], fontStyle:'bold', fontSize:9 },
-        bodyStyles:{ fontSize:10 },
-        alternateRowStyles:{ fillColor:[250,245,250] },
-        columnStyles:{ 0:{cellWidth:30,halign:'center'}, 1:{cellWidth:270,fontStyle:'bold'}, 2:{cellWidth:130,halign:'center',font:'courier',fontStyle:'bold',textColor:[0,90,140]} },
-        margin:{left:40,right:40},
-      });
-      pdf.save(`codigos-amigo-secreto-${new Date().toISOString().slice(0,10)}.pdf`);
-      showToast('PDF descargado', 'success');
-    } catch(e) { showToast('Error: ' + e.message, 'error'); }
-  };
-
-  /* Cuadro completo de emparejamientos: descifra los sobres maestros con la contraseña maestra.
-     Se muestra solo en pantalla; nada se guarda descifrado. */
-  window.ssOpenPairings = () => {
-    if (!state.ssAssignments.length) return showToast('Aún no hay sorteo', 'error');
-    $('#modalTitle').textContent = 'Emparejamientos';
-    $('#modalSub').textContent = '// Solo para el organizador';
+  function ssAskMaster(title, sub, onOk) {
+    $('#modalTitle').textContent = title;
+    $('#modalSub').textContent = sub;
     $('#modalBody').innerHTML = `
-      <div class="ss-warning" style="margin-bottom:1rem">
-        <span>🙈</span>
-        <div><strong>Esto te muestra el sorteo completo.</strong> Si tú también juegas, verás a quién te tocó.
-        Nada queda guardado descifrado: al cerrar, desaparece.</div>
-      </div>
       <div class="form-group"><label>Contraseña maestra</label>
-        <input id="ssPairMaster" type="password" autocomplete="current-password" placeholder="La que definiste al sortear" /></div>
-      <div id="ssPairOut"></div>`;
+        <input id="ssMasterIn" type="password" autocomplete="current-password" placeholder="La que definiste al sortear" /></div>`;
     $('#modalActions').innerHTML = `
-      <button class="btn btn-ghost" onclick="closeModal()">Cerrar</button>
-      <button class="btn btn-primary" id="modalSubmit">Ver cuadro</button>`;
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" id="modalSubmit">Continuar</button>`;
     setTimeout(() => {
-      const input = $('#ssPairMaster');
+      const input = $('#ssMasterIn');
       const run = async () => {
-        const mp = input.value;
-        if (!mp) return showToast('Escribe la contraseña maestra', 'error');
-        const btn = $('#modalSubmit'); btn.disabled = true;
-        const out = $('#ssPairOut');
-        const total = state.ssAssignments.length;
-        const rows = [];
-        let i = 0;
-        for (const a of state.ssAssignments) {
-          i++;
-          btn.textContent = `Descifrando ${i}/${total}…`;
-          try {
-            const d = await decryptPayload(a.master, mp, a.giverId);
-            const g = state.members.find(x => x.id === a.giverId);
-            rows.push({ giverId: a.giverId, giver: memberName(a.giverId), group: g?.ssGroup || 'sin', receiver: memberName(d.r), code: d.code || '', revealed: !!a.revealedAt });
-          } catch (e) {
-            btn.disabled = false; btn.textContent = 'Ver cuadro';
-            out.innerHTML = '';
-            return showToast(i === 1 ? 'Contraseña maestra incorrecta' : `No se pudo abrir el sobre de ${memberName(a.giverId)}`, 'error');
-          }
-        }
-        window._ssPairRows = rows;
-        input.value = '';
-        const grp = input.closest('.form-group'); if (grp) grp.classList.add('hidden');
-        const grupo = (key, titulo) => {
-          const list = rows.filter(r => r.group === key).sort((x, y) => x.giver.localeCompare(y.giver));
-          if (!list.length) return '';
-          return `<h4 style="font-family:'Chakra Petch',sans-serif;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin:.9rem 0 .4rem">${titulo} · ${list.length}</h4>
-            <div class="card"><table class="pair-table"><tbody>
-            ${list.map(r => `<tr data-name="${(r.giver + ' ' + r.receiver).toLowerCase()}">
-              <td>${r.revealed ? '<span title="Ya reveló" style="color:var(--green)">✓</span>' : '<span title="Aún no revela" style="color:var(--text-muted)">·</span>'}</td>
-              <td style="font-weight:500">${r.giver}</td>
-              <td style="color:var(--text-muted)">→</td>
-              <td style="color:var(--cyan)">${r.receiver}</td>
-              <td><span class="ss-code-box" style="font-size:.78rem;padding:.2rem .45rem">${r.code}</span></td>
-            </tr>`).join('')}
-            </tbody></table></div>`;
-        };
-        out.innerHTML = `
-          <div class="search-wrap" style="margin-top:.4rem">
-            <span class="search-icon">🔍</span>
-            <input id="pairSearch" class="search-input" type="text" placeholder="Buscar persona…" autocomplete="off"
-              oninput="document.querySelectorAll('.pair-table tr').forEach(tr => tr.style.display = tr.dataset.name.includes(this.value.trim().toLowerCase()) ? '' : 'none')" />
-          </div>
-          ${grupo('adulto', 'Adultos')}${grupo('nino', 'Niños')}${grupo('sin', 'Sin grupo')}`;
-        $('#modalActions').innerHTML = `
-          <button class="btn btn-ghost" onclick="window.ssExportPairingsPDF()">⬇ PDF</button>
-          <button class="btn btn-primary" onclick="window._ssPairRows=null;closeModal()">Cerrar</button>`;
+        const mp = input.value; if (!mp) return showToast('Escribe la contraseña maestra', 'error');
+        const b = $('#modalSubmit'); b.disabled = true; b.textContent = 'Verificando…';
+        try { await ssUnlockSecrets(mp); input.value = ''; onOk(); }
+        catch (e) { b.disabled = false; b.textContent = 'Continuar'; showToast('Contraseña maestra incorrecta', 'error'); }
       };
       $('#modalSubmit').onclick = run;
       input.addEventListener('keydown', e => { if (e.key === 'Enter') run(); });
     }, 50);
     $('#modalBackdrop').classList.add('show');
+  }
+
+  window.ssRecoverLinks = () => ssAskMaster('Recuperar links', '// Trae los links del sorteo a este dispositivo', () => { closeModal(); renderSSAdmin(); showToast('Links recuperados', 'success'); ssShowLinks(); });
+
+  /* Cuadro completo de emparejamientos. Solo en pantalla; nada se guarda descifrado. */
+  window.ssOpenPairings = async () => {
+    if (!state.ssAssignments.length) return showToast('Aún no hay sorteo', 'error');
+    const needed = [...new Set(state.ssAssignments.map(a => a.group))];
+    if (needed.some(g => !_ssSecrets[g])) {
+      return ssAskMaster('Emparejamientos', '// Este dispositivo no tiene las llaves: confirma la maestra', () => window.ssOpenPairings());
+    }
+    $('#modalTitle').textContent = 'Emparejamientos';
+    $('#modalSub').textContent = '// Solo para el organizador';
+    $('#modalBody').innerHTML = `<div class="ss-warning"><span>🙈</span><div><strong>Esto te muestra el sorteo completo.</strong> Si tú también juegas, verás a quién te tocó.</div></div><div id="ssPairOut"><p class="no-results">Descifrando…</p></div>`;
+    $('#modalActions').innerHTML = `<button class="btn btn-primary" onclick="window._ssPairRows=null;closeModal()">Cerrar</button>`;
+    $('#modalBackdrop').classList.add('show');
+
+    const rows = [];
+    try {
+      for (const a of state.ssAssignments) {
+        const rid = await ssReceiverOf(a);
+        rows.push({ giverId: a.giverId, giver: memberName(a.giverId), group: a.group, receiver: memberName(rid), revealed: !!a.revealedAt });
+      }
+    } catch (e) { $('#ssPairOut').innerHTML = ''; return showToast('No se pudieron descifrar las asignaciones', 'error'); }
+    window._ssPairRows = rows;
+
+    const grupo = (key) => {
+      const list = rows.filter(r => r.group === key).sort((x, y) => x.giver.localeCompare(y.giver));
+      if (!list.length) return '';
+      const G = GROUPS[key] || { label: 'Sin grupo', emoji: '' };
+      return `<h4 style="font-family:'Chakra Petch',sans-serif;font-size:.85rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);margin:.9rem 0 .4rem">${G.emoji} ${G.label} · ${list.length}</h4>
+        <div class="card"><table class="pair-table"><tbody>
+        ${list.map(r => `<tr data-name="${(r.giver + ' ' + r.receiver).toLowerCase()}">
+          <td>${r.revealed ? '<span title="Ya reveló" style="color:var(--green)">✓</span>' : '<span title="Aún no revela" style="color:var(--text-muted)">·</span>'}</td>
+          <td style="font-weight:500">${escHtml(r.giver)}</td>
+          <td style="color:var(--text-muted)">→</td>
+          <td style="color:var(--cyan)">${escHtml(r.receiver)}</td>
+          <td>${r.revealed ? `<button class="mini-btn" title="Desbloquear" onclick="window.ssUnlock('${r.giverId}')">↺</button>` : ''}</td>
+        </tr>`).join('')}
+        </tbody></table></div>`;
+    };
+    $('#ssPairOut').innerHTML = `
+      <div class="search-wrap" style="margin-top:.4rem">
+        <span class="search-icon">🔍</span>
+        <input id="pairSearch" class="search-input" type="text" placeholder="Buscar persona…" autocomplete="off"
+          oninput="document.querySelectorAll('.pair-table tr').forEach(tr => tr.style.display = tr.dataset.name.includes(this.value.trim().toLowerCase()) ? '' : 'none')" />
+      </div>
+      ${grupo('adulto')}${grupo('nino')}`;
+    $('#modalActions').innerHTML = `
+      <button class="btn btn-ghost" onclick="window.ssExportPairingsPDF()">⬇ PDF</button>
+      <button class="btn btn-primary" onclick="window._ssPairRows=null;closeModal()">Cerrar</button>`;
   };
 
   window.ssExportPairingsPDF = () => {
@@ -4429,8 +4495,8 @@
         const list = rows.filter(r => r.group === k).sort((x, y2) => x.giver.localeCompare(y2.giver));
         if (!list.length) return;
         pdf.autoTable({
-          startY: y, head: [[t, 'Le regala a', 'Código', 'Reveló']],
-          body: list.map(r => [r.giver, r.receiver, r.code, r.revealed ? 'Sí' : '']),
+          startY: y, head: [[t, 'Le regala a', 'Reveló']],
+          body: list.map(r => [r.giver, r.receiver, r.revealed ? 'Sí' : '']),
           styles: { fontSize: 9, cellPadding: 4 }, headStyles: { fillColor: [20, 28, 48] },
           margin: { left: 40, right: 40 },
         });
@@ -4440,46 +4506,16 @@
     } catch (e) { showToast('Error: ' + e.message, 'error'); }
   };
 
-  window.ssOpenRecover = () => {
-    $('#modalTitle').textContent = 'Recuperar código';
-    $('#modalSub').textContent = '// Genera un código nuevo para quien perdió el suyo';
-    $('#modalBody').innerHTML = `
-      <div class="form-group"><label>Participante</label>
-        <select id="ssRecMember">
-          ${state.ssAssignments.map(a => `<option value="${a.giverId}">${memberName(a.giverId)}</option>`)
-            .sort().join('')}
-        </select></div>
-      <div class="form-group"><label>Contraseña maestra</label>
-        <input id="ssRecMaster" type="password" placeholder="La que definiste al sortear" /></div>
-      <p style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--text-muted)">
-        // Se generará un código nuevo sin revelarte la asignación
-      </p>`;
-    $('#modalActions').innerHTML = `
-      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
-      <button class="btn btn-primary" id="modalSubmit">Generar nuevo código</button>`;
-    setTimeout(() => { $('#modalSubmit').onclick = async () => {
-      const gid = $('#ssRecMember').value;
-      const mp = $('#ssRecMaster').value;
-      const rec = state.ssAssignments.find(a => a.giverId === gid);
-      if (!rec) return showToast('Sin asignación', 'error');
-      try {
-        const data = await decryptPayload(rec.master, mp, gid);
-        const newCode = genCode();
-        const personal = await encryptPayload(padPayload({ r: data.r }), newCode, gid);
-        const master = await encryptPayload(padPayload({ r: data.r, code: newCode }), mp, gid);
-        await setDoc(doc(db, 'ss_assignments', gid), { giverId: gid, personal, master });
-        const nm = memberName(gid);
-        $('#modalBody').innerHTML = `
-          <p style="margin-bottom:1rem;color:var(--text-dim)">Nuevo código para <strong style="color:var(--text)">${nm}</strong>:</p>
-          <div class="ss-code-box" style="font-size:1.5rem;padding:1rem">${newCode}</div>
-          <div style="margin-top:1rem;text-align:center">
-            <button class="wa-btn" onclick="window.ssSendWhatsApp('${gid}','${newCode}')">Enviar por WhatsApp</button>
-          </div>`;
-        $('#modalActions').innerHTML = `<button class="btn btn-primary" onclick="closeModal()">Listo</button>`;
-        showToast('Código regenerado', 'success');
-      } catch(e) { showToast('Contraseña maestra incorrecta', 'error'); }
-    }; }, 50);
-    $('#modalBackdrop').classList.add('show');
+  /* Alguien abrió un nombre ajeno: el organizador lo desbloquea para que su dueño lo vea */
+  window.ssUnlock = async (giverId) => {
+    const m = state.members.find(x => x.id === giverId);
+    if (!m) return;
+    if (!confirm(`¿Desbloquear a ${m.name}?\n\nSu nombre volverá a aparecer disponible en el link del grupo.`)) return;
+    try {
+      await updateDoc(doc(db, 'ss_assignments', giverId), { revealedAt: null });
+      showToast(`${m.name.split(' ')[0]} desbloqueado`, 'success');
+      if (window._ssPairRows) window.ssOpenPairings();
+    } catch (e) { showToast('Error: ' + e.message, 'error'); }
   };
 
   window.ssResetDraw = async () => {
@@ -4487,7 +4523,8 @@
     if (!confirm('Confirma de nuevo: esto borra el sorteo actual.')) return;
     try {
       for (const a of state.ssAssignments) await deleteDoc(doc(db, 'ss_assignments', a.id));
-      window._ssLastCodes = null;
+      Object.keys(GROUPS).forEach(g => lsSet(LS.me(g), null));
+      _ssPicked = null;
       showToast('Sorteo borrado', 'success');
     } catch(e) { showToast('Error: ' + e.message, 'error'); }
   };

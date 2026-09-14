@@ -4432,16 +4432,32 @@
     $('#modalTitle').textContent = title;
     $('#modalSub').textContent = sub;
     $('#modalBody').innerHTML = `
-      <div class="form-group"><label>Contraseña maestra</label>
-        <input id="ssMasterIn" type="password" autocomplete="current-password" placeholder="La que definiste al sortear" /></div>`;
+      <div class="ss-help-box" style="margin-bottom:1rem"><span>🔑</span>
+        <div>Este navegador no tiene guardadas las llaves del sorteo (se guardan en el dispositivo donde se ejecutó). Hay dos formas de traerlas:</div></div>
+      <div class="form-group"><label>Opción 1 · Contraseña maestra</label>
+        <input id="ssMasterIn" type="password" autocomplete="current-password" placeholder="La que definiste al sortear" /></div>
+      <div class="form-group"><label>Opción 2 · Pega los links que enviaste por WhatsApp</label>
+        <textarea id="ssLinksIn" rows="3" placeholder="Pega aquí el link de adultos y el de niños (uno por línea o juntos)"></textarea>
+        <p style="font-family:'JetBrains Mono',monospace;font-size:.66rem;color:var(--text-muted);margin-top:.3rem">// Los links llevan la llave de cada grupo. También sirve abrirlos directamente en este navegador.</p></div>`;
     $('#modalActions').innerHTML = `
       <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
       <button class="btn btn-primary" id="modalSubmit">Continuar</button>`;
     setTimeout(() => {
-      const input = $('#ssMasterIn');
+      const input = $('#ssMasterIn'), links = $('#ssLinksIn');
       const run = async () => {
-        const mp = input.value; if (!mp) return showToast('Escribe la contraseña maestra', 'error');
         const b = $('#modalSubmit'); b.disabled = true; b.textContent = 'Verificando…';
+        // Links pegados: extraer los secretos sin necesidad de la maestra
+        const txt = (links.value || '');
+        const found = [...txt.matchAll(/#g=(adultos|ninos)\.([A-Za-z0-9]{8,24})/g)];
+        if (found.length) {
+          found.forEach(mm => { const g = groupFromKey(mm[1].toLowerCase()); if (g) { _ssSecrets[g] = mm[2].toUpperCase(); lsSet(LS.secret(g), _ssSecrets[g]); } });
+          Object.keys(_ssKeyCache).forEach(k => delete _ssKeyCache[k]);
+          const needed = [...new Set(state.ssAssignments.map(a => a.group))].filter(g => !_ssSecrets[g]);
+          if (!needed.length) { onOk(); return; }
+          b.disabled = false; b.textContent = 'Continuar';
+          return showToast(`Falta el link de ${needed.map(g => GROUPS[g].label.toLowerCase()).join(' y ')}`, 'error');
+        }
+        const mp = input.value; if (!mp) { b.disabled = false; b.textContent = 'Continuar'; return showToast('Escribe la contraseña maestra o pega los links', 'error'); }
         try { await ssUnlockSecrets(mp); input.value = ''; onOk(); }
         catch (e) { b.disabled = false; b.textContent = 'Continuar'; showToast('Contraseña maestra incorrecta', 'error'); }
       };

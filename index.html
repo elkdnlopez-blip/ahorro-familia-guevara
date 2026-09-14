@@ -3836,6 +3836,8 @@
           </div>
           <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
             <button class="btn btn-ghost btn-sm" onclick="window.ssOpenPairings()">👁 Ver emparejamientos</button>
+            <button class="btn btn-ghost btn-sm" onclick="window.ssOpenAddToDraw()">➕ Agregar a alguien al sorteo</button>
+            <button class="btn btn-ghost btn-sm" onclick="window.ssOpenDraw()">🎲 Volver a sortear un grupo</button>
             <button class="btn btn-danger btn-sm" onclick="window.ssResetDraw()">🗑 Borrar sorteo</button>
           </div>
         ` : `
@@ -4208,27 +4210,45 @@
           Usa una frase larga (p. ej. tres palabras y un número).
         </p>
       </div>
-      ${ssIsDrawn() ? `<div class="ss-warning" style="border-color:var(--danger);color:var(--danger);background:rgba(255,56,96,0.08)">
-        <span>⚠️</span><div>Ya existe un sorteo. Al continuar se <strong>borrará y reemplazará</strong>.</div></div>` : ''}`;
+      ${ssIsDrawn() ? `
+        <div class="form-group">
+          <label>¿Qué sortear?</label>
+          <select id="ssDrawScope">
+            <option value="nino">Solo el grupo de niños (los adultos quedan como están)</option>
+            <option value="adulto">Solo el grupo de adultos (los niños quedan como están)</option>
+            <option value="all">Los dos grupos (rehacer todo)</option>
+          </select>
+          <p style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:var(--text-muted);margin-top:0.4rem">
+            // El grupo que se vuelva a sortear <strong>conserva su mismo link</strong>; sus ✓ se reinician y quienes ya habían revelado tendrán que volver a abrir.
+            ¿Solo te faltó una persona? Mejor usa <strong>"Agregar a alguien al sorteo"</strong>: no cambia a nadie más.
+          </p>
+        </div>
+        <div class="ss-warning" style="border-color:var(--danger);color:var(--danger);background:rgba(255,56,96,0.08)">
+          <span>⚠️</span><div>Ya existe un sorteo. El grupo elegido se <strong>borrará y reemplazará</strong>.</div></div>` : ''}`;
     $('#modalActions').innerHTML = `
       <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
       <button class="btn btn-primary" id="modalSubmit" ${problems.length?'disabled style="opacity:0.4;cursor:not-allowed"':''}>🎲 Sortear ahora</button>`;
     setTimeout(() => {
       const btn = $('#modalSubmit');
       if (problems.length) return;
-      btn.onclick = () => ssRunDraw($('#ssMaster').value);
+      btn.onclick = () => { const sc = $('#ssDrawScope'); ssRunDraw($('#ssMaster').value, sc && sc.value !== 'all' ? sc.value : null); };
     }, 50);
     $('#modalBackdrop').classList.add('show');
   };
 
-  async function ssRunDraw(masterPass) {
+  async function ssRunDraw(masterPass, onlyGroup = null) {
     if (!masterPass || masterPass.length < 12) return showToast('Contraseña maestra: mínimo 12 caracteres', 'error');
 
     const exclusions = ssExclusionsMap();
     const groups = Object.keys(GROUPS)
+      .filter(g => !onlyGroup || g === onlyGroup)
       .map(g => ({ g, ids: ssByGroup(g).map(m => m.id) }))
       .filter(x => x.ids.length >= 3);
-    if (!groups.length) return showToast('Ningún grupo tiene al menos 3 participantes', 'error');
+    if (!groups.length) return showToast(onlyGroup ? `El grupo de ${GROUPS[onlyGroup].label.toLowerCase()} necesita al menos 3 participantes` : 'Ningún grupo tiene al menos 3 participantes', 'error');
+    // Si el grupo ya tenía link, se conserva el mismo secreto (el link enviado sigue sirviendo)
+    if (onlyGroup && !_ssSecrets[onlyGroup] && (state.ssConfig || {}).groupKeys && state.ssConfig.groupKeys[onlyGroup]) {
+      return ssAskMaster('Confirma la maestra', '// Para conservar el link de ese grupo', () => { closeModal(); window.ssOpenDraw(); });
+    }
 
     const btn = $('#modalSubmit');
     const restore = () => { if (btn) { btn.disabled = false; btn.textContent = '🎲 Sortear ahora'; } };
@@ -4251,11 +4271,11 @@
 
     // Un secreto por grupo (va en el link) + copia cifrada con la maestra para recuperarlo
     btn.textContent = 'Cifrando…';
-    const secrets = {}, groupKeys = {}, docsOut = [];
+    const secrets = {}, groupKeys = Object.assign({}, (state.ssConfig || {}).groupKeys || {}), docsOut = [];
     try {
       for (const x of groups) {
         const g = x.g;
-        secrets[g] = genCode(12).replace('-', '');
+        secrets[g] = _ssSecrets[g] || genCode(12).replace('-', '');
         const key = await deriveKey(secrets[g], 'group:' + g);
         for (const [giverId, receiverId] of shuffle(Object.entries(perGroup[g]))) {
           const blob = await encryptWithKey(key, padPayload({ r: receiverId }));
@@ -4266,17 +4286,20 @@
     } catch (e) { restore(); return showToast('Error al cifrar: ' + e.message, 'error'); }
 
     // Los links quedan a salvo en este dispositivo ANTES de escribir
-    Object.keys(secrets).forEach(g => { _ssSecrets[g] = secrets[g]; lsSet(LS.secret(g), secrets[g]); });
-    Object.keys(GROUPS).forEach(g => { if (!secrets[g]) { delete _ssSecrets[g]; lsSet(LS.secret(g), null); lsSet(LS.me(g), null); } });
+    Object.keys(secrets).forEach(g => { _ssSecrets[g] = secrets[g]; lsSet(LS.secret(g), secrets[g]); lsSet(LS.me(g), null); });
+    if (!onlyGroup) Object.keys(GROUPS).forEach(g => { if (!secrets[g]) { delete _ssSecrets[g]; delete groupKeys[g]; lsSet(LS.secret(g), null); lsSet(LS.me(g), null); } });
     Object.keys(_ssKeyCache).forEach(k => delete _ssKeyCache[k]);
 
     btn.textContent = 'Guardando…';
     try {
       const batch = writeBatch(db);
       const newIds = new Set(docsOut.map(d => d.giverId));
+      const touched = new Set(groups.map(x => x.g));
       docsOut.forEach(d => batch.set(doc(db, 'ss_assignments', d.giverId), d));
-      state.ssAssignments.forEach(a => { if (!newIds.has(a.id)) batch.delete(doc(db, 'ss_assignments', a.id)); });
-      batch.set(doc(db, 'secretsanta', 'config'), { drawnAt: serverTimestamp(), drawSize: docsOut.length, groupKeys }, { merge: true });
+      // Solo se borran los sobrantes de los grupos que se volvieron a sortear
+      state.ssAssignments.forEach(a => { if (!newIds.has(a.id) && (touched.has(a.group) || !onlyGroup)) batch.delete(doc(db, 'ss_assignments', a.id)); });
+      const keep = onlyGroup ? state.ssAssignments.filter(a => !touched.has(a.group)).length : 0;
+      batch.set(doc(db, 'secretsanta', 'config'), { drawnAt: serverTimestamp(), drawSize: docsOut.length + keep, groupKeys }, { merge: true });
       await batch.commit();
       closeModal();
       showToast('¡Sorteo realizado! 🎉', 'success');
@@ -4505,6 +4528,77 @@
       pdf.save(`emparejamientos-${new Date().toISOString().slice(0, 10)}.pdf`);
     } catch (e) { showToast('Error: ' + e.message, 'error'); }
   };
+
+  /* ===== AGREGAR A ALGUIEN A UN SORTEO YA HECHO =====
+     La cadena es un ciclo: A → B. Se busca un eslabón A → B donde A todavía no haya revelado
+     y las exclusiones permitan A → nuevo → B. Solo cambia la asignación de A; nadie más se entera. */
+  window.ssOpenAddToDraw = () => {
+    const assigned = new Set(state.ssAssignments.map(a => a.giverId));
+    const pending = state.members.filter(m => (m.ssGroup === 'adulto' || m.ssGroup === 'nino') && !assigned.has(m.id))
+      .sort((a, b) => a.name.localeCompare(b.name));
+    $('#modalTitle').textContent = 'Agregar al sorteo';
+    $('#modalSub').textContent = '// Sin rehacer el sorteo ni cambiar a los demás';
+    if (!pending.length) {
+      $('#modalBody').innerHTML = `<div class="ss-help-box"><span>ℹ️</span><div>Todos los que tienen grupo ya están en el sorteo.
+        Para sumar a alguien nuevo: agrégalo en <strong>Integrantes</strong>, ponle grupo (adulto/niño) en la lista de abajo y vuelve aquí.</div></div>`;
+      $('#modalActions').innerHTML = `<button class="btn btn-primary" onclick="closeModal()">Entendido</button>`;
+      $('#modalBackdrop').classList.add('show');
+      return;
+    }
+    $('#modalBody').innerHTML = `
+      <div class="ss-help-box" style="margin-bottom:1rem"><span>🧩</span>
+        <div>Se mete a la persona en la cadena de su grupo: <strong>una sola persona</strong> (que aún no haya revelado) pasa a regalarle al nuevo, y el nuevo le regala a quien esa persona tenía. El resto no cambia y el link sigue siendo el mismo.</div></div>
+      <div class="form-group"><label>¿A quién agregamos?</label>
+        <select id="ssAddWho">${pending.map(m => `<option value="${m.id}">${escHtml(m.name)} · ${GROUPS[m.ssGroup].label}</option>`).join('')}</select></div>
+      <div id="ssAddOut"></div>`;
+    $('#modalActions').innerHTML = `
+      <button class="btn btn-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn btn-primary" id="modalSubmit">➕ Agregar</button>`;
+    setTimeout(() => { $('#modalSubmit').onclick = () => ssInsertIntoDraw($('#ssAddWho').value); }, 50);
+    $('#modalBackdrop').classList.add('show');
+  };
+
+  async function ssInsertIntoDraw(memberId) {
+    const m = state.members.find(x => x.id === memberId);
+    if (!m) return;
+    const g = m.ssGroup;
+    if (!_ssSecrets[g]) return ssAskMaster('Confirma la maestra', '// Para abrir la cadena de ese grupo', () => { closeModal(); window.ssOpenAddToDraw(); });
+    const btn = $('#modalSubmit'); btn.disabled = true; btn.textContent = 'Buscando un lugar…';
+    try {
+      const key = await ssGroupKey(g);
+      const list = state.ssAssignments.filter(a => a.group === g);
+      if (list.length < 2) throw new Error('Ese grupo aún no tiene sorteo');
+      const edges = [];
+      for (const a of list) {
+        const d = await decryptWithKey(key, { iv: a.iv, ct: a.ct });
+        edges.push({ giver: a.giverId, receiver: d.r, revealed: !!a.revealedAt, doc: a });
+      }
+      const ex = ssExclusionsMap();
+      const ok = edges.filter(e => canGive(e.giver, memberId, ex) && canGive(memberId, e.receiver, ex));
+      if (!ok.length) throw new Error('Las exclusiones no dejan meterlo sin rehacer el sorteo de ese grupo');
+      const fresh = ok.filter(e => !e.revealed);
+      let pick;
+      if (fresh.length) pick = fresh[randInt(fresh.length)];
+      else {
+        pick = ok[randInt(ok.length)];
+        const who = memberName(pick.giver);
+        if (!confirm(`Todos los lugares posibles ya revelaron. Se le cambiaría la persona a ${who}, que tendría que volver a abrir su nombre (y tú avisarle). ¿Continuar?`)) { btn.disabled = false; btn.textContent = '➕ Agregar'; return; }
+      }
+      btn.textContent = 'Guardando…';
+      const batch = writeBatch(db);
+      const blobA = await encryptWithKey(key, padPayload({ r: memberId }));
+      const blobN = await encryptWithKey(key, padPayload({ r: pick.receiver }));
+      batch.set(doc(db, 'ss_assignments', pick.giver), { giverId: pick.giver, group: g, iv: blobA.iv, ct: blobA.ct, revealedAt: null });
+      batch.set(doc(db, 'ss_assignments', memberId), { giverId: memberId, group: g, iv: blobN.iv, ct: blobN.ct, revealedAt: null });
+      batch.set(doc(db, 'secretsanta', 'config'), { drawSize: state.ssAssignments.length + 1 }, { merge: true });
+      await batch.commit();
+      closeModal();
+      showToast(`${m.name.split(' ')[0]} ya está en el sorteo de ${GROUPS[g].label.toLowerCase()}`, 'success');
+    } catch (e) {
+      btn.disabled = false; btn.textContent = '➕ Agregar';
+      showToast(e.message || 'No se pudo agregar', 'error');
+    }
+  }
 
   /* Alguien abrió un nombre ajeno: el organizador lo desbloquea para que su dueño lo vea */
   window.ssUnlock = async (giverId) => {
